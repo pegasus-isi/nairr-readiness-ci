@@ -1,0 +1,24 @@
+default:
+  before_script:
+    - env
+
+# .retry-and-timeout: &retry-and-timeout
+#   retry: 1
+#   timeout: 15 minutes
+
+stages:
+  - unit
+  - e2e
+
+# pre-job:
+#   stage: .pre
+#   script:
+#     - echo "VERSION=`uuidgen`"
+#   artifacts:
+#     reports:
+#       dotenv: .env
+
+# ACCESS
+
+include:
+  - local: .gitlab/ci/access/main.yml

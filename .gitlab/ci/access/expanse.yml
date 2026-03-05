@@ -1,0 +1,15 @@
+include:
+  - local: .gitlab/ci/tests/ssh.yml
+
+variables:
+  RESOURCE_ID: 2
+
+expanse-ssh-job:
+  extends: .ssh-job
+  variables:
+    SSH_HOST: login.expanse.sdsc.edu
+    SSH_USER: mayani
+    SSH_KEY_FILE: ${ANVIL_SSH_KEY_FILE}
+    SSH_MFA_TYPE: totp
+    SSH_MFA_PROMPT: TOTP code
+    SSH_MFA_SHARED_SECRET: ${SDSC_SSH_MFA_SHARED_SECRET}

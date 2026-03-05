@@ -1,0 +1,59 @@
+variables:
+  TEST_ID: 1
+  SSH_JUMP_HOST: null
+  SSH_JUMP_PORT: 22
+  SSH_JUMP_USER: null
+  SSH_JUMP_KEY_FILE: null
+  SSH_JUMP_PASSPHRASE: null
+  SSH_JUMP_MFA_TYPE: null
+  SSH_JUMP_MFA_PROMPT: null
+  SSH_JUMP_MFA_SHARED_SECRET: null
+  SSH_JUMP_TIMEOUT: 10
+  SSH_JUMP_OPTIONS: -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+
+  SSH_HOST: null
+  SSH_PORT: 22
+  SSH_USER: null
+  SSH_KEY_FILE: null
+  SSH_PASSPHRASE: null
+  SSH_MFA_TYPE: null
+  SSH_MFA_PROMPT: null
+  SSH_MFA_SHARED_SECRET: null
+  SSH_TIMEOUT: 10
+  SSH_OPTIONS: -o IdentitiesOnly=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+
+.ssh-job:
+  stage: unit
+  image: rockylinux:9
+  before_script:
+    - dnf -y install openssh-clients mysql
+    - |
+      if [[ "${SSH_JUMP_MFA_TYPE}" == "totp" || "${SSH_MFA_TYPE}" == "totp" ]]; then
+        dnf -y install sshpass python3-pip
+        pip3 install pyotp
+      fi
+    - |
+      if [[ "${SSH_JUMP_PASSPHRASE}" != "" || "${SSH_PASSPHRASE}" != "" ]]; then
+        dnf -y install sshpass # expect
+      fi
+  script:
+    - env
+    - chmod 600 ${SSH_JUMP_KEY_FILE} ${SSH_KEY_FILE}
+    - |
+      PREFIX=""
+      if [[ "${SSH_JUMP_MFA_TYPE}" == "totp" || "${SSH_MFA_TYPE}" == "totp" ]]; then
+        export SSHPASS=`python3 -c "import pyotp; totp = pyotp.TOTP('${SSH_MFA_SHARED_SECRET}'); print(totp.now())"`
+        PREFIX="sshpass -P '${SSH_MFA_PROMPT}' -e"
+      fi
+    - echo bash -c "${PREFIX} ssh ${SSH_OPTIONS} -o ProxyCommand=\"ssh -i ${SSH_JUMP_KEY_FILE} -W %h:%p ${SSH_JUMP_OPTIONS} -l ${SSH_JUMP_USER} -p ${SSH_JUMP_PORT} ${SSH_JUMP_HOST}\" -i ${SSH_KEY_FILE} -l ${SSH_USER} -p ${SSH_PORT} ${SSH_HOST} true"
+    - bash -c "${PREFIX} ssh ${SSH_OPTIONS} -o ProxyCommand=\"ssh -i ${SSH_JUMP_KEY_FILE} -W %h:%p ${SSH_JUMP_OPTIONS} -l ${SSH_JUMP_USER} -p ${SSH_JUMP_PORT} ${SSH_JUMP_HOST}\" -i ${SSH_KEY_FILE} -l ${SSH_USER} -p ${SSH_PORT} ${SSH_HOST} true"
+  after_script:
+    - |
+      export MYSQL_PWD="${NAIRR_DB_PASS}"
+      if [ "$CI_JOB_STATUS" = "failed" ]; then
+        mysql -u${NAIRR_DB_USER} -h${NAIRR_DB_HOST} ${NAIRR_DB_NAME} -e "INSERT INTO readiness_results (resource_id, version, uid, etag, test_ssh_connectivity_id, test_ssh_connectivity_status, test_ssh_connectivity_timestamp, created_at, created_by, updated_at, updated_by) VALUES(${RESOURCE_ID}, '0.0.0', UUID(), UUID(), ${TEST_ID}, 'FAIL', NOW(), NOW(), 'mayani', NOW(), 'mayani');"
+      else
+        mysql -u${NAIRR_DB_USER} -h${NAIRR_DB_HOST} ${NAIRR_DB_NAME} -e "INSERT INTO readiness_results (resource_id, version, uid, etag, test_ssh_connectivity_id, test_ssh_connectivity_status, test_ssh_connectivity_timestamp, created_at, created_by, updated_at, updated_by) VALUES(${RESOURCE_ID}, '0.0.0', UUID(), UUID(), ${TEST_ID}, 'PASS', NOW(), NOW(), 'mayani', NOW(), 'mayani');"
+      fi
+  tags:
+    - docker

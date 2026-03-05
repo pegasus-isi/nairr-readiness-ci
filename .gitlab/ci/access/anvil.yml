@@ -1,0 +1,12 @@
+include:
+  - local: .gitlab/ci/tests/ssh.yml
+
+variables:
+  RESOURCE_ID: 1
+
+anvil-ssh-job:
+  extends: .ssh-job
+  variables:
+    SSH_HOST: anvil.rcac.purdue.edu
+    SSH_USER: x-mayani
+    SSH_KEY_FILE: ${ANVIL_SSH_KEY_FILE}
