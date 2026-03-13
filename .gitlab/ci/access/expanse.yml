@@ -1,0 +1,17 @@
+include:
+  - local: .gitlab/ci/components/ssh.yml
+    inputs:
+      job_name_prefix: EXPANSE
+      ssh_jump_host: $ACCESS_JUMP_HOST
+      ssh_jump_user: $ACCESS_JUMP_USER
+      ssh_jump_key_file: $ACCESS_SSH_KEY_FILE
+      ssh_host: login.expanse.sdsc.edu
+      ssh_user: mayani
+      ssh_key_file: $ANVIL_SSH_KEY_FILE
+  - local: .gitlab/ci/tests/ssh.yml
+    inputs:
+      job_name_prefix: EXPANSE
+      resource_id: 2
+      ssh_mfa_type: totp
+      ssh_mfa_prompt: TOTP code
+      ssh_mfa_shared_secret: $SDSC_SSH_MFA_SHARED_SECRET

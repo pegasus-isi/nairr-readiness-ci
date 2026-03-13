@@ -1,0 +1,11 @@
+include:
+  - local: .gitlab/ci/tests/ssh.yml
+
+variables:
+  RESOURCE_ID: 1
+  SSH_HOST: login.delta.ncsa.illinois.edu
+  SSH_USER: mayani
+  SSH_KEY_FILE: ${ANVIL_SSH_KEY_FILE}
+
+delta-ssh-job:
+  extends: .ssh-job
