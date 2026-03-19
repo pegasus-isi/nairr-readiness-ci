@@ -1,0 +1,9 @@
+variables:
+  SSH_JUMP_USER: mayani
+  SSH_JUMP_HOST: pegasus.access-ci.org
+  SSH_JUMP_KEY_FILE: ${ACCESS_SSH_KEY_FILE}
+
+include:
+  - local: .gitlab/ci/access/anvil.yml
+  - local: .gitlab/ci/access/expanse.yml
+  - local: .gitlab/ci/access/bridges.yml

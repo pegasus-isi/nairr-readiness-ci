@@ -1,0 +1,11 @@
+include:
+  - local: .gitlab/ci/components/ssh.yml
+    inputs:
+      job_name_prefix: BRIDGES
+      ssh_host: bridges2.psc.edu
+      ssh_user: mayani
+      ssh_key_file: $BRIDGES_SSH_KEY_FILE
+  - local: .gitlab/ci/tests/ssh.yml
+    inputs:
+      job_name_prefix: BRIDGES
+      resource_id: 3

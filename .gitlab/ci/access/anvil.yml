@@ -1,0 +1,11 @@
+include:
+  - local: .gitlab/ci/components/ssh.yml
+    inputs:
+      job_name_prefix: ANVIL
+      ssh_host: anvil.rcac.purdue.edu
+      ssh_user: x-mayani
+      ssh_key_file: $ANVIL_SSH_KEY_FILE
+  - local: .gitlab/ci/tests/ssh.yml
+    inputs:
+      job_name_prefix: ANVIL
+      resource_id: 1

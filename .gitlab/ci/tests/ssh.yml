@@ -1,0 +1,63 @@
+spec:
+  inputs:
+    job_name_prefix:
+      description: Must match the job_name_prefix used in the ssh component
+    resource_id:
+      description: Resource ID recorded in the database
+      type: number
+    test_id:
+      description: Test ID recorded in the database
+      default: 1
+      type: number
+    ssh_mfa_type:
+      description: MFA type for the target host (totp, or empty for none)
+      default: ""
+    ssh_mfa_prompt:
+      description: Keyboard-interactive prompt string for MFA
+      default: ""
+    ssh_mfa_shared_secret:
+      description: TOTP shared secret for MFA
+      default: ""
+
+---
+
+$[[ inputs.job_name_prefix ]]-ssh-job:
+  stage: unit
+  image: rockylinux:9
+  needs:
+    - job: $[[ inputs.job_name_prefix ]]-ssh-cmd
+      artifacts: true
+  before_script:
+    - dnf -y install openssh-clients mysql
+    - |
+      if [[ "$[[ inputs.ssh_mfa_type ]]" == "totp" ]]; then
+        dnf -y install sshpass python3-pip
+        pip3 install pyotp
+      fi
+  script:
+    - |
+      VAR_NAME="$[[ inputs.job_name_prefix ]]_SSH_CMD"
+      SSH_CMD="${!VAR_NAME}"
+
+      for key_file in $(echo "${SSH_CMD}" | grep -oP '(?<=-i )\S+'); do
+        chmod 600 "$(eval echo ${key_file})"
+      done
+
+      PREFIX=""
+      if [[ "$[[ inputs.ssh_mfa_type ]]" == "totp" ]]; then
+        MFA_SECRET="$[[ inputs.ssh_mfa_shared_secret ]]"
+        export SSHPASS=$(python3 -c "import pyotp; print(pyotp.TOTP('${MFA_SECRET}').now())")
+        PREFIX="sshpass -P '$[[ inputs.ssh_mfa_prompt ]]' -e"
+      fi
+
+      eval "${PREFIX} ${SSH_CMD} true"
+  after_script:
+    - |
+      export MYSQL_PWD="${NAIRR_DB_PASS}"
+      STATUS="PASS"
+      if [ "$CI_JOB_STATUS" = "failed" ]; then STATUS="FAIL"; fi
+      mysql -u${NAIRR_DB_USER} -h${NAIRR_DB_HOST} ${NAIRR_DB_NAME} \
+        -e "INSERT INTO readiness_results (resource_id, version, uid, etag, test_ssh_connectivity_id, test_ssh_connectivity_status, test_ssh_connectivity_timestamp, created_at, created_by, updated_at, updated_by) \
+            VALUES($[[ inputs.resource_id ]], '0.0.0', UUID(), UUID(), $[[ inputs.test_id ]], '${STATUS}', NOW(), NOW(), 'mayani', NOW(), 'mayani');"
+  tags:
+    - docker

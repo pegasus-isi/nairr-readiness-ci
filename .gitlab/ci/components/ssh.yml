@@ -1,0 +1,60 @@
+spec:
+  inputs:
+    job_name_prefix:
+      description: Prefix for the CI job name and dotenv variable (must be unique per pipeline)
+      default: ssh
+
+    ssh_jump_host:
+      description: SSH jump/bastion hostname
+      default: ""
+    ssh_jump_port:
+      description: SSH jump host port
+      default: 22
+      type: number
+    ssh_jump_user:
+      description: Username for the jump host
+      default: ""
+    ssh_jump_key_file:
+      description: Path to SSH private key for the jump host
+      default: ""
+    ssh_jump_options:
+      description: Additional SSH options for the jump host connection
+      default: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+
+    ssh_host:
+      description: Target SSH hostname
+    ssh_port:
+      description: Target SSH port
+      default: 22
+      type: number
+    ssh_user:
+      description: Username for the target host
+    ssh_key_file:
+      description: Path to SSH private key for the target host
+      default: ""
+    ssh_options:
+      description: Additional SSH options for the target host connection
+      default: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+
+---
+
+$[[ inputs.job_name_prefix ]]-ssh-cmd:
+  stage: unit
+  script:
+    - |
+      PROXY_OPTION=""
+      if [[ -n "$[[ inputs.ssh_jump_host ]]" ]]; then
+        JUMP_KEY_OPTION=""
+        [[ -n "$[[ inputs.ssh_jump_key_file ]]" ]] && JUMP_KEY_OPTION="-o IdentitiesOnly=yes -i \$[[ inputs.ssh_jump_key_file ]] "
+        PROXY_CMD="ssh ${JUMP_KEY_OPTION} -W [%h]:%p $[[ inputs.ssh_jump_options ]] -l $[[ inputs.ssh_jump_user ]] -p $[[ inputs.ssh_jump_port ]] $[[ inputs.ssh_jump_host ]]"
+        PROXY_OPTION="-o ProxyCommand=\"${PROXY_CMD}\""
+      fi
+
+      KEY_OPTION=""
+      [[ -n "$[[ inputs.ssh_key_file ]]" ]] && KEY_OPTION="-o IdentitiesOnly=yes -i \$[[ inputs.ssh_key_file ]] "
+      SSH_CMD="ssh $[[ inputs.ssh_options ]] ${PROXY_OPTION} ${KEY_OPTION} -l $[[ inputs.ssh_user ]] -p $[[ inputs.ssh_port ]] $[[ inputs.ssh_host ]]"
+
+      printf '$[[ inputs.job_name_prefix ]]_SSH_CMD=%s\n' "${SSH_CMD}" > $[[ inputs.job_name_prefix ]]-ssh.env
+  artifacts:
+    reports:
+      dotenv: $[[ inputs.job_name_prefix ]]-ssh.env
