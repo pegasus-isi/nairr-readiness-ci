@@ -10,11 +10,11 @@ Continuous integration system for testing SSH connectivity and infrastructure re
 
 ## Architecture
 
-GitLab CI/CD pipeline running SSH connectivity tests in Rocky Linux 9 Docker containers. Results stored in MySQL database.
+GitLab CI/CD pipeline running SSH connectivity probess in Rocky Linux 9 Docker containers. Results stored in MySQL database.
 
 **Pipeline Stages**:
-- `unit`: SSH connectivity tests
-- `e2e`: End-to-end tests (not yet implemented)
+- `unit`: SSH connectivity probes
+- `e2e`: End-to-end probes (not yet implemented)
 
 ## Directory Structure
 
@@ -27,7 +27,7 @@ GitLab CI/CD pipeline running SSH connectivity tests in Rocky Linux 9 Docker con
       delta.yml    # Delta @ NCSA
       delta-ai.yml # Delta AI @ NCSA
       expanse.yml  # Expanse @ SDSC
-    tests/
+    probes/
       ssh.yml      # Reusable SSH job template (.ssh-job)
 .gitlab-ci.yml     # Main pipeline entrypoint
 ```
@@ -45,7 +45,7 @@ GitLab CI/CD pipeline running SSH connectivity tests in Rocky Linux 9 Docker con
 
 ## SSH Job Template Variables
 
-Defined in `.gitlab/ci/tests/ssh.yml`. Key variables for each resource job:
+Defined in `.gitlab/ci/probes/ssh.yml`. Key variables for each resource job:
 
 - `JUMP_HOST`, `JUMP_USER`, `JUMP_SSH_KEY` — bastion/proxy config
 - `TARGET_HOST`, `TARGET_USER`, `TARGET_SSH_KEY` — destination host

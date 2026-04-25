@@ -5,10 +5,10 @@ include:
       ssh_host: login.expanse.sdsc.edu
       ssh_user: mayani
       ssh_key_file: $EXPANSE_SSH_KEY_FILE
-  - local: .gitlab/ci/tests/ssh.yml
+  - local: .gitlab/ci/probes/ssh.yml
     inputs:
       job_name_prefix: EXPANSE
       resource_id: 2
       ssh_mfa_type: totp
       ssh_mfa_prompt: TOTP code
-      ssh_mfa_shared_secret: $SDSC_SSH_MFA_SHARED_SECRET
+      ssh_mfa_shared_secret: $EXPANSE_SSH_MFA_SHARED_SECRET

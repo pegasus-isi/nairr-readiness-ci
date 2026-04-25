@@ -1,0 +1,116 @@
+spec:
+  inputs:
+    job_name_prefix:
+      description: Prefix for the CI job name and dotenv variable (must be unique per pipeline)
+      default: glab
+
+    gitlab_url:
+      description: GitLab URL
+    gitlab_runner_id:
+      description: GitLab Runner ID
+      type: number
+    gitlab_runner_uid:
+      description: GitLab Runner UID
+    gitlab_runner_token:
+      description: GitLab Runner Token
+    slurm_partition:
+      description: SLURM partition
+    slurm_account:
+      description: SLURM account
+    slurm_time:
+      description: SLURM job runtime
+      default: "00:30:00"
+
+---
+
+$[[ inputs.job_name_prefix ]]-gitlab-runner-run:
+  stage: unit
+  image: rockylinux:9
+  needs:
+    - job: $[[ inputs.job_name_prefix ]]-ssh-cmd
+      artifacts: true
+  before_script:
+    - dnf -y install openssh-clients mysql
+    - |
+      if [[ "$[[ inputs.ssh_mfa_type ]]" == "totp" ]]; then
+        dnf -y install sshpass python3-pip
+        pip3 install pyotp
+      fi
+  script:
+    - |
+      REMOTE_CMD='mkdir -p .gitlab-runner
+      echo > .gitlab-runner/config.toml <<EOF
+      concurrent = 2
+      check_interval = 0
+      connection_max_age = "15m0s"
+      shutdown_timeout = 0
+
+      [session_server]
+        session_timeout = 1800
+
+      [[runners]]
+        name = "$[[ inputs.job_name_prefix ]]"
+        url = "$[[ inputs.gitlab_url ]]"
+        id = $[[ inputs.gitlab_runner_id ]]
+        token = "$[[ inputs.gitlab_runner_token ]]"
+        # token_obtained_at = 2026-04-17T20:13:04Z
+        # token_expires_at = 0001-01-01T00:00:00Z
+        executor = "shell"
+        [runners.cache]
+          MaxUploadedArchiveSize = 0
+          [runners.cache.s3]
+            AssumeRoleMaxConcurrency = 0
+          [runners.cache.gcs]
+          [runners.cache.azure]
+      EOF
+      '
+
+    - |
+      REMOTE_CMD="${REMOTE_CMD}
+      cat > .gitlab-runner/.runner_system_id <<EOF
+      $[[ inputs.gitlab_runner_uid ]]
+      EOF
+      "
+
+    - |
+      REMOTE_CMD="${REMOTE_CMD}
+      curl -L --output .gitlab-runner/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
+      chmod +x .gitlab-runner/gitlab-runner
+      "
+
+    - |
+      REMOTE_CMD="${REMOTE_CMD}
+      cat > gitlab-runner.job <<EOF
+      #!/bin/bash
+      #SBATCH --partition="$[[ inputs.slurm_partition ]]"
+      #SBATCH --time="$[[ inputs.slurm_time ]]"
+      #SBATCH --account="$[[ inputs.slurm_account ]]"
+
+      set -e
+      .gitlab-runner/gitlab-runner run
+      EOF
+      chmod +x gitlab-runner.job
+      "
+
+    - |
+      REMOTE_CMD="${REMOTE_CMD}
+      echo sbatch gitlab-runner.job
+      echo squeue -u $USER
+      "
+
+    - |
+      VAR_NAME="$[[ inputs.job_name_prefix ]]_SSH_CMD"
+      SSH_CMD="${!VAR_NAME}"
+
+      for key_file in $(echo "${SSH_CMD}" | grep -oP '(?<=-i )\S+'); do
+        chmod 600 "$(eval echo ${key_file})"
+      done
+
+      PREFIX=""
+      if [[ "$[[ inputs.ssh_mfa_type ]]" == "totp" ]]; then
+        MFA_SECRET="$[[ inputs.ssh_mfa_shared_secret ]]"
+        export SSHPASS=$(python3 -c "import pyotp; print(pyotp.TOTP('${MFA_SECRET}').now())")
+        PREFIX="sshpass -P '$[[ inputs.ssh_mfa_prompt ]]' -e"
+      fi
+
+      eval "${PREFIX} ${SSH_CMD} '${REMOTE_CMD}'"

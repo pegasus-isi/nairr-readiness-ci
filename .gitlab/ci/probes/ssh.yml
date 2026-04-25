@@ -5,7 +5,7 @@ spec:
     resource_id:
       description: Resource ID recorded in the database
       type: number
-    test_id:
+    probe_id:
       description: Test ID recorded in the database
       default: 1
       type: number
@@ -58,6 +58,6 @@ $[[ inputs.job_name_prefix ]]-ssh-job:
       if [ "$CI_JOB_STATUS" = "failed" ]; then STATUS="FAIL"; fi
       mysql -u${NAIRR_DB_USER} -h${NAIRR_DB_HOST} ${NAIRR_DB_NAME} \
         -e "INSERT INTO readiness_results (resource_id, version, uid, etag, test_ssh_connectivity_id, test_ssh_connectivity_status, test_ssh_connectivity_timestamp, created_at, created_by, updated_at, updated_by) \
-            VALUES($[[ inputs.resource_id ]], '0.0.0', UUID(), UUID(), $[[ inputs.test_id ]], '${STATUS}', NOW(), NOW(), 'mayani', NOW(), 'mayani');"
+            VALUES($[[ inputs.resource_id ]], '0.0.0', UUID(), UUID(), $[[ inputs.probe_id ]], '${STATUS}', NOW(), NOW(), 'mayani', NOW(), 'mayani');"
   tags:
     - docker
