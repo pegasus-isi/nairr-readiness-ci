@@ -112,11 +112,9 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
       sleep 5
   script:
     - |
-      cd install-pegasus/workflow
       python3 workflow.py
       pegasus-status -w5 -l abc
       condor_off
-      cd ~
   after_script:
     - |
       export MYSQL_PWD="${NAIRR_DB_PASS}"
