@@ -121,3 +121,5 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       fi
 
       eval "${PREFIX} ${SSH_CMD} '${REMOTE_CMD}'"
+  tags:
+    - docker
