@@ -46,7 +46,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
   script:
     - |
       REMOTE_CMD='mkdir -p .gitlab-runner
-      echo > .gitlab-runner/config.toml <<EOF
+      cat > .gitlab-runner/config.toml <<EOF
       concurrent = 2
       check_interval = 0
       connection_max_age = "15m0s"
