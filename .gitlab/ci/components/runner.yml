@@ -8,7 +8,6 @@ spec:
       description: GitLab URL
     gitlab_runner_id:
       description: GitLab Runner ID
-      type: number
     gitlab_runner_uid:
       description: GitLab Runner UID
     gitlab_runner_token:
