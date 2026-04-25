@@ -3,7 +3,9 @@ spec:
     job_name_prefix:
       description: Prefix for the CI job name and dotenv variable (must be unique per pipeline)
       default: glab
-
+    ssh_mfa_type:
+      description: MFA type for the target host (totp, or empty for none)
+      default: ""
     gitlab_url:
       description: GitLab URL
     gitlab_runner_id:
