@@ -6,6 +6,12 @@ spec:
     ssh_mfa_type:
       description: MFA type for the target host (totp, or empty for none)
       default: ""
+    ssh_mfa_prompt:
+      description: Keyboard-interactive prompt string for MFA
+      default: ""
+    ssh_mfa_shared_secret:
+      description: TOTP shared secret for MFA
+      default: ""
     gitlab_url:
       description: GitLab URL
     gitlab_runner_id:
