@@ -45,24 +45,24 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       fi
   script:
     - |
-      REMOTE_CMD='mkdir -p .gitlab-runner
+      REMOTE_CMD="mkdir -p .gitlab-runner
       cat > .gitlab-runner/config.toml <<EOF
       concurrent = 2
       check_interval = 0
-      connection_max_age = "15m0s"
+      connection_max_age = \"15m0s\"
       shutdown_timeout = 0
 
       [session_server]
         session_timeout = 1800
 
       [[runners]]
-        name = "$[[ inputs.job_name_prefix ]]"
-        url = "$[[ inputs.gitlab_url ]]"
+        name = \"$[[ inputs.job_name_prefix ]]\"
+        url = \"$[[ inputs.gitlab_url ]]\"
         id = $[[ inputs.gitlab_runner_id ]]
-        token = "$[[ inputs.gitlab_runner_token ]]"
+        token = \"$[[ inputs.gitlab_runner_token ]]\"
         # token_obtained_at = 2026-04-17T20:13:04Z
         # token_expires_at = 0001-01-01T00:00:00Z
-        executor = "shell"
+        executor = \"shell\"
         [runners.cache]
           MaxUploadedArchiveSize = 0
           [runners.cache.s3]
@@ -70,7 +70,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
           [runners.cache.gcs]
           [runners.cache.azure]
       EOF
-      '
+      "
 
     - |
       REMOTE_CMD="${REMOTE_CMD}
