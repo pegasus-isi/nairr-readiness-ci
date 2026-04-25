@@ -48,7 +48,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
       sleep 5
   script:
     - |
-      mv ${CI_PROJECT_DIR} ./workflow.py
+      mv ${CI_PROJECT_DIR}/workflows/pegasus-simple.py ./workflow.py
       python3 workflow.py
       pegasus-status -w5 -l abc
       condor_off
