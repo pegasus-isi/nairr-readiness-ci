@@ -4,7 +4,7 @@ import shutil
 from pathlib import Path
 from Pegasus.api import *
 
-wf = Workflow("multi-testbed-workflow")
+wf = Workflow("pegasus-simple")
 
 # --- Sites ---
 
