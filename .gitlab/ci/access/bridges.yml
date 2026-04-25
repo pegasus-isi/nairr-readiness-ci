@@ -20,8 +20,8 @@ include:
       slurm_partition: RM-Shared
       slurm_account: sta230005p
       slurm_time: "00:30:00"
-  # - local: .gitlab/ci/probes/pegasus-simple.yml
-  #   inputs:
-  #     job_name_prefix: BRIDGES
-  #     resource_id: 3
-  #     probe_id: 2
+  - local: .gitlab/ci/probes/pegasus-simple.yml
+    inputs:
+      job_name_prefix: BRIDGES
+      resource_id: 3
+      probe_id: 2
