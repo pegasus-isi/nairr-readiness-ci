@@ -46,7 +46,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
   script:
     - |
       REMOTE_CMD="
-      set -e
+      set -exv
       mkdir -p .gitlab-runner
       cat > .gitlab-runner/config.toml <<EOF
       concurrent = 2
@@ -112,7 +112,6 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       while true; do
         JOBID=\$(squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" --noheader -o \"%.i\")
         if [[ -n \"\$JOBID\" ]]; then
-          echo $[[ inputs.job_name_prefix ]]_GITLAB_RUN_JOB_ID=\"\${JOBID}\" > $[[ inputs.job_name_prefix ]]-gitlab-run.env
           break
         fi
         sleep 5
