@@ -49,8 +49,10 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
   script:
     - |
       cp ${CI_PROJECT_DIR}/workflows/pegasus-simple.py ./workflow.py
+      set -e
       python3 workflow.py
       pegasus-status -w5 -l abc
+      set +e
       condor_off
   after_script:
     - |
