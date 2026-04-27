@@ -45,9 +45,8 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       fi
   script:
     - |
-      set -xv
       REMOTE_CMD="
-      set -e
+      set -exv
       mkdir -p .gitlab-runner
       cat > .gitlab-runner/config.toml <<EOF
       concurrent = 2
@@ -84,7 +83,9 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
     - |
       REMOTE_CMD="${REMOTE_CMD}
+      set +e
       scancel --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" && true
+      set -e
       curl -L --output .gitlab-runner/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
       chmod +x .gitlab-runner/gitlab-runner
       "
@@ -111,6 +112,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       while true; do
         JOBID=\$(squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" --noheader -o \"%.i\")
         if [[ -n \"\$JOBID\" ]]; then
+          echo YES
           printf $[[ inputs.job_name_prefix ]]_GITLAB_RUN_JOB_ID=%s\n \"\${JOBID}\" > $[[ inputs.job_name_prefix ]]-gitlab-run.env
           break
         fi
