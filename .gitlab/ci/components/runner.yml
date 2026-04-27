@@ -110,7 +110,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       JOBID=\$(sbatch gitlab-runner.job | grep -o [0-9]*)
       set +e
       while true; do
-        if squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" -t R; then
+        if squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" -j \${JOBID} -t R --noheader; then
           break
         fi
         sleep 5
