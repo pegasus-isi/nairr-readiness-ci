@@ -111,7 +111,8 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       JOBID=\$(sbatch gitlab-runner.job | grep -o [0-9]*)
       set +e
       while true; do
-        if squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" -j \${JOBID} -t R --noheader; then
+        IS_RUNNING=\$(squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" -j \${JOBID} -t RUNNING --noheader)
+        if [[ -n \${IS_RUNNING} ]]; then
           break
         fi
         sleep 5
@@ -134,6 +135,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       fi
 
       eval "${PREFIX} ${SSH_CMD} '${REMOTE_CMD}'" 2>&1 | tee out
+      cat out
       cat out | grep _GITLAB_RUN_JOB_ID > $[[ inputs.job_name_prefix ]]-gitlab-run.env
       rm out
   tags:
