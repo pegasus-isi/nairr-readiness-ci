@@ -36,7 +36,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
       python3 -m pip install -t python-deps dataclasses pyyaml gitpython
 
       # Source env.sh
-      . ${CI_PROJECT_DIR}/pegasus-5.1.3-dev.0/env.sh
+      . ${CI_PROJECT_DIR}/install-pegasus/pegasus-5.1.3-dev.0/env.sh
 
       # Set PYTHONPATH so import Pegasus works
       export PYTHONPATH=`pegasus-config --python`:`pwd`/python-deps
