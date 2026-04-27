@@ -37,7 +37,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
     - job: $[[ inputs.job_name_prefix ]]-ssh-cmd
       artifacts: true
   before_script:
-    - dnf -y install openssh-clients mysql
+    - dnf -y install openssh-clients
     - |
       if [[ "$[[ inputs.ssh_mfa_type ]]" == "totp" ]]; then
         dnf -y install sshpass python3-pip
@@ -45,6 +45,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       fi
   script:
     - |
+      set -exv
       REMOTE_CMD="
       set -exv
       mkdir -p .gitlab-runner
