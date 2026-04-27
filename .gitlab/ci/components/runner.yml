@@ -102,7 +102,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
     - |
       REMOTE_CMD="${REMOTE_CMD}
-      scancel --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" && true
+      scancel --job-name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" && true
       sbatch gitlab-runner.job
       while true; do
         JOBID=\$(squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" --noheader -o \"%.i\")
