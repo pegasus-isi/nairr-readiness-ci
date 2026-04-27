@@ -105,7 +105,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       scancel --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" && true
       sbatch gitlab-runner.job
       while true; do
-        JOBID=`squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" --noheader -o \"%.i\"`
+        JOBID=\$(squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" --noheader -o \"%.i\")
         if [[ -n "\$JOBID" ]]; then
           printf '$[[ inputs.job_name_prefix ]]_GITLAB_RUN_JOB_ID=%s\n' "${JOBID}" > $[[ inputs.job_name_prefix ]]-gitlab-run.env
           break
