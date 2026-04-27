@@ -111,7 +111,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       while true; do
         JOBID=\$(squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" --noheader -o \"%.i\")
         if [[ -n "\$JOBID" ]]; then
-          printf \"$[[ inputs.job_name_prefix ]]_GITLAB_RUN_JOB_ID=%s\n\" "${JOBID}" > $[[ inputs.job_name_prefix ]]-gitlab-run.env
+          printf $[[ inputs.job_name_prefix ]]_GITLAB_RUN_JOB_ID=%s\n' \"\${JOBID}\" > $[[ inputs.job_name_prefix ]]-gitlab-run.env
           break
         fi
         sleep 5
