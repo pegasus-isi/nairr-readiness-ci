@@ -101,11 +101,6 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       "
 
     - |
-      env
-      which sbatch
-      which scancel
-      which squeue
-
       REMOTE_CMD="${REMOTE_CMD}
       scancel --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" && true
       sbatch gitlab-runner.job
