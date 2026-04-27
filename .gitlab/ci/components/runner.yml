@@ -113,7 +113,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       while true; do
         IS_RUNNING=\$(squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" -j \${JOBID} -t RUNNING --noheader)
         if [[ -n \${IS_RUNNING} ]]; then
-          echo $[[ inputs.job_name_prefix ]]_GITLAB_RUN_JOB_ID=\"\${JOBID}\" > $[[ inputs.job_name_prefix ]]-gitlab-run.env
+          echo $[[ inputs.job_name_prefix ]]_GITLAB_RUN_JOB_ID=\"\${JOBID}\"
           break
         fi
         sleep 5
