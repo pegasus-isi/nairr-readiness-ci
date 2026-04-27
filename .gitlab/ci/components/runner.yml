@@ -89,9 +89,10 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       REMOTE_CMD="${REMOTE_CMD}
       cat > gitlab-runner.job <<EOF
       #!/bin/bash
-      #SBATCH --partition="$[[ inputs.slurm_partition ]]"
-      #SBATCH --time="$[[ inputs.slurm_time ]]"
-      #SBATCH --account="$[[ inputs.slurm_account ]]"
+      #SBATCH --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\"
+      #SBATCH --partition=\"$[[ inputs.slurm_partition ]]\"
+      #SBATCH --time=\"$[[ inputs.slurm_time ]]\"
+      #SBATCH --account=\"$[[ inputs.slurm_account ]]\"
 
       set -e
       .gitlab-runner/gitlab-runner run
@@ -101,8 +102,16 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
     - |
       REMOTE_CMD="${REMOTE_CMD}
-      echo sbatch gitlab-runner.job
-      echo squeue -u $USER
+      scancel --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" && true
+      sbatch gitlab-runner.job
+      while true; do
+        JOBID=`squeue -u \"\$USER\" --name=gitlab-runner.job --noheader -o \"%.i\"`
+        if [[ -n "\$JOBID" ]]; then
+          printf '$[[ inputs.job_name_prefix ]]_GITLAB_RUN_JOB_ID=%s\n' "${JOBID}" > $[[ inputs.job_name_prefix ]]-gitlab-run.env
+          break
+        fi
+        sleep 5
+      done
       "
 
     - |
@@ -123,3 +132,6 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       eval "${PREFIX} ${SSH_CMD} '${REMOTE_CMD}'"
   tags:
     - docker
+  artifacts:
+    reports:
+      dotenv: $[[ inputs.job_name_prefix ]]-gitlab-run.env

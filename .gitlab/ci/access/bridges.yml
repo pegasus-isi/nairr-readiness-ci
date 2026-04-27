@@ -17,7 +17,7 @@ include:
       gitlab_runner_id: ${BRIDGES_GITLAB_RUNNER_ID}
       gitlab_runner_uid: ${BRIDGES_GITLAB_RUNNER_UID}
       gitlab_runner_token: ${BRIDGES_GITLAB_RUNNER_TOKEN}
-      slurm_partition: RM-Shared
+      slurm_partition: RM-shared
       slurm_account: sta230005p
       slurm_time: "00:30:00"
   - local: .gitlab/ci/probes/pegasus-simple.yml
