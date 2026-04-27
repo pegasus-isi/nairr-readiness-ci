@@ -107,11 +107,10 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
     - |
       REMOTE_CMD="${REMOTE_CMD}
-      sbatch gitlab-runner.job
+      JOBID=\$(sbatch gitlab-runner.job | grep -o [0-9]*)
       set +e
       while true; do
-        JOBID=\$(squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" --noheader -o \"%.i\")
-        if [[ -n \"\$JOBID\" ]]; then
+        if squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" -t R; then
           break
         fi
         sleep 5
