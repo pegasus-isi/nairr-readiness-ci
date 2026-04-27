@@ -89,7 +89,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       REMOTE_CMD="${REMOTE_CMD}
       cat > gitlab-runner.job <<EOF
       #!/bin/bash
-      #SBATCH --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\"
+      #SBATCH --job-name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\"
       #SBATCH --partition=\"$[[ inputs.slurm_partition ]]\"
       #SBATCH --time=\"$[[ inputs.slurm_time ]]\"
       #SBATCH --account=\"$[[ inputs.slurm_account ]]\"
@@ -102,7 +102,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
     - |
       REMOTE_CMD="${REMOTE_CMD}
-      scancel --job-name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" && true
+      scancel --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" && true
       sbatch gitlab-runner.job
       while true; do
         JOBID=\$(squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" --noheader -o \"%.i\")
