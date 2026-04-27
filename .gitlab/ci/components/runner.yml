@@ -46,7 +46,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
   script:
     - |
       REMOTE_CMD="
-      set -exv
+      set -e
       mkdir -p .gitlab-runner
       cat > .gitlab-runner/config.toml <<EOF
       concurrent = 2
@@ -112,8 +112,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       while true; do
         JOBID=\$(squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" --noheader -o \"%.i\")
         if [[ -n \"\$JOBID\" ]]; then
-          echo YES
-          printf $[[ inputs.job_name_prefix ]]_GITLAB_RUN_JOB_ID=%s\n \"\${JOBID}\" > $[[ inputs.job_name_prefix ]]-gitlab-run.env
+          echo $[[ inputs.job_name_prefix ]]_GITLAB_RUN_JOB_ID=\"\${JOBID}\" > $[[ inputs.job_name_prefix ]]-gitlab-run.env
           break
         fi
         sleep 5
@@ -135,7 +134,9 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
         PREFIX="sshpass -P '$[[ inputs.ssh_mfa_prompt ]]' -e"
       fi
 
-      eval "${PREFIX} ${SSH_CMD} '${REMOTE_CMD}'"
+      eval "${PREFIX} ${SSH_CMD} '${REMOTE_CMD}'" 2>&1 | tee out
+      cat out | grep _GITLAB_RUN_JOB_ID > $[[ inputs.job_name_prefix ]]-gitlab-run.env
+      rm out
   tags:
     - docker
   artifacts:
