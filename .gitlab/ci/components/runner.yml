@@ -45,9 +45,9 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       fi
   script:
     - |
-      set -exv
+      set -e
       REMOTE_CMD="
-      set -exv
+      set -e
       mkdir -p .gitlab-runner
       cat > .gitlab-runner/config.toml <<EOF
       concurrent = 2
@@ -109,7 +109,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
     - |
       REMOTE_CMD="${REMOTE_CMD}
       JOBID=\$(sbatch gitlab-runner.job | grep -o [0-9]*)
-      set +e
+      set +ex
       while true; do
         IS_RUNNING=\$(squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" -j \${JOBID} -t RUNNING --noheader)
         if [[ -n \${IS_RUNNING} ]]; then
@@ -136,7 +136,6 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       fi
 
       eval "${PREFIX} ${SSH_CMD} '${REMOTE_CMD}'" 2>&1 | tee out
-      cat out
       cat out | grep _GITLAB_RUN_JOB_ID > $[[ inputs.job_name_prefix ]]-gitlab-run.env
       rm out
   tags:
