@@ -9,14 +9,7 @@ default:
 stages:
   - unit
   - e2e
-
-# pre-job:
-#   stage: .pre
-#   script:
-#     - echo "VERSION=`uuidgen`"
-#   artifacts:
-#     reports:
-#       dotenv: .env
+  - status
 
 # ACCESS
 
