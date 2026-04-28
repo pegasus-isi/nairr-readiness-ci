@@ -14,6 +14,9 @@ spec:
       default: ""
     gitlab_url:
       description: GitLab URL
+    gitlab_runner_arch:
+      description: GitLab Runner architecture
+      default: amd64
     gitlab_runner_id:
       description: GitLab Runner ID
     gitlab_runner_uid:
@@ -87,7 +90,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       set +e
       scancel --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" && true
       set -e
-      curl -L --output .gitlab-runner/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
+      curl -L --output .gitlab-runner/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-$[[ inputs.gitlab_runner_arch ]]
       chmod +x .gitlab-runner/gitlab-runner
       "
 
@@ -158,9 +161,10 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       fi
 
       eval "${PREFIX} ${SSH_CMD} '${REMOTE_CMD}'" 2>&1 | tee out
-      cat out | grep _GITLAB_RUN_JOB_ID > $[[ inputs.job_name_prefix ]]-gitlab-run.env
+      cat out | grep _GITLAB_RUN_JOB_ID > .env
   tags:
     - docker
   artifacts:
+    access: developer
     reports:
-      dotenv: $[[ inputs.job_name_prefix ]]-gitlab-run.env
+      dotenv: .env

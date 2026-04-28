@@ -20,7 +20,6 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
   needs:
     - job: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
   before_script:
-    # - dnf -y install mysql
     - $[[ inputs.pre_script ]]
     - |
       # Source env.sh
@@ -42,15 +41,36 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
       set +e
   after_script:
     - |
-      export MYSQL_PWD="${NAIRR_DB_PASS}"
       STATUS="PASS"
       if [ "$CI_JOB_STATUS" = "failed" ]; then STATUS="FAIL"; fi
+      printf '$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_STATUS=%s\n' "${STATUS}" > .env
+  artifacts:
+    when: always
+    access: developer
+    paths:
+      - workflow
+    reports:
+      dotenv: .env
+  tags:
+    - $[[ inputs.job_name_prefix ]]
+
+
+$[[ inputs.job_name_prefix ]]-pegasus-simple-status:
+  stage: status
+  image: rockylinux:9
+  needs:
+    - job: $[[ inputs.job_name_prefix ]]-pegasus-simple
+      artifacts: true
+  before_script:
+    - dnf -y install mysql
+  script:
+    - |
+      VAR_NAME="$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_STATUS"
+      STATUS="${!VAR_NAME}"
+
+      export MYSQL_PWD="${NAIRR_DB_PASS}"
       mysql -u${NAIRR_DB_USER} -h${NAIRR_DB_HOST} ${NAIRR_DB_NAME} \
         -e "INSERT INTO readiness_results (resource_id, version, uid, etag, probe_id, probe_status, probe_timestamp, created_at, created_by, updated_at, updated_by) \
             VALUES($[[ inputs.resource_id ]], '0.0.0', UUID(), UUID(), $[[ inputs.probe_id ]], '${STATUS}', NOW(), NOW(), 'mayani', NOW(), 'mayani');"
-  artifacts:
-    when: always
-    paths:
-      - workflow
   tags:
-    - $[[ inputs.job_name_prefix ]]
+    - docker

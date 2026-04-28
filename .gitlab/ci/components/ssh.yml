@@ -54,7 +54,8 @@ $[[ inputs.job_name_prefix ]]-ssh-cmd:
       [[ -n "$[[ inputs.ssh_key_file ]]" ]] && KEY_OPTION="-o IdentitiesOnly=yes -i \$[[ inputs.ssh_key_file ]] "
       SSH_CMD="ssh $[[ inputs.ssh_options ]] ${PROXY_OPTION} ${KEY_OPTION} -l $[[ inputs.ssh_user ]] -p $[[ inputs.ssh_port ]] $[[ inputs.ssh_host ]]"
 
-      printf '$[[ inputs.job_name_prefix ]]_SSH_CMD=%s\n' "${SSH_CMD}" > $[[ inputs.job_name_prefix ]]-ssh.env
+      printf '$[[ inputs.job_name_prefix ]]_SSH_CMD=%s\n' "${SSH_CMD}" > .env
   artifacts:
+    access: developer
     reports:
-      dotenv: $[[ inputs.job_name_prefix ]]-ssh.env
+      dotenv: .env
