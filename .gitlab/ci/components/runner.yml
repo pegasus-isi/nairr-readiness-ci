@@ -117,6 +117,8 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       #SBATCH --partition=\"$[[ inputs.slurm_partition ]]\"
       #SBATCH --time=\"$[[ inputs.slurm_time ]]\"
       #SBATCH --account=\"$[[ inputs.slurm_account ]]\"
+      #SBATCH --nodes=\"1\"
+      #SBATCH --ntasks=\"1\"
 
       set -e
 
