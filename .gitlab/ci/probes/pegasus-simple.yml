@@ -23,20 +23,9 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
     # - dnf -y install mysql
     - $[[ inputs.pre_script ]]
     - |
-      # Setup
-      rm -rf install-pegasus
-      mkdir install-pegasus
-      cd install-pegasus
-
-      # Get Pegasus
-      curl -s https://raw.githubusercontent.com/pegasus-isi/get-pegasus/refs/heads/main/get_pegasus | python3
-
-      # Install Python dependencies
-      mkdir python-deps
-      python3 -m pip install -t python-deps dataclasses pyyaml gitpython
-
       # Source env.sh
-      . ${CI_PROJECT_DIR}/install-pegasus/pegasus-5.1.3-dev.0/env.sh
+      USER_HOME=$(eval "realpath ~$USER")
+      . ${USER_HOME}/install-pegasus/pegasus-5.1.3-dev.0/env.sh
 
       # Set PYTHONPATH so import Pegasus works
       export PYTHONPATH=`pegasus-config --python`:`pwd`/python-deps
@@ -44,8 +33,6 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
       # Workflow Example
       mkdir workflow
       cd workflow
-      condor_master
-      sleep 5
   script:
     - |
       cp ${CI_PROJECT_DIR}/workflows/pegasus-simple.py ./workflow.py
