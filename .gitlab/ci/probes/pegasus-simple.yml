@@ -40,7 +40,6 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
       python3 workflow.py
       pegasus-status -w5 -l abc
       set +e
-      condor_off
   after_script:
     - |
       export MYSQL_PWD="${NAIRR_DB_PASS}"
@@ -52,6 +51,6 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
   artifacts:
     when: always
     paths:
-      - install-pegasus/workflow
+      - workflow
   tags:
     - $[[ inputs.job_name_prefix ]]
