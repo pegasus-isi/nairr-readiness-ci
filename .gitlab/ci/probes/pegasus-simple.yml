@@ -28,7 +28,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
       . ${USER_HOME}/install-pegasus/pegasus-5.1.3-dev.0/env.sh
 
       # Set PYTHONPATH so import Pegasus works
-      export PYTHONPATH=`pegasus-config --python`:`pwd`/python-deps
+      export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
 
       # Workflow Example
       mkdir workflow
