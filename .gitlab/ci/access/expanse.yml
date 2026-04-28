@@ -12,3 +12,19 @@ include:
       ssh_mfa_type: totp
       ssh_mfa_prompt: TOTP code
       ssh_mfa_shared_secret: $EXPANSE_SSH_MFA_SHARED_SECRET
+
+  - local: .gitlab/ci/components/runner.yml
+    inputs:
+      job_name_prefix: EXPANSE
+      gitlab_url: ${GITLAB_URL}
+      gitlab_runner_id: ${EXPANSE_GITLAB_RUNNER_ID}
+      gitlab_runner_uid: ${EXPANSE_GITLAB_RUNNER_UID}
+      gitlab_runner_token: ${EXPANSE_GITLAB_RUNNER_TOKEN}
+      slurm_partition: shared
+      slurm_account: TG-STA230005
+      slurm_time: "00:30:00"
+  - local: .gitlab/ci/probes/pegasus-simple.yml
+    inputs:
+      job_name_prefix: EXPANSE
+      resource_id: 2
+      probe_id: 2

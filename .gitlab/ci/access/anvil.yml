@@ -9,3 +9,21 @@ include:
     inputs:
       job_name_prefix: ANVIL
       resource_id: 1
+
+  - local: .gitlab/ci/components/runner.yml
+    inputs:
+      job_name_prefix: ANVIL
+      gitlab_url: ${GITLAB_URL}
+      gitlab_runner_id: ${ANVIL_GITLAB_RUNNER_ID}
+      gitlab_runner_uid: ${ANVIL_GITLAB_RUNNER_UID}
+      gitlab_runner_token: ${ANVIL_GITLAB_RUNNER_TOKEN}
+
+      slurm_partition: shared
+      slurm_account: sta230005
+      slurm_time: "00:30:00"
+  - local: .gitlab/ci/probes/pegasus-simple.yml
+    inputs:
+      job_name_prefix: ANVIL
+      pre_script: module load openjdk/11.0.8_10
+      resource_id: 1
+      probe_id: 2
