@@ -60,7 +60,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
       STATUS="PASS"
       if [ "$CI_JOB_STATUS" = "failed" ]; then STATUS="FAIL"; fi
       mysql -u${NAIRR_DB_USER} -h${NAIRR_DB_HOST} ${NAIRR_DB_NAME} \
-        -e "INSERT INTO readiness_results (resource_id, version, uid, etag, test_ssh_connectivity_id, test_ssh_connectivity_status, test_ssh_connectivity_timestamp, created_at, created_by, updated_at, updated_by) \
+        -e "INSERT INTO readiness_results (resource_id, version, uid, etag, probe_id, probe_status, probe_timestamp, created_at, created_by, updated_at, updated_by) \
             VALUES($[[ inputs.resource_id ]], '0.0.0', UUID(), UUID(), $[[ inputs.probe_id ]], '${STATUS}', NOW(), NOW(), 'mayani', NOW(), 'mayani');"
   artifacts:
     when: always

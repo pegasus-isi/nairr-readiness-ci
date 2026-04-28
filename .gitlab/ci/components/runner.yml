@@ -137,7 +137,6 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
       eval "${PREFIX} ${SSH_CMD} '${REMOTE_CMD}'" 2>&1 | tee out
       cat out | grep _GITLAB_RUN_JOB_ID > $[[ inputs.job_name_prefix ]]-gitlab-run.env
-      rm out
   tags:
     - docker
   artifacts:
