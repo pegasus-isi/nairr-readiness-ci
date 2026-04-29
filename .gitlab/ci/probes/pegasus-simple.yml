@@ -24,7 +24,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
     - |
       # Source env.sh
       USER_HOME=$(eval "realpath ~$USER")
-      . ${USER_HOME}/install-pegasus/pegasus-5.1.3-dev.0/env.sh
+      . ${USER_HOME}/install-pegasus/pegasus/env.sh
 
       # Set PYTHONPATH so import Pegasus works
       export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
