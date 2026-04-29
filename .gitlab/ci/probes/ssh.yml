@@ -55,7 +55,7 @@ $[[ inputs.job_name_prefix ]]-ssh-job:
     - |
       export MYSQL_PWD="${NAIRR_DB_PASS}"
       STATUS="PASS"
-      if [ "$CI_JOB_STATUS" = "failed" ]; then STATUS="FAIL"; fi
+      if [[ "$CI_JOB_STATUS" == "failed" ]]; then STATUS="FAIL"; fi
       mysql -u${NAIRR_DB_USER} -h${NAIRR_DB_HOST} ${NAIRR_DB_NAME} \
         -e "INSERT INTO readiness_results (resource_id, version, uid, etag, probe_id, probe_status, probe_timestamp, created_at, created_by, updated_at, updated_by) \
             VALUES($[[ inputs.resource_id ]], '0.0.0', UUID(), UUID(), $[[ inputs.probe_id ]], '${STATUS}', NOW(), NOW(), 'mayani', NOW(), 'mayani');"

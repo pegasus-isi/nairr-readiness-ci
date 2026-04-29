@@ -42,7 +42,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
   after_script:
     - |
       STATUS="PASS"
-      if [ "$CI_JOB_STATUS" = "failed" ]; then STATUS="FAIL"; fi
+      if [[ "$CI_JOB_STATUS" == "failed" ]]; then STATUS="FAIL"; fi
       printf '$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_STATUS=%s\n' "${STATUS}" > .env
   artifacts:
     when: always
@@ -51,6 +51,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
       - workflow
     reports:
       dotenv: .env
+  allow_failure: true
   tags:
     - $[[ inputs.job_name_prefix ]]
 
