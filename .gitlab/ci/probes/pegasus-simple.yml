@@ -44,6 +44,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
       STATUS="PASS"
       if [[ "$CI_JOB_STATUS" == "failed" ]]; then STATUS="FAIL"; fi
       printf '$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_STATUS=%s\n' "${STATUS}" > .env
+      cat .env
   artifacts:
     when: always
     access: developer
