@@ -43,8 +43,8 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
     - |
       STATUS="PASS"
       if [[ "$CI_JOB_STATUS" == "failed" ]]; then STATUS="FAIL"; fi
-      printf '$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_STATUS=%s\n' "${STATUS}" > .env
-      cat .env
+      printf '$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
+      printf '$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_STATUS=%s\n' "${STATUS}" >> .env
   artifacts:
     when: always
     access: developer
@@ -67,12 +67,15 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple-status:
     - dnf -y install mysql
   script:
     - |
+      VAR_NAME="$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_JOB_ID"
+      JOB_ID="${!VAR_NAME}"
       VAR_NAME="$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_STATUS"
       STATUS="${!VAR_NAME}"
 
       export MYSQL_PWD="${NAIRR_DB_PASS}"
+      EXTRA="{\"pipeline_url\": \"${CI_PIPELINE_URL}\", \"job_id\": \"${JOB_ID}\"}"
       mysql -u${NAIRR_DB_USER} -h${NAIRR_DB_HOST} ${NAIRR_DB_NAME} \
-        -e "INSERT INTO readiness_results (resource_id, version, uid, etag, probe_id, probe_status, probe_timestamp, created_at, created_by, updated_at, updated_by) \
-            VALUES($[[ inputs.resource_id ]], '0.0.0', UUID(), UUID(), $[[ inputs.probe_id ]], '${STATUS}', NOW(), NOW(), 'mayani', NOW(), 'mayani');"
+        -e "INSERT INTO readiness_results (resource_id, version, uid, etag, probe_id, probe_status, probe_timestamp, extra, created_at, created_by, updated_at, updated_by) \
+            VALUES($[[ inputs.resource_id ]], '0.0.0', UUID(), UUID(), $[[ inputs.probe_id ]], '${STATUS}', NOW(), '${EXTRA}', NOW(), 'mayani', NOW(), 'mayani');"
   tags:
     - docker
