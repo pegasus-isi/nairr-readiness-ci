@@ -103,17 +103,18 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
     - |
       REMOTE_CMD="${REMOTE_CMD}
-      rm -rf install-pegasus
-      mkdir install-pegasus
-      pushd install-pegasus
+      if [ ! -d "install-pegasus" ]; then
+        mkdir install-pegasus
+        pushd install-pegasus
 
-      # Get Pegasus
-      curl -s https://raw.githubusercontent.com/pegasus-isi/get-pegasus/refs/heads/main/get_pegasus | python3 - --target pegasus
+        # Get Pegasus
+        curl -s https://raw.githubusercontent.com/pegasus-isi/get-pegasus/refs/heads/main/get_pegasus | python3 - --target pegasus
 
-      # Install Python dependencies
-      mkdir python-deps
-      python3 -m pip install -t python-deps dataclasses pyyaml gitpython
-      popd
+        # Install Python dependencies
+        mkdir python-deps
+        python3 -m pip install -t python-deps dataclasses pyyaml gitpython
+        popd
+      fi
       "
 
     - |
