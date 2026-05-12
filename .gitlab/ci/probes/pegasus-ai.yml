@@ -1,0 +1,90 @@
+spec:
+  inputs:
+    job_name_prefix:
+      description: Must match the job_name_prefix used in the ssh component
+    resource_id:
+      description: Resource ID recorded in the database
+      type: number
+    probe_id:
+      description: Test ID recorded in the database
+      default: 2
+      type: number
+    pre_script:
+      description: Pre-script to run before Pegasus
+      default: ""
+    slurm_cpu_partition:
+      description: SLURM CPU partition
+    slurm_gpu_partition:
+      description: SLURM GPU partition
+    slurm_account:
+      description: SLURM account
+    workflow_generator:
+      description: Workflow generator script
+      default: training
+
+---
+
+$[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]:
+  stage: e2e
+  needs:
+    - job: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
+  environment:
+    SLURM_CPU_PARTITION: $[[ inputs.slurm_cpu_partition ]]
+    SLURM_GPU_PARTITION: $[[ inputs.slurm_gpu_partition ]]
+    SLURM_ACCOUNT: $[[ inputs.slurm_account ]]
+  before_script:
+    - $[[ inputs.pre_script ]]
+    - |
+      # Source env.sh
+      USER_HOME=$(eval "realpath ~$USER")
+      . ${USER_HOME}/install-pegasus/pegasus/env.sh
+
+      # Set PYTHONPATH so import Pegasus works
+      export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
+  script:
+    - |
+      cd ${CI_PROJECT_DIR}/workflows/crophealth-inference
+      set -e
+      python3 $[[ inputs.workflow_generator ]].py
+      pegasus-status -w5 -l submit
+      set +e
+  after_script:
+    - |
+      STATUS="PASS"
+      if [[ "$CI_JOB_STATUS" == "failed" ]]; then STATUS="FAIL"; fi
+      printf '$[[ inputs.job_name_prefix ]]_PEGASUS_$[[ inputs.workflow_generator ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
+      printf '$[[ inputs.job_name_prefix ]]_PEGASUS_$[[ inputs.workflow_generator ]]_STATUS=%s\n' "${STATUS}" >> .env
+  artifacts:
+    when: always
+    access: developer
+    paths:
+      - workflows/crophealth-inference
+    reports:
+      dotenv: .env
+  allow_failure: true
+  tags:
+    - $[[ inputs.job_name_prefix ]]
+
+
+$[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]-status:
+  stage: status
+  image: rockylinux:9
+  needs:
+    - job: $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]
+      artifacts: true
+  before_script:
+    - dnf -y install mysql
+  script:
+    - |
+      VAR_NAME="$[[ inputs.job_name_prefix ]]_PEGASUS_$[[ inputs.workflow_generator ]]_JOB_ID"
+      JOB_ID="${!VAR_NAME}"
+      VAR_NAME="$[[ inputs.job_name_prefix ]]_PEGASUS_$[[ inputs.workflow_generator ]]_STATUS"
+      STATUS="${!VAR_NAME}"
+
+      export MYSQL_PWD="${NAIRR_DB_PASS}"
+      EXTRA="{\"pipeline_url\": \"${CI_PIPELINE_URL}\", \"job_id\": \"${JOB_ID}\"}"
+      mysql -u${NAIRR_DB_USER} -h${NAIRR_DB_HOST} ${NAIRR_DB_NAME} \
+        -e "INSERT INTO readiness_results (resource_id, version, uid, etag, probe_id, probe_status, probe_timestamp, extra, created_at, created_by, updated_at, updated_by) \
+            VALUES($[[ inputs.resource_id ]], '0.0.0', UUID(), UUID(), $[[ inputs.probe_id ]], '${STATUS}', NOW(), '${EXTRA}', NOW(), 'mayani', NOW(), 'mayani');"
+  tags:
+    - docker
