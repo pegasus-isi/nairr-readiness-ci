@@ -131,6 +131,10 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
       # Source env.sh
       . ~/install-pegasus/pegasus/env.sh
+
+      # Configure SLURM
+      pegasus-configure-glite
+
       if [[ \"$[[ inputs.install_condor ]]\" == \"true\" ]]; then
         condor_master
         sleep 5

@@ -37,7 +37,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
       cp ${CI_PROJECT_DIR}/workflows/pegasus-simple.py ./workflow.py
       set -e
       python3 workflow.py
-      pegasus-status -w5 -l abc
+      pegasus-status -w5 -l submit
       set +e
   after_script:
     - |

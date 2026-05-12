@@ -58,4 +58,4 @@ task_a.add_outputs(result_a)
 
 wf.add_jobs(task_a)
 
-wf.write("workflow.yml").plan(sites=["condorpool"], relative_dir="./abc", submit=True)
+wf.write("workflow.yml").plan(sites=["condorpool"], relative_dir="submit", submit=True)
