@@ -28,7 +28,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]:
   stage: e2e
   needs:
     - job: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
-  environment:
+  variables:
     SLURM_CPU_PARTITION: $[[ inputs.slurm_cpu_partition ]]
     SLURM_GPU_PARTITION: $[[ inputs.slurm_gpu_partition ]]
     SLURM_ACCOUNT: $[[ inputs.slurm_account ]]
