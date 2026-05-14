@@ -33,6 +33,10 @@ spec:
     slurm_extra_opts:
       description: SLURM extra options
       default: ""
+    force_install_runner:
+      description: Force Install GitLab
+      type: boolean
+      default: false
     force_install_condor:
       description: Force Install Condor
       type: boolean
@@ -101,8 +105,10 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       set +e
       scancel --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" && true
       set -e
-      curl -L --output .gitlab-runner/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-$[[ inputs.gitlab_runner_arch ]]
-      chmod +x .gitlab-runner/gitlab-runner
+      if [[ \"$[[ inputs.force_install_runner ]]\" == \"true\" || ! -f .gitlab-runner/gitlab-runner ]]; then
+        curl -L --output .gitlab-runner/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-$[[ inputs.gitlab_runner_arch ]]
+        chmod +x .gitlab-runner/gitlab-runner
+      fi
       "
 
     - |
