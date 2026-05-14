@@ -90,11 +90,6 @@ class CropHealthWorkflow:
 
         local = Site("local").add_directories(
             Directory(
-                Directory.SHARED_SCRATCH, self.shared_scratch_dir
-            ).add_file_servers(
-                FileServer("file://" + self.shared_scratch_dir, Operation.ALL)
-            ),
-            Directory(
                 Directory.LOCAL_STORAGE, self.local_storage_dir
             ).add_file_servers(
                 FileServer("file://" + self.local_storage_dir, Operation.ALL)
@@ -102,7 +97,13 @@ class CropHealthWorkflow:
         )
 
         exec_site = (
-            Site(exec_site_name)
+            Site(exec_site_name).add_directories(
+                Directory(
+                    Directory.SHARED_SCRATCH, self.shared_scratch_dir
+                ).add_file_servers(
+                    FileServer("file://" + self.shared_scratch_dir, Operation.ALL)
+                )
+                )
             .add_condor_profile(grid_resource="batch slurm")
             .add_pegasus_profile(
                 style="glite",
@@ -110,10 +111,6 @@ class CropHealthWorkflow:
                 project=os.environ["SLURM_ACCOUNT"],
                 data_configuration="sharedfs",
                 auxillary_local="true",
-                nodes=1,
-                ppn=1,
-                runtime=1800,
-                clusters_num=2
             )
         )
 
@@ -242,5 +239,8 @@ workflow.create_replica_catalog()
 
 print("Creating crop health workflow DAG...")
 workflow.create_workflow(args)
+
+workflow.write()
+print("\nCrop Health Workflow has been generated!")
 
 workflow.plan_submit()
