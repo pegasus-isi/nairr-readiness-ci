@@ -54,7 +54,7 @@ class CropHealthWorkflow:
     def plan_submit(self):
         """Plan and submit the workflow."""
         try:
-            self.wf.plan(submit=True)
+            self.wf.plan(submit=True, relative_dir="submit")
         except PegasusClientError as e:
             print(e)
 
