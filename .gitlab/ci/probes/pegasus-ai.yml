@@ -43,7 +43,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]:
       export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
   script:
     - |
-      cd ${CI_PROJECT_DIR}/workflows/crophealth-inference
+      cd ${CI_PROJECT_DIR}/workflows/crophealth
       set -e
       python3 $[[ inputs.workflow_generator ]].py
       pegasus-status -w5 -l submit
@@ -58,7 +58,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]:
     when: always
     access: developer
     paths:
-      - workflows/crophealth-inference
+      - workflows/crophealth
     reports:
       dotenv: .env
   allow_failure: true

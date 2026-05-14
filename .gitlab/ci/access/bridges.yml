@@ -19,7 +19,7 @@ include:
       gitlab_runner_token: ${BRIDGES_GITLAB_RUNNER_TOKEN}
       slurm_partition: RM-shared
       slurm_account: sta230005p
-      slurm_time: "00:30:00"
+      slurm_time: "01:00:00"
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: BRIDGES
