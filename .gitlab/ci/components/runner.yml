@@ -33,6 +33,10 @@ spec:
     slurm_extra_opts:
       description: SLURM extra options
       default: ""
+    force_install_condor:
+      description: Force Install Condor
+      type: boolean
+      default: false
     install_condor:
       description: Install Condor
       type: boolean
@@ -103,6 +107,10 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
     - |
       REMOTE_CMD="${REMOTE_CMD}
+      if [[ \"$[[ inputs.force_install_condor ]]\" == \"true\" ]]; then
+        rm -rf install-pegasus
+      fi
+
       if [ ! -d "install-pegasus" ]; then
         mkdir install-pegasus
         pushd install-pegasus
