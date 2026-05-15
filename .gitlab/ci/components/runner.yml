@@ -47,8 +47,8 @@ spec:
       default: true
     site_shared_scratch:
       description: Shared Scratch
-    site_local_scratch:
-      description: Local Scratch
+    site_local_scratch_var:
+      description: Local Scratch variable
 
 ---
 
@@ -90,7 +90,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
         executor = \"shell\"
         environment = [
           \"SITE_SHARED_SCRATCH=$[[ inputs.site_shared_scratch ]]\",
-          \"SITE_LOCAL_SCRATCH=$[[ inputs.site_local_scratch ]]\",
+          \"SITE_LOCAL_SCRATCH_VAR=$[[ inputs.site_local_scratch_var ]]\",
         ]
         [runners.cache]
           MaxUploadedArchiveSize = 0
