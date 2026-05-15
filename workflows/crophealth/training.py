@@ -1,10 +1,10 @@
 # Image preprocessing parameters
-IMAGE_SIZE = 128        # Target image size (square)
-TRAIN_SPLIT = 0.8       # Fraction of data for training
+IMAGE_SIZE = 128  # Target image size (square)
+TRAIN_SPLIT = 0.8  # Fraction of data for training
 
 # Model training parameters
-EPOCHS = 10             # Number of training epochs
-BATCH_SIZE = 16         # Training batch size
+EPOCHS = 10  # Number of training epochs
+BATCH_SIZE = 16  # Training batch size
 
 import os
 import logging
@@ -81,34 +81,43 @@ class CropHealthWorkflow:
     def create_pegasus_properties(self):
         """Create Pegasus properties configuration."""
         self.props = Properties()
-        self.props["pegasus.transfer.threads"] = "16"
+        self.props["pegasus.mode"] = "development"
 
     def create_sites_catalog(self, exec_site_name="condorpool"):
         """Create site catalog."""
         self.sc = SiteCatalog()
 
         local = Site("local").add_directories(
-            Directory(
-                Directory.LOCAL_STORAGE, self.local_storage_dir
-            ).add_file_servers(
+            Directory(Directory.LOCAL_STORAGE, self.local_storage_dir).add_file_servers(
                 FileServer("file://" + self.local_storage_dir, Operation.ALL)
+            ),
+            Directory(
+                Directory.SHARED_SCRATCH, self.shared_scratch_dir
+            ).add_file_servers(
+                FileServer("file://" + self.shared_scratch_dir, Operation.ALL)
             ),
         )
 
         exec_site = (
-            Site(exec_site_name).add_directories(
+            Site(exec_site_name)
+            .add_directories(
                 Directory(
-                    Directory.SHARED_SCRATCH, self.shared_scratch_dir
+                    Directory.SHARED_SCRATCH,
+                    self.shared_scratch_dir,
+                    shared_file_system=True,
                 ).add_file_servers(
                     FileServer("file://" + self.shared_scratch_dir, Operation.ALL)
-                )
-                )
+                ),
+                Directory(
+                    Directory.LOCAL_SCRATCH, os.environ["SITE_LOCAL_SCRATCH"]
+                ).add_file_servers(FileServer("file://" + os.environ["SITE_LOCAL_SCRATCH"], Operation.ALL)),
+            )
             .add_condor_profile(grid_resource="batch slurm")
             .add_pegasus_profile(
                 style="glite",
                 queue=os.environ["SLURM_CPU_PARTITION"],
                 project=os.environ["SLURM_ACCOUNT"],
-                data_configuration="sharedfs",
+                data_configuration="nonsharedfs",
                 auxillary_local="true",
             )
         )
@@ -126,27 +135,35 @@ class CropHealthWorkflow:
         crophealth_container = Container(
             "crophealth_container",
             container_type=Container.SINGULARITY,
-            image=f"https://download.pegasus.isi.edu/tutorial/crophealth/crophealth-container.sif",
+            image="https://download.pegasus.isi.edu/tutorial/crophealth/crophealth-container.sif",
             image_site="www",
         )
 
-        preprocess_images = Transformation(
-            "preprocess_images",
-            site=exec_site_name,
-            pfn=os.path.join(self.wf_dir, "bin/preprocess_images.py"),
-            is_stageable=True,
-            container=crophealth_container,
-        ).add_pegasus_profile(glite_arguments="--mem=1G")
+        preprocess_images = (
+            Transformation(
+                "preprocess_images",
+                site=exec_site_name,
+                pfn=os.path.join(self.wf_dir, "bin/preprocess_images.py"),
+                is_stageable=True,
+                container=crophealth_container,
+            )
+            .add_pegasus_profile(gpus="1")
+            .add_pegasus_profile(glite_arguments="--mem=21G")
+            .add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"])
+        )
 
-        train_classifier = Transformation(
-            "train_classifier",
-            site=exec_site_name,
-            pfn=os.path.join(self.wf_dir, "bin/train_classifier.py"),
-            is_stageable=True,
-            container=crophealth_container,
-        ).add_pegasus_profile(gpus="1")\
-         .add_pegasus_profile(glite_arguments="--mem=21G")\
-         .add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"])
+        train_classifier = (
+            Transformation(
+                "train_classifier",
+                site=exec_site_name,
+                pfn=os.path.join(self.wf_dir, "bin/train_classifier.py"),
+                is_stageable=True,
+                container=crophealth_container,
+            )
+            .add_pegasus_profile(gpus="1")
+            .add_pegasus_profile(glite_arguments="--mem=21G")
+            .add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"])
+        )
 
         self.tc.add_containers(crophealth_container)
         self.tc.add_transformations(
@@ -163,8 +180,16 @@ class CropHealthWorkflow:
         images_archive = File("images.tar.gz")
 
         # simplified inputs - these were originally downloaded from Kaggle
-        self.rc.add_replica("remote", catalog_file, f"https://download.pegasus.isi.edu/tutorial/crophealth/{catalog_file}")
-        self.rc.add_replica("remote", images_archive, f"https://download.pegasus.isi.edu/tutorial/crophealth/{images_archive}")
+        self.rc.add_replica(
+            "remote",
+            catalog_file,
+            f"https://download.pegasus.isi.edu/tutorial/crophealth/{catalog_file}",
+        )
+        self.rc.add_replica(
+            "remote",
+            images_archive,
+            f"https://download.pegasus.isi.edu/tutorial/crophealth/{images_archive}",
+        )
 
         # Output file names
         train_data = File("train_data.npz")
@@ -175,30 +200,44 @@ class CropHealthWorkflow:
         training_info = File("training_info.json")
         predictions_file = File("predictions.json")
 
-
         # Job 1: Preprocess images
-        preprocess_job = Job("preprocess_images", _id="preprocess", node_label="preprocess")
+        preprocess_job = Job(
+            "preprocess_images", _id="preprocess", node_label="preprocess"
+        )
         preprocess_job.add_args(
-            "--input", catalog_file,
-            "--output-dir", ".",
-            "--image-size", str(args.image_size),
-            "--split", str(args.train_split),
-            "--images-archive", images_archive,
+            "--input",
+            catalog_file,
+            "--output-dir",
+            ".",
+            "--image-size",
+            str(args.image_size),
+            "--split",
+            str(args.train_split),
+            "--images-archive",
+            images_archive,
         )
         preprocess_job.add_inputs(catalog_file, images_archive)
         preprocess_job.add_outputs(train_data, stage_out=True, register_replica=False)
         preprocess_job.add_outputs(val_data, stage_out=True, register_replica=False)
-        preprocess_job.add_outputs(label_mapping, stage_out=True, register_replica=False)
-        preprocess_job.add_outputs(preprocessing_info, stage_out=True, register_replica=False)
+        preprocess_job.add_outputs(
+            label_mapping, stage_out=True, register_replica=False
+        )
+        preprocess_job.add_outputs(
+            preprocessing_info, stage_out=True, register_replica=False
+        )
         preprocess_job.add_pegasus_profile(label="preprocess")
 
         # Job 2: Train classifier
         train_job = Job("train_classifier", _id="train", node_label="train")
         train_job.add_args(
-            "--input-dir", ".",
-            "--output-dir", ".",
-            "--epochs", str(args.epochs),
-            "--batch-size", str(args.batch_size),
+            "--input-dir",
+            ".",
+            "--output-dir",
+            ".",
+            "--epochs",
+            str(args.epochs),
+            "--batch-size",
+            str(args.batch_size),
         )
         train_job.add_inputs(train_data, val_data, label_mapping)
         train_job.add_outputs(model_checkpoint, stage_out=True, register_replica=False)
@@ -213,7 +252,7 @@ class CropHealthWorkflow:
 
 
 # --- Build and generate the workflow ---
-dagfile = 'workflow.yml'
+dagfile = "workflow.yml"
 
 args = argparse.Namespace(
     image_size=IMAGE_SIZE,

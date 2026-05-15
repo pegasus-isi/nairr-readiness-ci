@@ -1,3 +1,5 @@
+# Shared scratch: /expanse/lustre/scratch/<user>
+# Node Local: /tmp or ${TMPDIR}
 include:
   - local: .gitlab/ci/components/ssh.yml
     inputs:
@@ -25,9 +27,29 @@ include:
       gitlab_runner_token: ${EXPANSE_GITLAB_RUNNER_TOKEN}
       slurm_partition: shared
       slurm_account: TG-STA230005
-      slurm_time: "00:30:00"
+      slurm_time: "03:00:00"
+      site_shared_scratch: /expanse/lustre/scratch/mayani
+      site_local_scratch: ${TMPDIR}
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: EXPANSE
       resource_id: 2
       probe_id: 2
+  - local: .gitlab/ci/probes/pegasus-ai.yml
+    inputs:
+      job_name_prefix: EXPANSE
+      resource_id: 3
+      probe_id: 3
+      slurm_cpu_partition: compute
+      slurm_gpu_partition: gpu-shared
+      slurm_account: TG-STA230005
+      workflow_generator: training
+  - local: .gitlab/ci/probes/pegasus-ai.yml
+    inputs:
+      job_name_prefix: EXPANSE
+      resource_id: 3
+      probe_id: 4
+      slurm_cpu_partition: compute
+      slurm_gpu_partition: gpu-shared
+      slurm_account: TG-STA230005
+      workflow_generator: inference

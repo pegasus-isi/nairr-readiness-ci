@@ -1,3 +1,5 @@
+# Shared scratch: /anvil/scratch/<user> or ${CLUSTER_SCRATCH}
+# Node Local: /tmp or ${TMPDIR}
 include:
   - local: .gitlab/ci/components/ssh.yml
     inputs:
@@ -17,13 +19,34 @@ include:
       gitlab_runner_id: ${ANVIL_GITLAB_RUNNER_ID}
       gitlab_runner_uid: ${ANVIL_GITLAB_RUNNER_UID}
       gitlab_runner_token: ${ANVIL_GITLAB_RUNNER_TOKEN}
-
       slurm_partition: shared
       slurm_account: sta230005
-      slurm_time: "00:30:00"
+      slurm_time: "03:00:00"
+      site_shared_scratch: ${CLUSTER_SCRATCH}
+      site_local_scratch: ${TMPDIR}
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: ANVIL
       pre_script: module load openjdk/11.0.8_10
       resource_id: 1
       probe_id: 2
+  - local: .gitlab/ci/probes/pegasus-ai.yml
+    inputs:
+      job_name_prefix: ANVIL
+      pre_script: module load openjdk/11.0.8_10
+      resource_id: 3
+      probe_id: 3
+      slurm_cpu_partition: shared
+      slurm_gpu_partition: gpu
+      slurm_account: sta230005
+      workflow_generator: training
+  - local: .gitlab/ci/probes/pegasus-ai.yml
+    inputs:
+      job_name_prefix: ANVIL
+      pre_script: module load openjdk/11.0.8_10
+      resource_id: 3
+      probe_id: 4
+      slurm_cpu_partition: shared
+      slurm_gpu_partition: gpu
+      slurm_account: sta230005
+      workflow_generator: inference

@@ -45,6 +45,10 @@ spec:
       description: Install Condor
       type: boolean
       default: true
+    site_shared_scratch:
+      description: Shared Scratch
+    site_local_scratch:
+      description: Local Scratch
 
 ---
 
@@ -84,6 +88,10 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
         # token_obtained_at = 2026-04-17T20:13:04Z
         # token_expires_at = 0001-01-01T00:00:00Z
         executor = \"shell\"
+        environment = [
+          \"SITE_SHARED_SCRATCH=$[[ inputs.site_shared_scratch ]]\",
+          \"SITE_LOCAL_SCRATCH=$[[ inputs.site_local_scratch ]]\",
+        ]
         [runners.cache]
           MaxUploadedArchiveSize = 0
           [runners.cache.s3]

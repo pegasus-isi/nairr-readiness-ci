@@ -1,3 +1,6 @@
+# URL: https://www.psc.edu/resources/bridges-2/user-guide/
+# Shared Scratch: /ocean/projects/<allocation>/<user>/ or ${PROJECT}
+# Node Local: /local or ${LOCAL}
 include:
   - local: .gitlab/ci/components/ssh.yml
     inputs:
@@ -19,7 +22,9 @@ include:
       gitlab_runner_token: ${BRIDGES_GITLAB_RUNNER_TOKEN}
       slurm_partition: RM-shared
       slurm_account: sta230005p
-      slurm_time: "01:00:00"
+      slurm_time: "03:00:00"
+      site_shared_scratch: ${PROJECT}
+      site_local_scratch: ${LOCAL}
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: BRIDGES
