@@ -6,7 +6,7 @@ include:
     inputs:
       job_name_prefix: BRIDGES
       ssh_host: bridges2.psc.edu
-      ssh_user: mayani
+      ssh_user: $BRIDGES_SSH_USER
       ssh_key_file: $BRIDGES_SSH_KEY_FILE
   - local: .gitlab/ci/probes/ssh.yml
     inputs:
@@ -37,7 +37,6 @@ include:
       probe_id: 3
       slurm_cpu_partition: RM-shared
       slurm_gpu_partition: GPU-shared
-      slurm_account: sta230005p
       workflow_generator: training
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
@@ -46,5 +45,4 @@ include:
       probe_id: 4
       slurm_cpu_partition: RM-shared
       slurm_gpu_partition: GPU-shared
-      slurm_account: sta230005p
       workflow_generator: inference

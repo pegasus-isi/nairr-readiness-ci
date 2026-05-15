@@ -5,7 +5,7 @@ include:
     inputs:
       job_name_prefix: ANVIL
       ssh_host: anvil.rcac.purdue.edu
-      ssh_user: x-mayani
+      ssh_user: $ANVIL_SSH_USER
       ssh_key_file: $ANVIL_SSH_KEY_FILE
   - local: .gitlab/ci/probes/ssh.yml
     inputs:
@@ -38,7 +38,6 @@ include:
       probe_id: 3
       slurm_cpu_partition: shared
       slurm_gpu_partition: gpu
-      slurm_account: sta230005
       workflow_generator: training
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
@@ -48,5 +47,4 @@ include:
       probe_id: 4
       slurm_cpu_partition: shared
       slurm_gpu_partition: gpu
-      slurm_account: sta230005
       workflow_generator: inference

@@ -5,7 +5,7 @@ include:
     inputs:
       job_name_prefix: EXPANSE
       ssh_host: login.expanse.sdsc.edu
-      ssh_user: mayani
+      ssh_user: $EXPANSE_SSH_USER
       ssh_key_file: $EXPANSE_SSH_KEY_FILE
   - local: .gitlab/ci/probes/ssh.yml
     inputs:
@@ -40,16 +40,14 @@ include:
       job_name_prefix: EXPANSE
       resource_id: 3
       probe_id: 3
-      slurm_cpu_partition: compute
+      slurm_cpu_partition: shared
       slurm_gpu_partition: gpu-shared
-      slurm_account: TG-STA230005
       workflow_generator: training
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: EXPANSE
       resource_id: 3
       probe_id: 4
-      slurm_cpu_partition: compute
+      slurm_cpu_partition: shared
       slurm_gpu_partition: gpu-shared
-      slurm_account: TG-STA230005
       workflow_generator: inference

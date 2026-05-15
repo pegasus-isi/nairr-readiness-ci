@@ -46,18 +46,21 @@ NAIRR_DB_NAME                  true       false   false   false     *      NAIRR
 
 GITLAB_URL                     false      false   false   false     *      GitLab URL
 
+ANVIL_SSH_USER                 true       false   false   false     *      Anvil SSH user
 ANVIL_SSH_KEY_FILE             true       false   false   false     *      Anvil user's private key file
 ANVIL_GITLAB_RUNNER_CONFIG     false      false   false   true      *      Anvil GitLab runner config.toml
 ANVIL_GITLAB_RUNNER_TOKEN      true       false   false   false     *      Anvil GitLab runner token
 ANVIL_GITLAB_RUNNER_ID         false      false   false   false     *      Anvil GitLab runner integer identifier
 ANVIL_GITLAB_RUNNER_UID        false      false   false   false     *      Anvil GitLab runner unique identifier
 
+BRIDGES_SSH_USER               true       false   false   false     *      Bridges SSH user
 BRIDGES_SSH_KEY_FILE           true       false   false   false     *      Bridges user's private key file
 BRIDGES_GITLAB_RUNNER_CONFIG   false      false   false   true      *      Bridges GitLab runner config.toml
 BRIDGES_GITLAB_RUNNER_TOKEN    true       true    true    false     *      Bridges GitLab runner token
 BRIDGES_GITLAB_RUNNER_ID       false      false   false   false     *      Bridges GitLab runner integer identifier
 BRIDGES_GITLAB_RUNNER_UID      false      false   false   false     *      Bridges GitLab runner unique identifier
 
+EXPANSE_SSH_USER               true       false   false   false     *      Expanse SSH user
 EXPANSE_SSH_MFA_SHARED_SECRET  true       true    true    false     *      Expanse user's MFA shared secret
 EXPANSE_SSH_KEY_FILE           true       false   false   false     *      Expanse user's private key file
 EXPANSE_GITLAB_RUNNER_CONFIG   false      false   false   true      *      Expanse GitLab runner config.toml

@@ -16,8 +16,6 @@ spec:
       description: SLURM CPU partition
     slurm_gpu_partition:
       description: SLURM GPU partition
-    slurm_account:
-      description: SLURM account
     workflow_generator:
       description: Workflow generator script
       default: training
@@ -31,7 +29,6 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]:
   variables:
     SLURM_CPU_PARTITION: $[[ inputs.slurm_cpu_partition ]]
     SLURM_GPU_PARTITION: $[[ inputs.slurm_gpu_partition ]]
-    SLURM_ACCOUNT: $[[ inputs.slurm_account ]]
   before_script:
     - $[[ inputs.pre_script ]]
     - |
