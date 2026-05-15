@@ -22,8 +22,8 @@ include:
       slurm_partition: shared
       slurm_account: sta230005
       slurm_time: "03:00:00"
-      site_shared_scratch: ${CLUSTER_SCRATCH}
-      site_local_scratch: ${TMPDIR}
+      site_shared_scratch: \${CLUSTER_SCRATCH}
+      site_local_scratch: \${TMPDIR}
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: ANVIL

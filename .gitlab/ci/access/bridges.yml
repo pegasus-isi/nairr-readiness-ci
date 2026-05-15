@@ -23,8 +23,8 @@ include:
       slurm_partition: RM-shared
       slurm_account: sta230005p
       slurm_time: "03:00:00"
-      site_shared_scratch: ${PROJECT}
-      site_local_scratch: ${LOCAL}
+      site_shared_scratch: \${PROJECT}
+      site_local_scratch: \${LOCAL}
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: BRIDGES

@@ -29,7 +29,7 @@ include:
       slurm_account: TG-STA230005
       slurm_time: "03:00:00"
       site_shared_scratch: /expanse/lustre/scratch/mayani
-      site_local_scratch: ${TMPDIR}
+      site_local_scratch: \${TMPDIR}
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: EXPANSE
