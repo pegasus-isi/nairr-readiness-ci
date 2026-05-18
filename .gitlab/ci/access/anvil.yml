@@ -20,7 +20,7 @@ include:
       gitlab_runner_uid: ${ANVIL_GITLAB_RUNNER_UID}
       gitlab_runner_token: ${ANVIL_GITLAB_RUNNER_TOKEN}
       slurm_partition: shared
-      slurm_account: sta230005-gpu
+      slurm_account: sta230005
       slurm_time: "03:00:00"
       site_shared_scratch: \${CLUSTER_SCRATCH}
       site_local_scratch_var: TMPDIR

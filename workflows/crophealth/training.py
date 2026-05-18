@@ -170,6 +170,7 @@ class CropHealthWorkflow:
 
         if os.environ.get("RESOURCE") == "ANVIL":
             preprocess_images.add_pegasus_profile(
+                project=os.environ["SLURM_ACCOUNT"] + "-gpu",
                 glite_arguments=f"--gres=gpu:1 --qos=ai --mem={self.MEM}"
             )
             train_classifier.add_pegasus_profile(
