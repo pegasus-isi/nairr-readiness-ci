@@ -98,6 +98,10 @@ class CropHealthWorkflow:
             ),
         )
 
+        if os.path.exists("pegasus_lite_env_source"):
+            local.add_pegasus_profile(
+                pegasus_lite_env_source=os.path.abspath("pegasus_lite_env_source"))
+
         local_scratch_var = os.environ["SITE_LOCAL_SCRATCH_VAR"]
         local_scratch = os.environ[local_scratch_var]
         exec_site = (
@@ -121,6 +125,9 @@ class CropHealthWorkflow:
                 project=os.environ["SLURM_ACCOUNT"],
                 data_configuration="nonsharedfs",
                 auxillary_local="true",
+                nodes=1,
+                cores=1,
+                runtime=3600,
             )
         )
 
