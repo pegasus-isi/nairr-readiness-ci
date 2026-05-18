@@ -162,6 +162,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       if [[ \"$[[ inputs.install_condor ]]\" == \"true\" ]]; then
         condor_master
         sleep 5
+        condor_rm \${USER} || true
       fi
 
       .gitlab-runner/gitlab-runner run
