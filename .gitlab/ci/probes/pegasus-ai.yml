@@ -52,7 +52,13 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]:
       fi
       python3 $[[ inputs.workflow_generator ]].py
       pegasus-status -w5 -l submit
+    - |
       set +e
+      pegasus-status --jsonrv submit | grep -i state.*fail
+      EC=$?
+      if [[ "$EC" -eq 0 ]]; then
+        exit 1
+      fi
   after_script:
     - |
       STATUS="PASS"
