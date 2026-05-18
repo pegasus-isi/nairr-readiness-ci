@@ -157,7 +157,8 @@ class CropHealthWorkflow:
         )
         if os.environ.get("RESOURCE") == "ANVIL":
             classify_disease.add_pegasus_profile(
-                glite_arguments=f"--gres=gpu:1 --qos=ai --mem={self.MEM}"
+                project=os.environ["SLURM_ACCOUNT"] + "-gpu",
+                glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}"
             )
         else:
             classify_disease.add_pegasus_profile(
