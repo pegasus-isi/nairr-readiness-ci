@@ -48,7 +48,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]:
       if [[ -n "$[[ inputs.pegasus_lite_env_source ]]" ]]; then
         cat > pegasus_lite_env_source <<EOF
         $[[ inputs.pegasus_lite_env_source ]]
-        EOF
+      EOF
       fi
       python3 $[[ inputs.workflow_generator ]].py
       pegasus-status -w5 -l submit
