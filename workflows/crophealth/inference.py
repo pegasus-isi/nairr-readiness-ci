@@ -110,6 +110,7 @@ class CropHealthWorkflow:
                 project=os.environ["SLURM_ACCOUNT"],
                 data_configuration="nonsharedfs",
                 auxillary_local="true",
+                runtime=3600,
             )
         )
 
