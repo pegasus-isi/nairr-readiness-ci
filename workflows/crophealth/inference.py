@@ -10,6 +10,8 @@ logging.basicConfig(level=logging.DEBUG)
 class CropHealthWorkflow:
     """Generate Pegasus workflow for crop disease detection."""
 
+    MEM = "21G"
+
     wf = None
     sc = None
     tc = None
@@ -91,7 +93,8 @@ class CropHealthWorkflow:
 
         if os.path.exists("pegasus_lite_env_source"):
             local.add_pegasus_profile(
-                pegasus_lite_env_source=os.path.abspath("pegasus_lite_env_source"))
+                pegasus_lite_env_source=os.path.abspath("pegasus_lite_env_source")
+            )
 
         local_scratch_var = os.environ["SITE_LOCAL_SCRATCH_VAR"]
         local_scratch = os.environ[local_scratch_var]
@@ -105,9 +108,9 @@ class CropHealthWorkflow:
                 ).add_file_servers(
                     FileServer("file://" + self.shared_scratch_dir, Operation.ALL)
                 ),
-                Directory(
-                    Directory.LOCAL_SCRATCH, local_scratch
-                ).add_file_servers(FileServer("file://" + local_scratch, Operation.ALL)),
+                Directory(Directory.LOCAL_SCRATCH, local_scratch).add_file_servers(
+                    FileServer("file://" + local_scratch, Operation.ALL)
+                ),
             )
             .add_condor_profile(grid_resource="batch slurm")
             .add_pegasus_profile(
@@ -116,11 +119,12 @@ class CropHealthWorkflow:
                 project=os.environ["SLURM_ACCOUNT"],
                 data_configuration="nonsharedfs",
                 auxillary_local="true",
-                nodes=1,
-                cores=1,
                 runtime=3600,
             )
         )
+
+        if os.environ.get("RESOURCE") == "EXPANSE":
+            exec_site.add_pegasus_profile(nodes=1, cores=1)
 
         self.sc.add_sites(local, exec_site)
 
@@ -151,6 +155,14 @@ class CropHealthWorkflow:
             .add_pegasus_profile(glite_arguments="--mem=21G")
             .add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"])
         )
+        if os.environ.get("RESOURCE") == "ANVIL":
+            classify_disease.add_pegasus_profile(
+                glite_arguments=f"--gres:gpu:1 --mem={self.MEM}"
+            )
+        else:
+            classify_disease.add_pegasus_profile(
+                gpus="1", glite_arguments=f"--mem={self.MEM}"
+            )
 
         self.tc.add_containers(crophealth_container)
         self.tc.add_transformations(classify_disease)

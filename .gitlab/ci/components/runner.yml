@@ -89,6 +89,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
         # token_expires_at = 0001-01-01T00:00:00Z
         executor = \"shell\"
         environment = [
+          \"RESOURCE=$[[ inputs.job_name_prefix ]]\",
           \"SLURM_ACCOUNT=$[[ inputs.slurm_account ]]\",
           \"SITE_SHARED_SCRATCH=$[[ inputs.site_shared_scratch ]]\",
           \"SITE_LOCAL_SCRATCH_VAR=$[[ inputs.site_local_scratch_var ]]\",
