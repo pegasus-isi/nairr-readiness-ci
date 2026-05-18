@@ -93,6 +93,8 @@ class CropHealthWorkflow:
             local.add_pegasus_profile(
                 pegasus_lite_env_source=os.path.abspath("pegasus_lite_env_source"))
 
+        local_scratch_var = os.environ["SITE_LOCAL_SCRATCH_VAR"]
+        local_scratch = os.environ[local_scratch_var]
         exec_site = (
             Site(exec_site_name)
             .add_directories(
@@ -104,8 +106,8 @@ class CropHealthWorkflow:
                     FileServer("file://" + self.shared_scratch_dir, Operation.ALL)
                 ),
                 Directory(
-                    Directory.LOCAL_SCRATCH, os.environ["SITE_LOCAL_SCRATCH"]
-                ).add_file_servers(FileServer("file://" + os.environ["SITE_LOCAL_SCRATCH"], Operation.ALL)),
+                    Directory.LOCAL_SCRATCH, local_scratch
+                ).add_file_servers(FileServer("file://" + local_scratch, Operation.ALL)),
             )
             .add_condor_profile(grid_resource="batch slurm")
             .add_pegasus_profile(
