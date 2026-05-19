@@ -151,8 +151,6 @@ class CropHealthWorkflow:
                 is_stageable=True,
                 container=crophealth_container,
             )
-            .add_pegasus_profile(gpus="1")
-            .add_pegasus_profile(glite_arguments="--mem=21G")
             .add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"])
             .add_pegasus_profile(container_arguments="--nv")
         )
