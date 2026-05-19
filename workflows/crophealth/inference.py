@@ -143,17 +143,16 @@ class CropHealthWorkflow:
             image_site="www",
         )
 
-        classify_disease = (
-            Transformation(
-                "classify_disease",
-                site=exec_site_name,
-                pfn=os.path.join(self.wf_dir, "bin/classify_disease.py"),
-                is_stageable=True,
-                container=crophealth_container,
-            )
-            .add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"])
-            .add_pegasus_profile(container_arguments="--nv")
+        classify_disease = Transformation(
+            "classify_disease",
+            site=exec_site_name,
+            pfn=os.path.join(self.wf_dir, "bin/classify_disease.py"),
+            is_stageable=True,
+            container=crophealth_container,
+        ).add_pegasus_profile(
+            queue=os.environ["SLURM_GPU_PARTITION"], container_arguments="--nv"
         )
+
         if os.environ.get("RESOURCE") == "ANVIL":
             classify_disease.add_pegasus_profile(
                 project=os.environ["SLURM_ACCOUNT"] + "-gpu",
