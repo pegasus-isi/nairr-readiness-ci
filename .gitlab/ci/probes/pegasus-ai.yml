@@ -51,6 +51,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]:
       EOF
       fi
       python3 $[[ inputs.workflow_generator ]].py
+      sleep 5
       pegasus-status -w5 -l submit
     - |
       set +e
