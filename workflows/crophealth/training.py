@@ -158,7 +158,9 @@ class CropHealthWorkflow:
             pfn=os.path.join(self.wf_dir, "bin/preprocess_images.py"),
             is_stageable=True,
             container=crophealth_container,
-        ).add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"])
+        ).add_pegasus_profile(
+            queue=os.environ["SLURM_GPU_PARTITION"], container_arguments="--nv"
+        )
 
         train_classifier = Transformation(
             "train_classifier",
@@ -166,16 +168,18 @@ class CropHealthWorkflow:
             pfn=os.path.join(self.wf_dir, "bin/train_classifier.py"),
             is_stageable=True,
             container=crophealth_container,
-        ).add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"])
+        ).add_pegasus_profile(
+            queue=os.environ["SLURM_GPU_PARTITION"], container_arguments="--nv"
+        )
 
         if os.environ.get("RESOURCE") == "ANVIL":
             preprocess_images.add_pegasus_profile(
                 project=os.environ["SLURM_ACCOUNT"] + "-gpu",
-                glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}"
+                glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}",
             )
             train_classifier.add_pegasus_profile(
                 project=os.environ["SLURM_ACCOUNT"] + "-gpu",
-                glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}"
+                glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}",
             )
         else:
             preprocess_images.add_pegasus_profile(

@@ -154,11 +154,12 @@ class CropHealthWorkflow:
             .add_pegasus_profile(gpus="1")
             .add_pegasus_profile(glite_arguments="--mem=21G")
             .add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"])
+            .add_pegasus_profile(container_arguments="--nv")
         )
         if os.environ.get("RESOURCE") == "ANVIL":
             classify_disease.add_pegasus_profile(
                 project=os.environ["SLURM_ACCOUNT"] + "-gpu",
-                glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}"
+                glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}",
             )
         else:
             classify_disease.add_pegasus_profile(
