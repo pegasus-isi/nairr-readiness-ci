@@ -149,18 +149,19 @@ class CropHealthWorkflow:
             pfn=os.path.join(self.wf_dir, "bin/classify_disease.py"),
             is_stageable=True,
             container=crophealth_container,
-        ).add_pegasus_profile(
-            queue=os.environ["SLURM_GPU_PARTITION"], container_arguments="--nv"
-        )
+        ).add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"])
 
         if os.environ.get("RESOURCE") == "ANVIL":
             classify_disease.add_pegasus_profile(
                 project=os.environ["SLURM_ACCOUNT"] + "-gpu",
                 glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}",
+                container_arguments="--nv --no-mount bind-paths",
             )
         else:
             classify_disease.add_pegasus_profile(
-                gpus="1", glite_arguments=f"--mem={self.MEM}"
+                gpus="1",
+                glite_arguments=f"--mem={self.MEM}",
+                container_arguments="--no-mount bind-paths",
             )
 
         self.tc.add_containers(crophealth_container)
