@@ -62,10 +62,8 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]:
       fi
   after_script:
     - |
-      STATUS="PASS"
-      if [[ "$CI_JOB_STATUS" == "failed" ]]; then STATUS="FAIL"; fi
       printf '$[[ inputs.job_name_prefix ]]_PEGASUS_$[[ inputs.workflow_generator ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
-      printf '$[[ inputs.job_name_prefix ]]_PEGASUS_$[[ inputs.workflow_generator ]]_STATUS=%s\n' "${STATUS}" >> .env
+      printf '$[[ inputs.job_name_prefix ]]_PEGASUS_$[[ inputs.workflow_generator ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
   artifacts:
     when: always
     access: developer
@@ -92,6 +90,10 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]-status:
       JOB_ID="${!VAR_NAME}"
       VAR_NAME="$[[ inputs.job_name_prefix ]]_PEGASUS_$[[ inputs.workflow_generator ]]_STATUS"
       STATUS="${!VAR_NAME}"
+
+      if [[ "$CI_JOB_STATUS" == "canceled" ]]; then
+        exit 0
+      fi
 
       export MYSQL_PWD="${NAIRR_DB_PASS}"
       EXTRA="{\"pipeline_url\": \"${CI_PIPELINE_URL}\", \"job_id\": \"${JOB_ID}\"}"
