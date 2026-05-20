@@ -47,9 +47,8 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
         exit 1
       fi
   after_script:
-    - |
-      printf '$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
-      printf '$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
+    - printf '$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
+    - printf '$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
   artifacts:
     when: always
     access: developer
@@ -71,13 +70,12 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple-status:
   before_script:
     - dnf -y install mysql
   script:
+    - VAR_NAME="$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_JOB_ID"
+    - JOB_ID="${!VAR_NAME}"
+    - VAR_NAME="$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_STATUS"
+    - STATUS="${!VAR_NAME}"
     - |
-      VAR_NAME="$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_JOB_ID"
-      JOB_ID="${!VAR_NAME}"
-      VAR_NAME="$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_STATUS"
-      STATUS="${!VAR_NAME}"
-
-      if [[ "$CI_JOB_STATUS" == "canceled" ]]; then
+      if [[ "$STATUS" == "canceled" ]]; then
         exit 0
       fi
 
