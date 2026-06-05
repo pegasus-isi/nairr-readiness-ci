@@ -1,0 +1,63 @@
+spec:
+  inputs:
+    job_name_prefix:
+      description: Prefix for the CI job name and dotenv variable (must be unique per pipeline)
+      default: glab
+    ssh_mfa_type:
+      description: MFA type for the target host (totp, or empty for none)
+      default: ""
+    ssh_mfa_prompt:
+      description: Keyboard-interactive prompt string for MFA
+      default: ""
+    ssh_mfa_shared_secret:
+      description: TOTP shared secret for MFA
+      default: ""
+    gitlab_url:
+      description: GitLab URL
+    gitlab_runner_arch:
+      description: GitLab Runner architecture
+      default: amd64
+    gitlab_runner_id:
+      description: GitLab Runner ID
+    gitlab_runner_uid:
+      description: GitLab Runner UID
+    gitlab_runner_token:
+      description: GitLab Runner Token
+    slurm_partition:
+      description: SLURM partition
+    slurm_account:
+      description: SLURM account
+    slurm_time:
+      description: SLURM job runtime
+      default: "00:30:00"
+    slurm_extra_opts:
+      description: SLURM extra options
+      default: ""
+    force_install_runner:
+      description: Force Install GitLab
+      type: boolean
+      default: false
+    force_install_condor:
+      description: Force Install Condor
+      type: boolean
+      default: false
+    install_condor:
+      description: Install Condor
+      type: boolean
+      default: true
+    site_shared_scratch:
+      description: Shared Scratch
+    site_local_scratch_var:
+      description: Local Scratch variable
+
+---
+
+$[[ inputs.job_name_prefix ]]-gitlab-runner-run:
+  stage: unit
+  image: rockylinux:9
+  script:
+    - echo "Runner should be started manually"
+  tags:
+    - docker
+  artifacts:
+    access: developer

@@ -13,18 +13,18 @@ include:
   #     job_name_prefix: DELTA
   #     resource_id: 4
 
-  # - local: .gitlab/ci/components/runner.yml
-  #   inputs:
-  #     job_name_prefix: DELTA
-  #     gitlab_url: ${GITLAB_URL}
-  #     gitlab_runner_id: ${DELTA_GITLAB_RUNNER_ID}
-  #     gitlab_runner_uid: ${DELTA_GITLAB_RUNNER_UID}
-  #     gitlab_runner_token: ${DELTA_GITLAB_RUNNER_TOKEN}
-  #     slurm_partition: cpu
-  #     slurm_account: bfof-delta-cpu
-  #     slurm_time: "03:00:00"
-  #     site_shared_scratch: /scratch/bfof/mayani
-  #     site_local_scratch_var: TMPDIR
+  - local: .gitlab/ci/components/manual-runner.yml
+    inputs:
+      job_name_prefix: DELTA
+      gitlab_url: ${GITLAB_URL}
+      gitlab_runner_id: ${DELTA_GITLAB_RUNNER_ID}
+      gitlab_runner_uid: ${DELTA_GITLAB_RUNNER_UID}
+      gitlab_runner_token: ${DELTA_GITLAB_RUNNER_TOKEN}
+      slurm_partition: cpu
+      slurm_account: bfof-delta-cpu
+      slurm_time: "03:00:00"
+      site_shared_scratch: /scratch/bfof/mayani
+      site_local_scratch_var: TMPDIR
 
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
