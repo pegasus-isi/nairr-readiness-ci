@@ -1,11 +1,49 @@
+# URL: https://docs.ncsa.illinois.edu/systems/delta/en/latest/index.html
+# URL: https://docs.ncsa.illinois.edu/systems/deltaai/en/latest/user-guide/data-mgmt.html
 include:
-  - local: .gitlab/ci/probes/ssh.yml
+  # Can't do as this requires Duo MFA
+  # - local: .gitlab/ci/components/ssh.yml
+  #   inputs:
+  #     job_name_prefix: DELTA
+  #     ssh_host: login.delta.ncsa.illinois.edu
+  #     ssh_user: $DELTA_SSH_USER
+  #     ssh_key_file: $DELTA_SSH_KEY_FILE
+  # - local: .gitlab/ci/probes/ssh.yml
+  #   inputs:
+  #     job_name_prefix: DELTA
+  #     resource_id: 4
 
-variables:
-  RESOURCE_ID: 1
-  SSH_HOST: login.delta.ncsa.illinois.edu
-  SSH_USER: mayani
-  SSH_KEY_FILE: ${ANVIL_SSH_KEY_FILE}
+  # - local: .gitlab/ci/components/runner.yml
+  #   inputs:
+  #     job_name_prefix: DELTA
+  #     gitlab_url: ${GITLAB_URL}
+  #     gitlab_runner_id: ${DELTA_GITLAB_RUNNER_ID}
+  #     gitlab_runner_uid: ${DELTA_GITLAB_RUNNER_UID}
+  #     gitlab_runner_token: ${DELTA_GITLAB_RUNNER_TOKEN}
+  #     slurm_partition: cpu
+  #     slurm_account: bfof-delta-cpu
+  #     slurm_time: "03:00:00"
+  #     site_shared_scratch: /scratch/bfof/mayani
+  #     site_local_scratch_var: TMPDIR
 
-delta-ssh-job:
-  extends: .ssh-job
+  - local: .gitlab/ci/probes/pegasus-simple.yml
+    inputs:
+      job_name_prefix: DELTA
+      resource_id: 4
+      probe_id: 2
+  - local: .gitlab/ci/probes/pegasus-ai.yml
+    inputs:
+      job_name_prefix: DELTA
+      resource_id: 4
+      probe_id: 3
+      slurm_cpu_partition: cpu
+      slurm_gpu_partition: gpuA100x4
+      workflow_generator: training
+  - local: .gitlab/ci/probes/pegasus-ai.yml
+    inputs:
+      job_name_prefix: DELTA
+      resource_id: 4
+      probe_id: 4
+      slurm_cpu_partition: cpu
+      slurm_gpu_partition: gpuA100x4
+      workflow_generator: inference
