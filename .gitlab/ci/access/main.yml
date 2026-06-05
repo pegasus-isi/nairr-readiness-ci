@@ -7,3 +7,4 @@ include:
   - local: .gitlab/ci/access/anvil.yml
   - local: .gitlab/ci/access/expanse.yml
   - local: .gitlab/ci/access/bridges.yml
+  - local: .gitlab/ci/access/delta.yml
