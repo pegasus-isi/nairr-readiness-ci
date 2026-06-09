@@ -33,6 +33,9 @@ spec:
     slurm_extra_opts:
       description: SLURM extra options
       default: ""
+    pre_script:
+      description: Pre-script
+      default: ""
     force_install_runner:
       description: Force Install GitLab
       type: boolean
@@ -123,6 +126,10 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
     - |
       REMOTE_CMD="${REMOTE_CMD}
+      if [[ \"$[[ inputs.pre_script ]]\" != \"\" ]]; then
+        $[[ inputs.pre_script ]]
+      fi
+
       if [[ \"$[[ inputs.force_install_condor ]]\" == \"true\" ]]; then
         rm -rf install-pegasus
       fi
