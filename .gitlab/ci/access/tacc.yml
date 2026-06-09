@@ -33,13 +33,11 @@ include:
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: STAMPEDE3
-      pre_script: module load python/3.12.12
       resource_id: 7
       probe_id: 2
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: STAMPEDE3
-      pre_script: module load python/3.12.12
       resource_id: 7
       probe_id: 3
       slurm_cpu_partition: icx
@@ -48,7 +46,6 @@ include:
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: STAMPEDE3
-      pre_script: module load python/3.12.12
       resource_id: 7
       probe_id: 4
       slurm_cpu_partition: icx
