@@ -126,9 +126,8 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
     - |
       REMOTE_CMD="${REMOTE_CMD}
-      if [[ \"$[[ inputs.pre_script ]]\" != \"\" ]]; then
-        $[[ inputs.pre_script ]]
-      fi
+      # Pre-script
+      $[[ inputs.pre_script ]]
 
       if [[ \"$[[ inputs.force_install_condor ]]\" == \"true\" ]]; then
         rm -rf install-pegasus
