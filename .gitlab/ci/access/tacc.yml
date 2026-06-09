@@ -10,7 +10,7 @@ include:
   - local: .gitlab/ci/probes/ssh.yml
     inputs:
       job_name_prefix: STAMPEDE3
-      resource_id: 2
+      resource_id: 7
       ssh_mfa_type: totp
       ssh_mfa_prompt: TACC Token Code
       ssh_mfa_shared_secret: $STAMPEDE3_SSH_MFA_SHARED_SECRET
@@ -33,7 +33,7 @@ include:
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: STAMPEDE3
-      resource_id: 2
+      resource_id: 7
       probe_id: 2
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
