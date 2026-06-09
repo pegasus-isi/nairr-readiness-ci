@@ -1,0 +1,55 @@
+# Shared scratch: /expanse/lustre/scratch/<user>
+# Node Local: /tmp or ${TMPDIR}
+include:
+  - local: .gitlab/ci/components/ssh.yml
+    inputs:
+      job_name_prefix: STAMPEDE3
+      ssh_host: stampede3.tacc.utexas.edu
+      ssh_user: $STAMPEDE3_SSH_USER
+      ssh_key_file: $STAMPEDE3_SSH_KEY_FILE
+  - local: .gitlab/ci/probes/ssh.yml
+    inputs:
+      job_name_prefix: STAMPEDE3
+      resource_id: 2
+      ssh_mfa_type: totp
+      ssh_mfa_prompt: TACC Token Code
+      ssh_mfa_shared_secret: $STAMPEDE3_SSH_MFA_SHARED_SECRET
+
+  - local: .gitlab/ci/components/runner.yml
+    inputs:
+      job_name_prefix: STAMPEDE3
+      ssh_mfa_type: totp
+      ssh_mfa_prompt: TACC Token Code
+      ssh_mfa_shared_secret: $STAMPEDE3_SSH_MFA_SHARED_SECRET
+      gitlab_url: ${GITLAB_URL}
+      gitlab_runner_id: ${STAMPEDE3_GITLAB_RUNNER_ID}
+      gitlab_runner_uid: ${STAMPEDE3_GITLAB_RUNNER_UID}
+      gitlab_runner_token: ${STAMPEDE3_GITLAB_RUNNER_TOKEN}
+      slurm_partition: shared
+      slurm_account: TG-STA230005
+      slurm_time: "03:00:00"
+      site_shared_scratch: \${SCRATCH}
+      site_local_scratch_var: TMPDIR
+  - local: .gitlab/ci/probes/pegasus-simple.yml
+    inputs:
+      job_name_prefix: STAMPEDE3
+      resource_id: 2
+      probe_id: 2
+  - local: .gitlab/ci/probes/pegasus-ai.yml
+    inputs:
+      job_name_prefix: STAMPEDE3
+      pegasus_lite_env_source: module load singularitypro
+      resource_id: 7
+      probe_id: 3
+      slurm_cpu_partition: shared
+      slurm_gpu_partition: gpu-shared
+      workflow_generator: training
+  - local: .gitlab/ci/probes/pegasus-ai.yml
+    inputs:
+      job_name_prefix: STAMPEDE3
+      pegasus_lite_env_source: module load singularitypro
+      resource_id: 7
+      probe_id: 4
+      slurm_cpu_partition: shared
+      slurm_gpu_partition: gpu-shared
+      workflow_generator: inference
