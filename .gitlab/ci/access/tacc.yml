@@ -25,7 +25,7 @@ include:
       gitlab_runner_id: ${STAMPEDE3_GITLAB_RUNNER_ID}
       gitlab_runner_uid: ${STAMPEDE3_GITLAB_RUNNER_UID}
       gitlab_runner_token: ${STAMPEDE3_GITLAB_RUNNER_TOKEN}
-      slurm_partition: shared
+      slurm_partition: icx
       slurm_account: TG-STA230005
       slurm_time: "03:00:00"
       site_shared_scratch: \${SCRATCH}
@@ -38,18 +38,16 @@ include:
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: STAMPEDE3
-      pegasus_lite_env_source: module load singularitypro
       resource_id: 7
       probe_id: 3
-      slurm_cpu_partition: shared
-      slurm_gpu_partition: gpu-shared
+      slurm_cpu_partition: icx
+      slurm_gpu_partition: h100
       workflow_generator: training
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: STAMPEDE3
-      pegasus_lite_env_source: module load singularitypro
       resource_id: 7
       probe_id: 4
-      slurm_cpu_partition: shared
-      slurm_gpu_partition: gpu-shared
+      slurm_cpu_partition: icx
+      slurm_gpu_partition: h100
       workflow_generator: inference
