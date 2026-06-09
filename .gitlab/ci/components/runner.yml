@@ -176,7 +176,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
     - |
       REMOTE_CMD="${REMOTE_CMD}
-      JOBID=\$(sbatch $[[ inputs.slurm_extra_opts ]] gitlab-runner.job | grep -o [0-9]*)
+      JOBID=\$(sbatch $[[ inputs.slurm_extra_opts ]] gitlab-runner.job | tail -1 | grep -o [0-9]*)
       set +ex
       while true; do
         IS_RUNNING=\$(squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" -j \${JOBID} -t RUNNING --noheader)
