@@ -136,7 +136,10 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
         # Install Python dependencies
         mkdir python-deps
-        python3 -m pip install -t python-deps dataclasses pyyaml gitpython
+        if python3 -V | grep -q '3\.[67]'; then
+          python3 -m pip install -t python-deps dataclasses pyyaml gitpython
+        fi
+        python3 -m pip install -t python-deps pyyaml gitpython
         popd
       fi
       "
