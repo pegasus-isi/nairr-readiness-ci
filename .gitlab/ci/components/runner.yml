@@ -197,6 +197,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       REMOTE_CMD="${REMOTE_CMD}
       if [[ \"$[[ inputs.run_on_login_node ]]\" == \"true\" ]]; then
         screen -dmS \"$[[ inputs.job_name_prefix ]]-gitlab-runner\" timeout 3h ./gitlab-runner.job
+        echo $[[ inputs.job_name_prefix ]]_GITLAB_RUN_JOB_ID=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\"
       else
         JOBID=\$(sbatch $[[ inputs.slurm_extra_opts ]] gitlab-runner.job | tail -1 | grep -o [0-9]*)
         set +ex
