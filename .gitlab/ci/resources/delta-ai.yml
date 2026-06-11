@@ -31,12 +31,10 @@ include:
     inputs:
       job_name_prefix: DELTA_AI
       resource_id: 5
-      probe_id: 2
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: DELTA_AI
       resource_id: 5
-      probe_id: 3
       slurm_cpu_partition: test
       slurm_gpu_partition: GPU-shared
       workflow_generator: training

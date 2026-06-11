@@ -37,6 +37,10 @@ KEY                           PROTECTED  MASKED  HIDDEN  EXPANDED  SCOPE  DESCRI
 ACCESS_PROJECT_ID               true       false   false   false     *      ACCESS allocation project id
 ACCESS_SSH_USER                 true       false   false   false     *      ACCESS user's username
 ACCESS_SSH_KEY_FILE             true       false   false   false     *      ACCESS user's private key file
+ACCESS_GITLAB_RUNNER_CONFIG     false      false   false   true      *      ACCESS GitLab runner config.toml
+ACCESS_GITLAB_RUNNER_TOKEN      true       true    true    false     *      ACCESS GitLab runner token
+ACCESS_GITLAB_RUNNER_ID         false      false   false   false     *      ACCESS GitLab runner integer identifier
+ACCESS_GITLAB_RUNNER_UID        false      false   false   false     *      ACCESS GitLab runner unique identifier
 
 NAIRR_DB_HOST                   true       false   false   false     *      NAIRR MySQL database host
 NAIRR_DB_PORT                   true       false   false   false     *      NAIRR MySQL database port number

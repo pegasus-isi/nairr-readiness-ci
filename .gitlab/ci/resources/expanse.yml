@@ -34,13 +34,11 @@ include:
     inputs:
       job_name_prefix: EXPANSE
       resource_id: 2
-      probe_id: 2
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: EXPANSE
       pegasus_lite_env_source: module load singularitypro
       resource_id: 3
-      probe_id: 3
       slurm_cpu_partition: shared
       slurm_gpu_partition: gpu-shared
       workflow_generator: training

@@ -29,12 +29,10 @@ include:
     inputs:
       job_name_prefix: BRIDGES
       resource_id: 3
-      probe_id: 2
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: BRIDGES
       resource_id: 3
-      probe_id: 3
       slurm_cpu_partition: RM-shared
       slurm_gpu_partition: GPU-shared
       workflow_generator: training

@@ -36,12 +36,10 @@ include:
     inputs:
       job_name_prefix: STAMPEDE3
       resource_id: 7
-      probe_id: 2
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: STAMPEDE3
       resource_id: 7
-      probe_id: 3
       slurm_cpu_partition: icx
       slurm_gpu_partition: h100
       workflow_generator: training

@@ -29,13 +29,11 @@ include:
       job_name_prefix: ANVIL
       pre_script: module load openjdk/11.0.8_10
       resource_id: 1
-      probe_id: 2
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: ANVIL
       pre_script: module load openjdk/11.0.8_10
       resource_id: 3
-      probe_id: 3
       slurm_cpu_partition: shared
       slurm_gpu_partition: gpu
       workflow_generator: training
