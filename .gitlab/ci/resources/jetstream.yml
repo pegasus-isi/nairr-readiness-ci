@@ -18,6 +18,7 @@ include:
       gitlab_runner_uid: ${ACCESS_GITLAB_RUNNER_UID}
       gitlab_runner_token: ${ACCESS_GITLAB_RUNNER_TOKEN}
       run_on_login_node: true
+      install_condor: false
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: ACCESS
