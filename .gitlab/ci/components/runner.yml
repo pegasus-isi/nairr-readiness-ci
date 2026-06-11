@@ -29,8 +29,10 @@ spec:
       default: false
     slurm_partition:
       description: SLURM partition
+      default: ""
     slurm_account:
       description: SLURM account
+      default: ""
     slurm_time:
       description: SLURM job runtime
       default: "00:30:00"
@@ -54,8 +56,10 @@ spec:
       default: true
     site_shared_scratch:
       description: Shared Scratch
+      default: ""
     site_local_scratch_var:
       description: Local Scratch variable
+      default: ""
 
 ---
 
