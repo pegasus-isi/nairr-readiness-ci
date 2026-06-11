@@ -20,6 +20,6 @@ include:
       run_on_login_node: true
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
-      job_name_prefix: JETSTREAM
+      job_name_prefix: ACCESS
       resource_id: 6
       probe_id: 2
