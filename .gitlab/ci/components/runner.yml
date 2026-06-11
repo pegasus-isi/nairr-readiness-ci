@@ -80,7 +80,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
     - |
       set -e
       REMOTE_CMD="
-      set -e
+      set -ev
       mkdir -p .gitlab-runner
       cat > .gitlab-runner/config.toml <<EOF
       concurrent = 2
