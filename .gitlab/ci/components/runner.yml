@@ -23,6 +23,10 @@ spec:
       description: GitLab Runner UID
     gitlab_runner_token:
       description: GitLab Runner Token
+    run_on_login_node:
+      description: Run the GitLab runner on the login node
+      type: boolean
+      default: false
     slurm_partition:
       description: SLURM partition
     slurm_account:
@@ -116,7 +120,12 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
     - |
       REMOTE_CMD="${REMOTE_CMD}
       set +e
-      scancel --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" && true
+      if [[ \"$[[ inputs.run_on_login_node ]]\" == \"true\" ]]; then
+        screen -X -S \"$[[ inputs.job_name_prefix ]]-gitlab-runner\" quit || true
+      else
+        scancel --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" || true
+      fi
+
       set -e
       if [[ \"$[[ inputs.force_install_runner ]]\" == \"true\" || ! -f .gitlab-runner/gitlab-runner ]]; then
         curl -L --output .gitlab-runner/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-$[[ inputs.gitlab_runner_arch ]]
@@ -182,16 +191,20 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
     - |
       REMOTE_CMD="${REMOTE_CMD}
-      JOBID=\$(sbatch $[[ inputs.slurm_extra_opts ]] gitlab-runner.job | tail -1 | grep -o [0-9]*)
-      set +ex
-      while true; do
-        IS_RUNNING=\$(squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" -j \${JOBID} -t RUNNING --noheader)
-        if [[ -n \${IS_RUNNING} ]]; then
-          echo $[[ inputs.job_name_prefix ]]_GITLAB_RUN_JOB_ID=\"\${JOBID}\"
-          break
-        fi
-        sleep 5
-      done
+      if [[ \"$[[ inputs.run_on_login_node ]]\" == \"true\" ]]; then
+        screen -dmS \"$[[ inputs.job_name_prefix ]]-gitlab-runner\" timeout 3h ./gitlab-runner.job
+      else
+        JOBID=\$(sbatch $[[ inputs.slurm_extra_opts ]] gitlab-runner.job | tail -1 | grep -o [0-9]*)
+        set +ex
+        while true; do
+          IS_RUNNING=\$(squeue -u \"\$USER\" --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" -j \${JOBID} -t RUNNING --noheader)
+          if [[ -n \${IS_RUNNING} ]]; then
+            echo $[[ inputs.job_name_prefix ]]_GITLAB_RUN_JOB_ID=\"\${JOBID}\"
+            break
+          fi
+          sleep 5
+        done
+      fi
       "
 
     - |
