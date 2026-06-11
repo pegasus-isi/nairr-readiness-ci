@@ -20,9 +20,10 @@ include:
       gitlab_runner_id: ${DELTA_AI_GITLAB_RUNNER_ID}
       gitlab_runner_uid: ${DELTA_AI_GITLAB_RUNNER_UID}
       gitlab_runner_token: ${DELTA_AI_GITLAB_RUNNER_TOKEN}
-      slurm_partition: test
+      slurm_partition: ghx4
       slurm_account: bfof-dtai-gh
       slurm_time: "03:00:00"
+      slurm_extra_opts: --gpus=1
       site_shared_scratch: /work/nvme/bfof/mayani
       site_local_scratch_var: TMPDIR
 
