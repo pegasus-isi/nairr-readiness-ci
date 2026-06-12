@@ -149,7 +149,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
         rm -rf install-pegasus
       fi
 
-      if [ ! -d "install-pegasus" ]; then
+      if [[ \"$[[ inputs.install_condor ]]\" == \"true\" && ! -d "install-pegasus" ]]; then
         mkdir install-pegasus
         pushd install-pegasus
 
