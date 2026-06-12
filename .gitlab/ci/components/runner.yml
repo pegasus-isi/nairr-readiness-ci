@@ -176,13 +176,13 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
       set -e
 
-      # Source env.sh
-      . ~/install-pegasus/pegasus/env.sh
-
-      # Configure SLURM
-      pegasus-configure-glite
-
       if [[ \"$[[ inputs.install_condor ]]\" == \"true\" ]]; then
+        # Source env.sh
+        . ~/install-pegasus/pegasus/env.sh
+
+        # Configure SLURM
+        pegasus-configure-glite
+
         condor_master
         sleep 5
         condor_rm \${USER} || true
