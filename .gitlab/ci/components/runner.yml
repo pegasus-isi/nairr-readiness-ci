@@ -189,8 +189,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
         sleep 5
         condor_rm \${USER} || true
       fi
-      echo \"$[[ inputs.install_condor ]]\"
-      echo $PATH
+
       .gitlab-runner/gitlab-runner run
       EOF
       chmod +x gitlab-runner.job
