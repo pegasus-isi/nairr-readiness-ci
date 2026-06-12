@@ -1,4 +1,4 @@
-# Shared scratch: /expanse/lustre/scratch/<user>
+# Shared scratch: /expanse/lustre/scratch/<user>/temp_project
 # Node Local: /tmp or ${TMPDIR}
 include:
   - local: .gitlab/ci/components/ssh.yml
@@ -28,7 +28,7 @@ include:
       slurm_partition: shared
       slurm_account: TG-STA230005
       slurm_time: "03:00:00"
-      site_shared_scratch: /expanse/lustre/scratch/mayani
+      site_shared_scratch: /expanse/lustre/scratch/mayani/temp_project
       site_local_scratch_var: TMPDIR
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:

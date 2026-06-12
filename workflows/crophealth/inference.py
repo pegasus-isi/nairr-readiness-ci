@@ -190,7 +190,7 @@ class CropHealthWorkflow:
         )
 
         # sample input images from https://download.pegasus.isi.edu/tutorial/crophealth/inference/
-        for image_num in range(10):
+        for image_num in range(2):
             image_id = f"{image_num:02d}"
 
             # inputs
