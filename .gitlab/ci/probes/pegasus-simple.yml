@@ -22,6 +22,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
   before_script:
     - $[[ inputs.pre_script ]]
     - |
+      env
       if [[ "${INSTALL_CONDOR}" == "true" ]]; then
         # Source env.sh
         USER_HOME=$(eval "realpath ~$USER")
@@ -30,6 +31,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
         # Set PYTHONPATH so import Pegasus works
         export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
       fi
+      env
   script:
     - |
       cd ${CI_PROJECT_DIR}/workflows/
