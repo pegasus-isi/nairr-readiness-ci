@@ -126,6 +126,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       REMOTE_CMD="${REMOTE_CMD}
       set +e
       if [[ \"$[[ inputs.run_on_login_node ]]\" == \"true\" ]]; then
+        echo \"Quitting GitLab Runner inside screen session...\"
         screen -X -S \"$[[ inputs.job_name_prefix ]]-gitlab-runner\" quit || true
       else
         scancel --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" || true
