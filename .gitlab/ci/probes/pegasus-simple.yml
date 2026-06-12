@@ -22,21 +22,19 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
   before_script:
     - $[[ inputs.pre_script ]]
     - |
-      # Source env.sh
-      USER_HOME=$(eval "realpath ~$USER")
-      . ${USER_HOME}/install-pegasus/pegasus/env.sh
+      if [[ "${INSTALL_CONDOR}" == \"true\" ]]; then
+        # Source env.sh
+        USER_HOME=$(eval "realpath ~$USER")
+        . ${USER_HOME}/install-pegasus/pegasus/env.sh
 
-      # Set PYTHONPATH so import Pegasus works
-      export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
-
-      # Workflow Example
-      mkdir workflow
-      cd workflow
+        # Set PYTHONPATH so import Pegasus works
+        export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
+      fi
   script:
     - |
-      cp ${CI_PROJECT_DIR}/workflows/pegasus-simple.py ./workflow.py
+      cd ${CI_PROJECT_DIR}/workflows/
       set -e
-      python3 workflow.py
+      python3 pegasus-simple.py
       sleep 5
       pegasus-status -w5 -l submit
     - |
@@ -53,7 +51,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple:
     when: always
     access: developer
     paths:
-      - workflow
+      - workflows/submit
     reports:
       dotenv: .env
   allow_failure: true

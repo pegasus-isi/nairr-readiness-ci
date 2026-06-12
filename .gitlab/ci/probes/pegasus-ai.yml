@@ -35,12 +35,14 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]:
   before_script:
     - $[[ inputs.pre_script ]]
     - |
-      # Source env.sh
-      USER_HOME=$(eval "realpath ~$USER")
-      . ${USER_HOME}/install-pegasus/pegasus/env.sh
+      if [[ "${INSTALL_CONDOR}" == \"true\" ]]; then
+        # Source env.sh
+        USER_HOME=$(eval "realpath ~$USER")
+        . ${USER_HOME}/install-pegasus/pegasus/env.sh
 
-      # Set PYTHONPATH so import Pegasus works
-      export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
+        # Set PYTHONPATH so import Pegasus works
+        export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
+      fi
   script:
     - |
       cd ${CI_PROJECT_DIR}/workflows/crophealth
@@ -67,7 +69,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]:
     when: always
     access: developer
     paths:
-      - workflows/crophealth
+      - workflows/crophealth/submit
     reports:
       dotenv: .env
   allow_failure: true
