@@ -1,5 +1,8 @@
 variables:
+  # GIT_STRATEGY: clone
   GIT_CLEAN_FLAGS: -ffdx
+  RUNNER_AFTER_SCRIPT_TIMEOUT: 2m
+  RUNNER_SCRIPT_TIMEOUT: -2m
 
 default:
   before_script:

@@ -65,6 +65,17 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]:
   after_script:
     - printf '$[[ inputs.job_name_prefix ]]_PEGASUS_$[[ inputs.workflow_generator ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
     - printf '$[[ inputs.job_name_prefix ]]_PEGASUS_$[[ inputs.workflow_generator ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
+    - $[[ inputs.pre_script ]]
+    - |
+      if [[ "${INSTALL_CONDOR}" == "true" ]]; then
+        # Source env.sh
+        USER_HOME=$(eval "realpath ~$USER")
+        . ${USER_HOME}/install-pegasus/pegasus/env.sh
+
+        # Set PYTHONPATH so import Pegasus works
+        export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
+      fi
+    - pegasus-remove ${CI_PROJECT_DIR}/workflows/crophealth/submit
   artifacts:
     when: always
     access: developer

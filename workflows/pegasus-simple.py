@@ -41,7 +41,7 @@ task_a = Transformation(
     "task-a",
     site="condorpool",
     pfn=Path(shutil.which("pegasus-keg")).resolve(),
-    is_stageable=False,
+    is_stageable=True,
     arch=Arch.X86_64,
     os_type=OS.LINUX,
 )
