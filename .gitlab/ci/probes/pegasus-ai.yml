@@ -35,7 +35,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]:
   before_script:
     - $[[ inputs.pre_script ]]
     - |
-      if [[ "${INSTALL_CONDOR}" == \"true\" ]]; then
+      if [[ "${INSTALL_CONDOR}" == "true" ]]; then
         # Source env.sh
         USER_HOME=$(eval "realpath ~$USER")
         . ${USER_HOME}/install-pegasus/pegasus/env.sh
