@@ -181,10 +181,14 @@ class CropHealthWorkflow:
             )
         else:
             preprocess_images.add_pegasus_profile(
-                gpus="1", glite_arguments=f"--mem={self.MEM}", container_arguments="--no-mount bind-paths"
+                gpus="1",
+                glite_arguments=f"--mem={self.MEM}",
+                container_arguments="--no-mount bind-paths --bind /etc/resolv.conf",
             )
             train_classifier.add_pegasus_profile(
-                gpus="1", glite_arguments=f"--mem={self.MEM}", container_arguments="--no-mount bind-paths"
+                gpus="1",
+                glite_arguments=f"--mem={self.MEM}",
+                container_arguments="--no-mount bind-paths --bind /etc/resolv.conf",
             )
 
         self.tc.add_containers(crophealth_container)

@@ -161,7 +161,7 @@ class CropHealthWorkflow:
             classify_disease.add_pegasus_profile(
                 gpus="1",
                 glite_arguments=f"--mem={self.MEM}",
-                container_arguments="--no-mount bind-paths",
+                container_arguments="--no-mount bind-paths --bind /etc/resolv.conf",
             )
 
         self.tc.add_containers(crophealth_container)
