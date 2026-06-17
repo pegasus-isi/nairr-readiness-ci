@@ -85,6 +85,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple-status:
     - STATUS="${!VAR_NAME}"
     - |
       if [[ "$STATUS" == "canceled" ]]; then
+        echo "Job canceled, exiting..."
         exit 0
       fi
 

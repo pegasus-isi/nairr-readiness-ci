@@ -63,6 +63,5 @@ $[[ inputs.job_name_prefix ]]-ssh-job:
       mysql -u${NAIRR_DB_USER} -h${NAIRR_DB_HOST} ${NAIRR_DB_NAME} \
         -e "INSERT INTO readiness_results (resource_id, version, uid, etag, probe_id, probe_status, probe_timestamp, extra, created_at, created_by, updated_at, updated_by) \
             VALUES($[[ inputs.resource_id ]], '0.0.0', UUID(), UUID(), $[[ inputs.probe_id ]], '${CI_JOB_STATUS}', NOW(), '${EXTRA}', NOW(), 'mayani', NOW(), 'mayani');"
-    - echo "MySQL Insert Status: $?"
   tags:
     - docker
