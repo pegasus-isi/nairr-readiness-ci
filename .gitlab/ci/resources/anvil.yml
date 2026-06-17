@@ -33,7 +33,7 @@ include:
     inputs:
       job_name_prefix: ANVIL
       pre_script: module load openjdk/11.0.8_10
-      resource_id: 3
+      resource_id: 1
       slurm_cpu_partition: shared
       slurm_gpu_partition: gpu
       workflow_generator: training
@@ -41,7 +41,7 @@ include:
     inputs:
       job_name_prefix: ANVIL
       pre_script: module load openjdk/11.0.8_10
-      resource_id: 3
+      resource_id: 1
       probe_id: 4
       slurm_cpu_partition: shared
       slurm_gpu_partition: gpu

@@ -38,7 +38,7 @@ include:
     inputs:
       job_name_prefix: EXPANSE
       pegasus_lite_env_source: module load singularitypro
-      resource_id: 3
+      resource_id: 2
       slurm_cpu_partition: shared
       slurm_gpu_partition: gpu-shared
       workflow_generator: training
@@ -46,7 +46,7 @@ include:
     inputs:
       job_name_prefix: EXPANSE
       pegasus_lite_env_source: module load singularitypro
-      resource_id: 3
+      resource_id: 2
       probe_id: 4
       slurm_cpu_partition: shared
       slurm_gpu_partition: gpu-shared
