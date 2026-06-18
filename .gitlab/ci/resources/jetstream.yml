@@ -26,12 +26,16 @@ include:
       probe_id: 2
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
-      job_name_prefix: STAMPEDE3
+      job_name_prefix: ACCESS
       resource_id: 6
+      slurm_cpu_partition: not-used
+      slurm_gpu_partition: not-used
       workflow_generator: training
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
-      job_name_prefix: STAMPEDE3
+      job_name_prefix: ACCESS
       resource_id: 6
       probe_id: 4
+      slurm_cpu_partition: not-used
+      slurm_gpu_partition: not-used
       workflow_generator: inference
