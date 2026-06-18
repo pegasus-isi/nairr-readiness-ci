@@ -1,16 +1,12 @@
 variables:
   # GIT_STRATEGY: clone
   GIT_CLEAN_FLAGS: -ffdx
+  RUNNER_SCRIPT_TIMEOUT: 1h58m
   RUNNER_AFTER_SCRIPT_TIMEOUT: 2m
-  RUNNER_SCRIPT_TIMEOUT: -2m
 
 default:
   before_script:
     - env
-
-# .retry-and-timeout: &retry-and-timeout
-#   retry: 1
-#   timeout: 15 minutes
 
 stages:
   - unit
@@ -24,4 +20,4 @@ include:
   - local: .gitlab/ci/resources/delta.yml
   # - local: .gitlab/ci/resources/delta-ai.yml
   - local: .gitlab/ci/resources/jetstream.yml
-  # - local: .gitlab/ci/resources/stampede3.yml
+  - local: .gitlab/ci/resources/stampede3.yml
