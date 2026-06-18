@@ -46,7 +46,7 @@ class CropHealthWorkflow:
     def plan_submit(self):
         """Plan and submit the workflow."""
         try:
-            self.wf.plan(submit=True, relative_dir="submit")
+            self.wf.plan(submit=True, relative_dir="submit", sites=["compute"])
         except PegasusClientError as e:
             print(e)
 
@@ -76,7 +76,7 @@ class CropHealthWorkflow:
         self.props = Properties()
         self.props["pegasus.mode"] = "development"
 
-    def create_sites_catalog(self, exec_site_name="condorpool"):
+    def create_sites_catalog(self, exec_site_name="compute"):
         """Create site catalog."""
         self.sc = SiteCatalog()
 
@@ -96,43 +96,48 @@ class CropHealthWorkflow:
                 pegasus_lite_env_source=os.path.abspath("pegasus_lite_env_source")
             )
 
+        self.sc.add_sites(local)
+
         local_scratch_var = os.environ["SITE_LOCAL_SCRATCH_VAR"]
         local_scratch = os.environ[local_scratch_var]
-        exec_site = (
-            Site(exec_site_name)
-            .add_directories(
-                Directory(
-                    Directory.SHARED_SCRATCH,
-                    self.shared_scratch_dir,
-                    shared_file_system=True,
-                ).add_file_servers(
-                    FileServer("file://" + self.shared_scratch_dir, Operation.ALL)
-                ),
-                Directory(Directory.LOCAL_SCRATCH, local_scratch).add_file_servers(
-                    FileServer("file://" + local_scratch, Operation.ALL)
-                ),
+        if os.environ.get("RESOURCE") == "ACCESS":
+            self.props["pegasus.catalog.site.repo.file"] = "access-pegasus.yml"
+        else:
+            exec_site = (
+                Site(exec_site_name)
+                .add_directories(
+                    Directory(
+                        Directory.SHARED_SCRATCH,
+                        self.shared_scratch_dir,
+                        shared_file_system=True,
+                    ).add_file_servers(
+                        FileServer("file://" + self.shared_scratch_dir, Operation.ALL)
+                    ),
+                    Directory(Directory.LOCAL_SCRATCH, local_scratch).add_file_servers(
+                        FileServer("file://" + local_scratch, Operation.ALL)
+                    ),
+                )
+                .add_condor_profile(grid_resource="batch slurm")
+                .add_pegasus_profile(
+                    style="glite",
+                    queue=os.environ["SLURM_CPU_PARTITION"],
+                    project=os.environ["SLURM_ACCOUNT"],
+                    data_configuration="nonsharedfs",
+                    auxillary_local="true",
+                    runtime=3600,
+                )
             )
-            .add_condor_profile(grid_resource="batch slurm")
-            .add_pegasus_profile(
-                style="glite",
-                queue=os.environ["SLURM_CPU_PARTITION"],
-                project=os.environ["SLURM_ACCOUNT"],
-                data_configuration="nonsharedfs",
-                auxillary_local="true",
-                runtime=3600,
-            )
-        )
 
-        if os.environ.get("RESOURCE") == "EXPANSE":
-            exec_site.add_pegasus_profile(nodes=1, cores=1)
+            if os.environ.get("RESOURCE") == "EXPANSE":
+                exec_site.add_pegasus_profile(nodes=1, cores=1)
 
-        self.sc.add_sites(local, exec_site)
+            self.sc.add_sites(exec_site)
 
     def create_replica_catalog(self):
         """Create replica catalog for input files."""
         self.rc = ReplicaCatalog()
 
-    def create_transformation_catalog(self, exec_site_name="condorpool"):
+    def create_transformation_catalog(self, exec_site_name="compute"):
         """Create transformation catalog with executables and containers."""
         self.tc = TransformationCatalog()
 
@@ -226,13 +231,13 @@ dagfile = "workflow.yml"
 workflow = CropHealthWorkflow(dagfile=dagfile)
 
 print("Creating execution sites...")
-workflow.create_sites_catalog("condorpool")
+workflow.create_sites_catalog("compute")
 
 print("Creating workflow properties...")
 workflow.create_pegasus_properties()
 
 print("Creating transformation catalog...")
-workflow.create_transformation_catalog("condorpool")
+workflow.create_transformation_catalog("compute")
 
 print("Creating replica catalog...")
 workflow.create_replica_catalog()

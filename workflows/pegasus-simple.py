@@ -24,14 +24,14 @@ local = Site("local").add_directories(
     ),
 )
 
-condorpool_amd = (
-    Site("condorpool", arch=Arch.X86_64)
+compute_amd = (
+    Site("compute", arch=Arch.X86_64)
     .add_pegasus_profile(style="condor")
     .add_pegasus_profile(auxillary_local="true")
     .add_condor_profile(universe="vanilla")
 )
 
-sc.add_sites(local, condorpool_amd)
+sc.add_sites(local, compute_amd)
 
 sc.write()
 
@@ -39,7 +39,7 @@ sc.write()
 
 task_a = Transformation(
     "task-a",
-    site="condorpool",
+    site="compute",
     pfn=Path(shutil.which("pegasus-keg")).resolve(),
     is_stageable=True,
     arch=Arch.X86_64,
@@ -58,4 +58,4 @@ task_a.add_outputs(result_a)
 
 wf.add_jobs(task_a)
 
-wf.write("workflow.yml").plan(sites=["condorpool"], relative_dir="submit", submit=True)
+wf.write("workflow.yml").plan(sites=["compute"], relative_dir="submit", submit=True)
