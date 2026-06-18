@@ -129,7 +129,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
         echo \"Quitting GitLab Runner inside screen session...\"
         screen -X -S \"$[[ inputs.job_name_prefix ]]-gitlab-runner\" quit || true
         echo \"Killing GitLab Runner inside screen session...\"
-        pkill -KILL -u \"\$USER\" -f '\''gitlab-runner run'\'' || true
+        pkill -KILL -u \"\$USER\" -f \"gitlab-runner\" || true
       else
         scancel --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" || true
       fi
