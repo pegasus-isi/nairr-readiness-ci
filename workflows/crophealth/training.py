@@ -35,6 +35,7 @@ class CropHealthWorkflow:
 
     def __init__(self, dagfile="workflow.yml"):
         """Initialize workflow."""
+        self.props = Properties()
         self.dagfile = dagfile
         self.wf_dir = str(Path(".").resolve())
         self.shared_scratch_dir = os.path.join(self.wf_dir, "scratch")
@@ -82,7 +83,6 @@ class CropHealthWorkflow:
 
     def create_pegasus_properties(self):
         """Create Pegasus properties configuration."""
-        self.props = Properties()
         self.props["pegasus.mode"] = "development"
 
     def create_sites_catalog(self, exec_site_name="compute"):
