@@ -53,6 +53,7 @@ $[[ inputs.job_name_prefix ]]-ssh-job:
       eval "${PREFIX} ${SSH_CMD} true"
   after_script:
     - |
+      echo "Status: $CI_JOB_STATUS"
       if [[ "$CI_JOB_STATUS" == "canceled" ]]; then
         echo "Job canceled, exiting..."
         exit 0

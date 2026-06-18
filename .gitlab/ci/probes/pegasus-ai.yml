@@ -101,6 +101,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]-status:
     - JOB_ID="${!VAR_NAME}"
     - VAR_NAME="$[[ inputs.job_name_prefix ]]_PEGASUS_$[[ inputs.workflow_generator ]]_STATUS"
     - STATUS="${!VAR_NAME}"
+    - echo "Status: $STATUS"
     - |
       if [[ "$STATUS" == "canceled" ]]; then
         exit 0
