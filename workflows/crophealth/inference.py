@@ -98,11 +98,11 @@ class CropHealthWorkflow:
 
         self.sc.add_sites(local)
 
-        local_scratch_var = os.environ["SITE_LOCAL_SCRATCH_VAR"]
-        local_scratch = os.environ[local_scratch_var]
         if os.environ.get("RESOURCE") == "ACCESS":
             self.props["pegasus.catalog.site.repo.file"] = "access-pegasus.yml"
         else:
+            local_scratch_var = os.environ["SITE_LOCAL_SCRATCH_VAR"]
+            local_scratch = os.environ[local_scratch_var]
             exec_site = (
                 Site(exec_site_name)
                 .add_directories(

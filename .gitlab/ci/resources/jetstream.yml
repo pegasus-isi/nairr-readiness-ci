@@ -24,3 +24,14 @@ include:
       job_name_prefix: ACCESS
       resource_id: 6
       probe_id: 2
+  - local: .gitlab/ci/probes/pegasus-ai.yml
+    inputs:
+      job_name_prefix: STAMPEDE3
+      resource_id: 6
+      workflow_generator: training
+  - local: .gitlab/ci/probes/pegasus-ai.yml
+    inputs:
+      job_name_prefix: STAMPEDE3
+      resource_id: 6
+      probe_id: 4
+      workflow_generator: inference
