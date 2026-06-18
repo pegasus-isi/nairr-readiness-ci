@@ -29,8 +29,7 @@ import pandas as pd
 from PIL import Image
 
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -57,8 +56,8 @@ def resize_image(image_path: str, target_size: Tuple[int, int]) -> np.ndarray:
         img = Image.open(image_path)
 
         # Convert to RGB if needed
-        if img.mode != 'RGB':
-            img = img.convert('RGB')
+        if img.mode != "RGB":
+            img = img.convert("RGB")
 
         # Resize with antialiasing
         img = img.resize(target_size, Image.LANCZOS)
@@ -130,7 +129,7 @@ def preprocess_dataset(
     output_dir: str,
     image_size: int = 224,
     train_split: float = 0.8,
-    augment: bool = True
+    augment: bool = True,
 ) -> Dict:
     """
     Preprocess entire dataset.
@@ -149,7 +148,7 @@ def preprocess_dataset(
     output_path.mkdir(parents=True, exist_ok=True)
 
     # Create label mapping
-    label_to_idx, idx_to_label = create_label_mapping(catalog['category'].tolist())
+    label_to_idx, idx_to_label = create_label_mapping(catalog["category"].tolist())
 
     # Shuffle and split
     catalog_shuffled = catalog.sample(frac=1, random_state=42).reset_index(drop=True)
@@ -167,29 +166,29 @@ def preprocess_dataset(
     val_labels = []
 
     stats = {
-        'processed': 0,
-        'failed': 0,
-        'train_samples': 0,
-        'val_samples': 0,
+        "processed": 0,
+        "failed": 0,
+        "train_samples": 0,
+        "val_samples": 0,
     }
 
     # Process training set
     for idx, row in train_df.iterrows():
-        img_path = row['image_path']
-        category = row['category']
+        img_path = row["image_path"]
+        category = row["category"]
 
         # Check if file exists (skip sample placeholders)
         if not Path(img_path).exists():
-            if row.get('is_sample', False):
+            if row.get("is_sample", False):
                 # Create dummy data for sample mode
                 img = np.random.rand(image_size, image_size, 3).astype(np.float32)
             else:
-                stats['failed'] += 1
+                stats["failed"] += 1
                 continue
         else:
             img = resize_image(img_path, (image_size, image_size))
             if img is None:
-                stats['failed'] += 1
+                stats["failed"] += 1
                 continue
             img = normalize_image(img)
 
@@ -200,37 +199,37 @@ def preprocess_dataset(
             for aug_img in augmented:
                 train_images.append(aug_img)
                 train_labels.append(label)
-                stats['train_samples'] += 1
+                stats["train_samples"] += 1
         else:
             train_images.append(img)
             train_labels.append(label)
-            stats['train_samples'] += 1
+            stats["train_samples"] += 1
 
-        stats['processed'] += 1
+        stats["processed"] += 1
 
     # Process validation set (no augmentation)
     for idx, row in val_df.iterrows():
-        img_path = row['image_path']
-        category = row['category']
+        img_path = row["image_path"]
+        category = row["category"]
 
         if not Path(img_path).exists():
-            if row.get('is_sample', False):
+            if row.get("is_sample", False):
                 img = np.random.rand(image_size, image_size, 3).astype(np.float32)
             else:
-                stats['failed'] += 1
+                stats["failed"] += 1
                 continue
         else:
             img = resize_image(img_path, (image_size, image_size))
             if img is None:
-                stats['failed'] += 1
+                stats["failed"] += 1
                 continue
             img = normalize_image(img)
 
         label = label_to_idx[category]
         val_images.append(img)
         val_labels.append(label)
-        stats['val_samples'] += 1
-        stats['processed'] += 1
+        stats["val_samples"] += 1
+        stats["processed"] += 1
 
     # Convert to numpy arrays
     if train_images:
@@ -248,38 +247,34 @@ def preprocess_dataset(
         val_y = np.array([])
 
     # Save preprocessed data
-    np.savez_compressed(
-        output_path / 'train_data.npz',
-        images=train_X,
-        labels=train_y
-    )
+    np.savez_compressed(output_path / "train_data.npz", images=train_X, labels=train_y)
 
-    np.savez_compressed(
-        output_path / 'val_data.npz',
-        images=val_X,
-        labels=val_y
-    )
+    np.savez_compressed(output_path / "val_data.npz", images=val_X, labels=val_y)
 
     # Save label mapping
-    with open(output_path / 'label_mapping.json', 'w') as f:
-        json.dump({
-            'label_to_idx': label_to_idx,
-            'idx_to_label': {str(k): v for k, v in idx_to_label.items()},
-            'num_classes': len(label_to_idx),
-        }, f, indent=2)
+    with open(output_path / "label_mapping.json", "w") as f:
+        json.dump(
+            {
+                "label_to_idx": label_to_idx,
+                "idx_to_label": {str(k): v for k, v in idx_to_label.items()},
+                "num_classes": len(label_to_idx),
+            },
+            f,
+            indent=2,
+        )
 
     # Save preprocessing info
     preprocessing_info = {
-        'image_size': image_size,
-        'train_split': train_split,
-        'augmentation': augment,
-        'normalization': 'imagenet',
-        'stats': stats,
-        'train_shape': list(train_X.shape) if len(train_X) > 0 else [],
-        'val_shape': list(val_X.shape) if len(val_X) > 0 else [],
+        "image_size": image_size,
+        "train_split": train_split,
+        "augmentation": augment,
+        "normalization": "imagenet",
+        "stats": stats,
+        "train_shape": list(train_X.shape) if len(train_X) > 0 else [],
+        "val_shape": list(val_X.shape) if len(val_X) > 0 else [],
     }
 
-    with open(output_path / 'preprocessing_info.json', 'w') as f:
+    with open(output_path / "preprocessing_info.json", "w") as f:
         json.dump(preprocessing_info, f, indent=2)
 
     logger.info(f"Preprocessing complete:")
@@ -297,44 +292,34 @@ def main():
     )
 
     parser.add_argument(
-        '--input', '-i',
+        "--input", "-i", type=str, required=True, help="Input catalog CSV file"
+    )
+
+    parser.add_argument(
+        "--output-dir",
+        "-o",
         type=str,
         required=True,
-        help='Input catalog CSV file'
+        help="Output directory for preprocessed data",
     )
 
     parser.add_argument(
-        '--output-dir', '-o',
-        type=str,
-        required=True,
-        help='Output directory for preprocessed data'
+        "--image-size", type=int, default=224, help="Target image size (square)"
     )
 
     parser.add_argument(
-        '--image-size',
-        type=int,
-        default=224,
-        help='Target image size (square)'
+        "--split", type=float, default=0.8, help="Training set fraction (0-1)"
     )
 
     parser.add_argument(
-        '--split',
-        type=float,
-        default=0.8,
-        help='Training set fraction (0-1)'
+        "--no-augment", action="store_true", help="Disable data augmentation"
     )
 
     parser.add_argument(
-        '--no-augment',
-        action='store_true',
-        help='Disable data augmentation'
-    )
-
-    parser.add_argument(
-        '--images-archive',
+        "--images-archive",
         type=str,
         default=None,
-        help='Optional tar.gz archive containing images directory'
+        help="Optional tar.gz archive containing images directory",
     )
 
     args = parser.parse_args()
@@ -353,7 +338,7 @@ def main():
         args.output_dir,
         image_size=args.image_size,
         train_split=args.split,
-        augment=not args.no_augment
+        augment=not args.no_augment,
     )
 
 

@@ -23,8 +23,7 @@ from typing import Dict, List, Tuple
 import numpy as np
 
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -34,6 +33,7 @@ try:
     import torch.nn as nn
     import torch.optim as optim
     from torch.utils.data import DataLoader, TensorDataset
+
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False
@@ -42,6 +42,7 @@ except ImportError:
 try:
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.metrics import accuracy_score, classification_report
+
     SKLEARN_AVAILABLE = True
 except ImportError:
     SKLEARN_AVAILABLE = False
@@ -59,19 +60,16 @@ class SimpleCNN(nn.Module):
             nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(2, 2),
-
             # Block 2
             nn.Conv2d(32, 64, kernel_size=3, padding=1),
             nn.BatchNorm2d(64),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(2, 2),
-
             # Block 3
             nn.Conv2d(64, 128, kernel_size=3, padding=1),
             nn.BatchNorm2d(128),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(2, 2),
-
             # Block 4
             nn.Conv2d(128, 256, kernel_size=3, padding=1),
             nn.BatchNorm2d(256),
@@ -93,20 +91,22 @@ class SimpleCNN(nn.Module):
         return x
 
 
-def load_preprocessed_data(input_dir: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, Dict]:
+def load_preprocessed_data(
+    input_dir: str,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, Dict]:
     """Load preprocessed training and validation data."""
     input_path = Path(input_dir)
 
-    train_data = np.load(input_path / 'train_data.npz')
-    val_data = np.load(input_path / 'val_data.npz')
+    train_data = np.load(input_path / "train_data.npz")
+    val_data = np.load(input_path / "val_data.npz")
 
-    with open(input_path / 'label_mapping.json', 'r') as f:
+    with open(input_path / "label_mapping.json", "r") as f:
         label_mapping = json.load(f)
 
-    train_X = train_data['images']
-    train_y = train_data['labels']
-    val_X = val_data['images']
-    val_y = val_data['labels']
+    train_X = train_data["images"]
+    train_y = train_data["labels"]
+    val_X = val_data["images"]
+    val_y = val_data["labels"]
 
     logger.info(f"Loaded train: {train_X.shape}, val: {val_X.shape}")
     logger.info(f"Classes: {label_mapping['num_classes']}")
@@ -123,7 +123,7 @@ def train_pytorch_model(
     epochs: int = 20,
     batch_size: int = 32,
     learning_rate: float = 0.001,
-    device: str = 'auto'
+    device: str = "auto",
 ) -> Tuple[nn.Module, Dict]:
     """
     Train PyTorch CNN model.
@@ -132,8 +132,8 @@ def train_pytorch_model(
         Trained model and training history
     """
     # Determine device
-    if device == 'auto':
-        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    if device == "auto":
+        device = "cuda" if torch.cuda.is_available() else "cpu"
     logger.info(f"Using device: {device}")
 
     # Convert to PyTorch tensors (channels first: NCHW)
@@ -156,14 +156,14 @@ def train_pytorch_model(
     # Loss and optimizer
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=3)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, "min", patience=3)
 
     # Training history
     history = {
-        'train_loss': [],
-        'train_acc': [],
-        'val_loss': [],
-        'val_acc': [],
+        "train_loss": [],
+        "train_acc": [],
+        "val_loss": [],
+        "val_acc": [],
     }
 
     best_val_acc = 0
@@ -220,19 +220,21 @@ def train_pytorch_model(
         scheduler.step(val_loss)
 
         # Save history
-        history['train_loss'].append(train_loss)
-        history['train_acc'].append(train_acc)
-        history['val_loss'].append(val_loss)
-        history['val_acc'].append(val_acc)
+        history["train_loss"].append(train_loss)
+        history["train_acc"].append(train_acc)
+        history["val_loss"].append(val_loss)
+        history["val_acc"].append(val_acc)
 
         # Save best model
         if val_acc > best_val_acc:
             best_val_acc = val_acc
             best_model_state = model.state_dict().copy()
 
-        logger.info(f"Epoch {epoch+1}/{epochs}: "
-                   f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, "
-                   f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}")
+        logger.info(
+            f"Epoch {epoch + 1}/{epochs}: "
+            f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, "
+            f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}"
+        )
 
     # Load best model
     if best_model_state:
@@ -261,10 +263,7 @@ def train_sklearn_model(
 
     # Train model
     model = RandomForestClassifier(
-        n_estimators=100,
-        max_depth=20,
-        n_jobs=-1,
-        random_state=42
+        n_estimators=100, max_depth=20, n_jobs=-1, random_state=42
     )
     model.fit(train_X_flat, train_y)
 
@@ -279,123 +278,119 @@ def train_sklearn_model(
     logger.info(f"Validation Accuracy: {val_acc:.4f}")
 
     history = {
-        'train_acc': [train_acc],
-        'val_acc': [val_acc],
-        'model_type': 'RandomForest',
+        "train_acc": [train_acc],
+        "val_acc": [val_acc],
+        "model_type": "RandomForest",
     }
 
     return model, history
 
 
-def save_model(model, history: Dict, label_mapping: Dict, output_dir: str, use_pytorch: bool):
+def save_model(
+    model, history: Dict, label_mapping: Dict, output_dir: str, use_pytorch: bool
+):
     """Save trained model and training info."""
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
     if use_pytorch and TORCH_AVAILABLE:
         # Save PyTorch model
-        torch.save({
-            'model_state_dict': model.state_dict(),
-            'num_classes': label_mapping['num_classes'],
-        }, output_path / 'disease_classifier.pt')
+        torch.save(
+            {
+                "model_state_dict": model.state_dict(),
+                "num_classes": label_mapping["num_classes"],
+            },
+            output_path / "disease_classifier.pt",
+        )
     else:
         # Save sklearn model with joblib
         import joblib
-        joblib.dump(model, output_path / 'disease_classifier.joblib')
+
+        joblib.dump(model, output_path / "disease_classifier.joblib")
 
     # Save training info
     training_info = {
-        'trained_at': datetime.now().isoformat(),
-        'framework': 'pytorch' if (use_pytorch and TORCH_AVAILABLE) else 'sklearn',
-        'num_classes': label_mapping['num_classes'],
-        'label_mapping': label_mapping,
-        'history': history,
-        'final_train_acc': history['train_acc'][-1] if history['train_acc'] else 0,
-        'final_val_acc': history['val_acc'][-1] if history['val_acc'] else 0,
+        "trained_at": datetime.now().isoformat(),
+        "framework": "pytorch" if (use_pytorch and TORCH_AVAILABLE) else "sklearn",
+        "num_classes": label_mapping["num_classes"],
+        "label_mapping": label_mapping,
+        "history": history,
+        "final_train_acc": history["train_acc"][-1] if history["train_acc"] else 0,
+        "final_val_acc": history["val_acc"][-1] if history["val_acc"] else 0,
     }
 
-    with open(output_path / 'training_info.json', 'w') as f:
+    with open(output_path / "training_info.json", "w") as f:
         json.dump(training_info, f, indent=2)
 
     logger.info(f"Model saved to {output_dir}")
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Train crop disease classifier"
-    )
+    parser = argparse.ArgumentParser(description="Train crop disease classifier")
 
     parser.add_argument(
-        '--input-dir', '-i',
+        "--input-dir",
+        "-i",
         type=str,
         required=True,
-        help='Directory with preprocessed data'
+        help="Directory with preprocessed data",
     )
 
     parser.add_argument(
-        '--output-dir', '-o',
+        "--output-dir", "-o", type=str, required=True, help="Output directory for model"
+    )
+
+    parser.add_argument(
+        "--epochs", type=int, default=20, help="Number of training epochs"
+    )
+
+    parser.add_argument(
+        "--batch-size", type=int, default=32, help="Training batch size"
+    )
+
+    parser.add_argument(
+        "--learning-rate", type=float, default=0.001, help="Learning rate"
+    )
+
+    parser.add_argument(
+        "--device",
         type=str,
-        required=True,
-        help='Output directory for model'
+        default="auto",
+        choices=["auto", "cpu", "cuda"],
+        help="Device for training",
     )
 
     parser.add_argument(
-        '--epochs',
-        type=int,
-        default=20,
-        help='Number of training epochs'
-    )
-
-    parser.add_argument(
-        '--batch-size',
-        type=int,
-        default=32,
-        help='Training batch size'
-    )
-
-    parser.add_argument(
-        '--learning-rate',
-        type=float,
-        default=0.001,
-        help='Learning rate'
-    )
-
-    parser.add_argument(
-        '--device',
-        type=str,
-        default='auto',
-        choices=['auto', 'cpu', 'cuda'],
-        help='Device for training'
-    )
-
-    parser.add_argument(
-        '--use-sklearn',
-        action='store_true',
-        help='Use sklearn instead of PyTorch'
+        "--use-sklearn", action="store_true", help="Use sklearn instead of PyTorch"
     )
 
     args = parser.parse_args()
 
     # Load data
-    train_X, train_y, val_X, val_y, label_mapping = load_preprocessed_data(args.input_dir)
+    train_X, train_y, val_X, val_y, label_mapping = load_preprocessed_data(
+        args.input_dir
+    )
 
     if len(train_X) == 0:
         logger.error("No training data available")
         sys.exit(1)
 
-    num_classes = label_mapping['num_classes']
+    num_classes = label_mapping["num_classes"]
 
     # Train model
     use_pytorch = TORCH_AVAILABLE and not args.use_sklearn
 
     if use_pytorch:
         model, history = train_pytorch_model(
-            train_X, train_y, val_X, val_y,
+            train_X,
+            train_y,
+            val_X,
+            val_y,
             num_classes=num_classes,
             epochs=args.epochs,
             batch_size=args.batch_size,
             learning_rate=args.learning_rate,
-            device=args.device
+            device=args.device,
         )
     elif SKLEARN_AVAILABLE:
         model, history = train_sklearn_model(train_X, train_y, val_X, val_y)

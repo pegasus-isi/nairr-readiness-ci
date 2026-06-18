@@ -184,6 +184,13 @@ class CropHealthWorkflow:
                 glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}",
                 container_arguments="--nv --no-mount bind-paths",
             )
+        elif os.environ.get("RESOURCE") == "ACCESS":
+            preprocess_images.add_pegasus_profile(
+                queue=os.environ["SLURM_GPU_PARTITION"], memory=f"{self.MEM}B"
+            )
+            train_classifier.add_pegasus_profile(
+                queue=os.environ["SLURM_GPU_PARTITION"], memory=f"{self.MEM}B"
+            )
         else:
             preprocess_images.add_pegasus_profile(
                 gpus="1",
