@@ -31,10 +31,10 @@ include:
       pre_script: module load python/3.9.18
       site_shared_scratch: \${SCRATCH}
       site_local_scratch_var: TMPDIR
-  - local: .gitlab/ci/probes/pegasus-simple.yml
-    inputs:
-      job_name_prefix: STAMPEDE3
-      resource_id: 7
+  # - local: .gitlab/ci/probes/pegasus-simple.yml
+  #   inputs:
+  #     job_name_prefix: STAMPEDE3
+  #     resource_id: 7
   # - local: .gitlab/ci/probes/pegasus-ai.yml
   #   inputs:
   #     job_name_prefix: STAMPEDE3
