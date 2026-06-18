@@ -128,8 +128,8 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       if [[ \"$[[ inputs.run_on_login_node ]]\" == \"true\" ]]; then
         echo \"Quitting GitLab Runner inside screen session...\"
         screen -X -S \"$[[ inputs.job_name_prefix ]]-gitlab-runner\" quit || true
-        echo \"Killing GitLab Runner: pkill -KILL -u \$USER -f 'gitlab-runner run'\"
-        pkill -KILL -u \"\$USER\" -f 'gitlab-runner run' || true
+        echo \"Killing GitLab Runner: pkill -KILL -u \$USER -f '\''gitlab-runner run'\''\"
+        pkill -KILL -u \"\$USER\" -f '\''gitlab-runner run'\'' || true
       else
         scancel --name=\"$[[ inputs.job_name_prefix ]]-gitlab-runner\" || true
       fi
