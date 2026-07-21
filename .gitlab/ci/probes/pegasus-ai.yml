@@ -107,10 +107,15 @@ $[[ inputs.job_name_prefix ]]-pegasus-$[[ inputs.workflow_generator ]]-status:
         exit 0
       fi
 
+      if [[ -z "$STATUS" ]]; then
+        STATUS="timeout"
+      fi
+
+      PROBE_LOG=$(curl --location --header "JOB-TOKEN: $GITLAB_JOB_LOG_TOKEN" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/jobs/${JOB_ID}/trace")
       export MYSQL_PWD="${NAIRR_DB_PASS}"
       EXTRA="{\"pipeline_url\": \"${CI_PIPELINE_URL}\", \"job_id\": \"${JOB_ID}\"}"
       mysql -u${NAIRR_DB_USER} -h${NAIRR_DB_HOST} ${NAIRR_DB_NAME} \
-        -e "INSERT INTO readiness_results (resource_id, version, uid, etag, probe_id, probe_status, probe_timestamp, extra, created_at, created_by, updated_at, updated_by) \
-            VALUES($[[ inputs.resource_id ]], '0.0.0', UUID(), UUID(), $[[ inputs.probe_id ]], '${STATUS}', UTC_TIMESTAMP(), '${EXTRA}', UTC_TIMESTAMP(), 'mayani', UTC_TIMESTAMP(), 'mayani');"
+        -e "INSERT INTO readiness_results (resource_id, version, uid, etag, probe_id, probe_status, probe_log, probe_timestamp, extra, created_at, created_by, updated_at, updated_by) \
+            VALUES($[[ inputs.resource_id ]], '0.0.0', UUID(), UUID(), $[[ inputs.probe_id ]], '${STATUS}', '${PROBE_LOG}', UTC_TIMESTAMP(), '${EXTRA}', UTC_TIMESTAMP(), 'mayani', UTC_TIMESTAMP(), 'mayani');"
   tags:
     - docker

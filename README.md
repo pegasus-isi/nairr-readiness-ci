@@ -49,6 +49,7 @@ NAIRR_DB_PASS                   true       true    true    false     *      NAIR
 NAIRR_DB_NAME                   true       false   false   false     *      NAIRR MySQL database name
 
 GITLAB_URL                      false      false   false   false     *      GitLab URL
+GITLAB_JOB_LOG_TOKEN            true       true    true    false     *      GitLab token to read job log
 
 ANVIL_SSH_USER                  true       false   false   false     *      Anvil SSH user
 ANVIL_SSH_KEY_FILE              true       false   false   false     *      Anvil user's private key file
