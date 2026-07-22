@@ -30,7 +30,7 @@
 #### Create GitLab Variables
 
 > [!NOTE]
-> glab -R pegasus/nairr-readiness-ci variable list
+> glab -R pegasus-isi/nairr-readiness-ci variable list
 
 KEY                           PROTECTED  MASKED  HIDDEN  EXPANDED  SCOPE  DESCRIPTION
 
