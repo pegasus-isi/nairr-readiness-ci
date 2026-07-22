@@ -28,7 +28,7 @@ $[[ inputs.job_name_prefix ]]-ssh-job:
     - job: $[[ inputs.job_name_prefix ]]-ssh-cmd
       artifacts: true
   before_script:
-    - dnf -y install openssh-clients mysql
+    - dnf -y install openssh-clients mysql vim-common
     - |
       if [[ "$[[ inputs.ssh_mfa_type ]]" == "totp" ]]; then
         dnf -y install sshpass python3-pip
