@@ -89,14 +89,12 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple-status:
         echo "Job canceled, exiting..."
         exit 0
       fi
-    - |
+
       if [[ -z "$STATUS" ]]; then
         STATUS="timeout"
       fi
 
-    - PROBE_LOG=$(curl --location --header "PRIVATE-TOKEN: $GITLAB_JOB_LOG_TOKEN" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/jobs/${JOB_ID}/trace")
-
-    - |
+      PROBE_LOG=$(curl --location --header "PRIVATE-TOKEN: $GITLAB_JOB_LOG_TOKEN" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/jobs/${JOB_ID}/trace")
       export MYSQL_PWD="${NAIRR_DB_PASS}"
       EXTRA="{\"pipeline_url\": \"${CI_PIPELINE_URL}\", \"job_id\": \"${JOB_ID}\"}"
       mysql -u${NAIRR_DB_USER} -h${NAIRR_DB_HOST} ${NAIRR_DB_NAME} \
