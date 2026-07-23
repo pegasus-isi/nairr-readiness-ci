@@ -10,6 +10,7 @@ spec:
     probe_id:
       description: Test ID recorded in the database
       type: number
+      default: 5
     pre_script:
       description: Pre-script to run before Pegasus
       default: ""

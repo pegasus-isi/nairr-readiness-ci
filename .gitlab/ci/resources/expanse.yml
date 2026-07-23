@@ -51,3 +51,17 @@ include:
       slurm_cpu_partition: shared
       slurm_gpu_partition: gpu-shared
       workflow_generator: inference
+  - local: .gitlab/ci/probes/job-submit.yml
+    inputs:
+      job_name_prefix: STAMPEDE3
+      job_name: job_submit
+      resource_id: 2
+      slurm_partition: shared
+      slurm_account: TG-STA230005
+  - local: .gitlab/ci/probes/file-download.yml
+    inputs:
+      job_name_prefix: STAMPEDE3
+      job_name: file_download
+      resource_id: 2
+      slurm_partition: shared
+      slurm_account: TG-STA230005

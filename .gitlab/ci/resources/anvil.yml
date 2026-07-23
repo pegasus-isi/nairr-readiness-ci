@@ -46,3 +46,18 @@ include:
       slurm_cpu_partition: shared
       slurm_gpu_partition: gpu
       workflow_generator: inference
+  - local: .gitlab/ci/probes/job-submit.yml
+    inputs:
+      job_name_prefix: STAMPEDE3
+      job_name: job_submit
+      resource_id: 7
+      slurm_partition: shared
+      slurm_account: sta230005
+  - local: .gitlab/ci/probes/file-download.yml
+    inputs:
+      job_name_prefix: STAMPEDE3
+      job_name: file_download
+      resource_id: 7
+      pre_script: module load openjdk/11.0.8_10
+      slurm_partition: shared
+      slurm_account: sta230005
