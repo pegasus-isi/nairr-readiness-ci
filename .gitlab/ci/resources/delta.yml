@@ -47,14 +47,14 @@ include:
   #     workflow_generator: inference
   - local: .gitlab/ci/probes/job-submit.yml
     inputs:
-      job_name_prefix: STAMPEDE3
+      job_name_prefix: DELTA
       job_name: job_submit
       resource_id: 4
       slurm_partition: cpu
       slurm_account: bfof-delta-cpu
   - local: .gitlab/ci/probes/file-download.yml
     inputs:
-      job_name_prefix: STAMPEDE3
+      job_name_prefix: DELTA
       job_name: file_download
       resource_id: 4
       slurm_partition: cpu
