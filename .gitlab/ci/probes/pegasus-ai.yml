@@ -63,8 +63,8 @@ $[[ inputs.job_name_prefix ]]-pegasus_$[[ inputs.workflow_generator ]]:
         exit 1
       fi
   after_script:
-    - printf '$[[ inputs.job_name_prefix ]]_PEGASUS_$[[ inputs.workflow_generator ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
-    - printf '$[[ inputs.job_name_prefix ]]_PEGASUS_$[[ inputs.workflow_generator ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
+    - printf '$[[ inputs.job_name_prefix ]]_pegasus_$[[ inputs.workflow_generator ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
+    - printf '$[[ inputs.job_name_prefix ]]_pegasus_$[[ inputs.workflow_generator ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
     - $[[ inputs.pre_script ]]
     - |
       if [[ "${INSTALL_CONDOR}" == "true" ]]; then

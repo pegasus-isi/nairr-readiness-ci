@@ -48,8 +48,8 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
         exit 1
       fi
   after_script:
-    - printf '$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
-    - printf '$[[ inputs.job_name_prefix ]]_PEGASUS_SIMPLE_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
+    - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
+    - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
     - $[[ inputs.pre_script ]]
     - |
       if [[ "${INSTALL_CONDOR}" == "true" ]]; then

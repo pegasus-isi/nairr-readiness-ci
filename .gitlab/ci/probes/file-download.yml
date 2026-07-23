@@ -40,10 +40,10 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
       set -e
       cat > $[[ inputs.job_name ]].job <<EOF
       #!/bin/bash
-      #SBATCH --job-name="\"$[[ inputs.job_name ]]\""
-      #SBATCH --partition="\"$[[ inputs.slurm_partition ]]\""
-      #SBATCH --time="\"$[[ inputs.slurm_time ]]\""
-      #SBATCH --account="\"$[[ inputs.slurm_account ]]\""
+      #SBATCH --job-name="$[[ inputs.job_name ]]"
+      #SBATCH --partition="$[[ inputs.slurm_partition ]]"
+      #SBATCH --time="$[[ inputs.slurm_time ]]"
+      #SBATCH --account="$[[ inputs.slurm_account ]]"
       #SBATCH --nodes="1"
       #SBATCH --ntasks="1"
 
@@ -66,9 +66,9 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
       EOF
     - sbatch $[[ inputs.slurm_extra_opts ]] --output job.log --wait $[[ inputs.job_name ]].job
   after_script:
-    - cat job.log
     - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
     - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
+    - cat job.log
   artifacts:
     when: always
     access: developer
