@@ -90,7 +90,7 @@ $[[ inputs.job_name_prefix ]]-pegasus-simple-status:
         exit 0
       fi
 
-      if [[ -z "$STATUS" ]]; then
+      if [[ -z "$STATUS" || "$STATUS" == "timedout" ]]; then
         STATUS="timeout"
       fi
 
