@@ -31,6 +31,24 @@ include:
       pre_script: module load python/3.9.18
       site_shared_scratch: \${SCRATCH}
       site_local_scratch_var: TMPDIR
+  - local: .gitlab/ci/probes/job-submit.yml
+    inputs:
+      job_name_prefix: STAMPEDE3
+      job_name: job_submit
+      resource_id: 7
+      probe_id: 5
+      slurm_partition: icx
+      slurm_account: TG-STA230005
+  - local: .gitlab/ci/probes/file-download.yml
+    inputs:
+      job_name_prefix: STAMPEDE3
+      job_name: file_download
+      resource_id: 7
+      probe_id: 6
+      # TACC has Python 3.12 on the login node, but Python 3.9 on the compute node
+      pre_script: module load python/3.9.18
+      slurm_partition: icx
+      slurm_account: TG-STA230005
   # - local: .gitlab/ci/probes/pegasus-simple.yml
   #   inputs:
   #     job_name_prefix: STAMPEDE3

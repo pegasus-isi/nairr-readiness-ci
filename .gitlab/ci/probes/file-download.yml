@@ -1,0 +1,88 @@
+spec:
+  inputs:
+    job_name_prefix:
+      description: Must match the job_name_prefix used in the ssh component
+    job_name:
+      description: CI job name
+    resource_id:
+      description: Resource ID recorded in the database
+      type: number
+    probe_id:
+      description: Test ID recorded in the database
+      type: number
+    pre_script:
+      description: Pre-script to run before Pegasus
+      default: ""
+    slurm_partition:
+      description: SLURM partition
+      default: ""
+    slurm_account:
+      description: SLURM account
+      default: ""
+    slurm_time:
+      description: SLURM job runtime
+      default: "00:00:15"
+    slurm_extra_opts:
+      description: SLURM extra options
+      default: ""
+
+---
+
+$[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
+  stage: e2e
+  needs:
+    - job: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
+  before_script:
+    - $[[ inputs.pre_script ]]
+  script:
+    - |
+      set -e
+      cat > $[[ inputs.job_name ]].job <<EOF
+      #!/bin/bash
+      #SBATCH --job-name="\"$[[ inputs.job_name ]]\""
+      #SBATCH --partition="\"$[[ inputs.slurm_partition ]]\""
+      #SBATCH --time="\"$[[ inputs.slurm_time ]]\""
+      #SBATCH --account="\"$[[ inputs.slurm_account ]]\""
+      #SBATCH --nodes="1"
+      #SBATCH --ntasks="1"
+
+      set -e
+
+      if [[ \"$[[ inputs.install_condor ]]\" == \"true\" ]]; then
+        # Source env.sh
+        . ~/install-pegasus/pegasus/env.sh
+      fi
+
+      pegasus-transfer <<EOT
+      [
+        { "type": "transfer",
+          "id": 1,
+          "src_urls": [ { "site_label": "web", "url": "http://pegasus.isi.edu" } ],
+          "dest_urls": [ { "site_label": "local", "url": "file:///tmp/index.html" } ]
+        }
+      ]
+      EOT
+      EOF
+    - sbatch $[[ inputs.slurm_extra_opts ]] --output job.log --wait $[[ inputs.job_name ]].job
+  after_script:
+    - cat job.log
+    - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
+    - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
+  artifacts:
+    when: always
+    access: developer
+    paths:
+      - job.log
+    reports:
+      dotenv: .env
+  allow_failure: true
+  tags:
+    - $[[ inputs.job_name_prefix ]]
+
+include:
+  - local: .gitlab/ci/components/update-status.yml
+    inputs:
+      job_name_prefix: $[[ inputs.job_name_prefix ]]
+      job_name: $[[ inputs.job_name ]]
+      resource_id: $[[ inputs.resource_id ]]
+      probe_id: $[[ inputs.probe_id ]]
