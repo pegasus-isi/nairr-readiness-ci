@@ -39,3 +39,13 @@ include:
       slurm_cpu_partition: not-used
       slurm_gpu_partition: not-used
       workflow_generator: inference
+  - local: .gitlab/ci/probes/job-submit-htcondor.yml
+    inputs:
+      job_name_prefix: ACCESS
+      job_name: job_submit
+      resource_id: 6
+  # - local: .gitlab/ci/probes/file-download-htcondor.yml
+  #   inputs:
+  #     job_name_prefix: ACCESS
+  #     job_name: file_download
+  #     resource_id: 6

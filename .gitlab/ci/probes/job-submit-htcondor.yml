@@ -1,0 +1,64 @@
+spec:
+  inputs:
+    job_name_prefix:
+      description: Must match the job_name_prefix used in the ssh component
+    job_name:
+      description: CI job name
+    resource_id:
+      description: Resource ID recorded in the database
+      type: number
+    probe_id:
+      description: Test ID recorded in the database
+      type: number
+      default: 5
+    pre_script:
+      description: Pre-script to run before Pegasus
+      default: ""
+
+---
+
+$[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
+  stage: e2e
+  needs:
+    - job: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
+  before_script:
+    - $[[ inputs.pre_script ]]
+  script:
+    - |
+      set -e
+      cat > $[[ inputs.job_name ]].job <<EOF
+      universe = vanilla
+      executable = hostname
+
+      output = job.log
+
+      queue
+      EOF
+    - CLUSTER=`condor_submit -terse $[[ inputs.job_name ]].job`
+    - |
+      until condor_history "$CLUSTER" -af ExitCode 2>/dev/null | grep -qE '^[0-9]+$'; do
+        sleep 2
+      done
+    - exit `condor_history "$CLUSTER" -af ExitCode`
+  after_script:
+    - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
+    - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
+    - cat job.log
+  artifacts:
+    when: always
+    access: developer
+    paths:
+      - job.log
+    reports:
+      dotenv: .env
+  allow_failure: true
+  tags:
+    - $[[ inputs.job_name_prefix ]]
+
+include:
+  - local: .gitlab/ci/components/update-status.yml
+    inputs:
+      job_name_prefix: $[[ inputs.job_name_prefix ]]
+      job_name: $[[ inputs.job_name ]]
+      resource_id: $[[ inputs.resource_id ]]
+      probe_id: $[[ inputs.probe_id ]]
