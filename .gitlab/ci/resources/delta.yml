@@ -22,7 +22,7 @@ include:
       gitlab_runner_token: ${DELTA_GITLAB_RUNNER_TOKEN}
       slurm_partition: cpu
       slurm_account: bfof-delta-cpu
-      slurm_time: "03:00:00"
+      slurm_time: "04:00:00"
       site_shared_scratch: /scratch/bfof/mayani
       site_local_scratch_var: TMPDIR
 

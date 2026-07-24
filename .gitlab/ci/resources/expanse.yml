@@ -27,7 +27,7 @@ include:
       gitlab_runner_token: ${EXPANSE_GITLAB_RUNNER_TOKEN}
       slurm_partition: shared
       slurm_account: TG-STA230005
-      slurm_time: "03:00:00"
+      slurm_time: "04:00:00"
       site_shared_scratch: /expanse/lustre/scratch/mayani/temp_project
       site_local_scratch_var: TMPDIR
   - local: .gitlab/ci/probes/pegasus-simple.yml
