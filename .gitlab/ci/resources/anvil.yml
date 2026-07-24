@@ -50,14 +50,14 @@ include:
     inputs:
       job_name_prefix: ANVIL
       job_name: job_submit
-      resource_id: 7
+      resource_id: 1
       slurm_partition: shared
       slurm_account: sta230005
   - local: .gitlab/ci/probes/file-download.yml
     inputs:
       job_name_prefix: ANVIL
       job_name: file_download
-      resource_id: 7
+      resource_id: 1
       pre_script: module load openjdk/11.0.8_10
       slurm_partition: shared
       slurm_account: sta230005
