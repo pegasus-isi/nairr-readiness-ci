@@ -183,5 +183,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
     - docker
   artifacts:
     access: developer
+    paths:
+      - experiment.yml
     reports:
       dotenv: .env
