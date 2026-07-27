@@ -54,7 +54,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       curl -L --output .gitlab-runner/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-$[[ inputs.gitlab_runner_arch ]]
       chmod +x .gitlab-runner/gitlab-runner
 
-      mkdir install-pegasus
+      mkdir install-pegasus .gitlab-runner
       pushd install-pegasus
 
       # Get Pegasus
@@ -71,7 +71,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       cat > .gitlab-runner/config.toml <<EOT
       concurrent = 3
       check_interval = 0
-      connection_max_age = \"15m0s\"
+      connection_max_age = "15m0s"
       shutdown_timeout = 0
 
       [session_server]
@@ -180,6 +180,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
     - sed -i '425i \        print(errors)' /usr/local/lib/python3.9/site-packages/kiso/task.py
     - kiso --debug up --force
     - kiso ssh submit -- true
+    - kiso --debug run --force
   tags:
     - docker
   artifacts:
