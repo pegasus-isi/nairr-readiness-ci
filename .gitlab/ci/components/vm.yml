@@ -166,7 +166,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
           inputs:
             - labels:
                 - submit
-              src:
+              src: gitlab-runner.job
               dst: gitlab-runner.job
           scripts:
             - labels:
