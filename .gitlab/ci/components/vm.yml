@@ -48,7 +48,8 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
     - |
       cat > gitlab-runner.job <<EOF
       #!/bin/bash
-      sudo dnf -y install python3
+      sudo apt update
+      sudo DEBIAN_FRONTEND=noninteractive apt install -y curl python3 python3-pip
 
       curl -L --output .gitlab-runner/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-$[[ inputs.gitlab_runner_arch ]]
       chmod +x .gitlab-runner/gitlab-runner
@@ -126,7 +127,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
               - labels:
                   - submit
                 site: FIU
-                image: default_rocky_9
+                image: default_ubuntu_24
                 flavour_desc:
                   core: 8
                   mem: 32
