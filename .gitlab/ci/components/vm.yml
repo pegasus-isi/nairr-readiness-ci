@@ -177,7 +177,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
                 ./gitlab-runner.job
       EOF
 
-    - sed -i '425i \        print(errors)' task.py
+    - sed -i '425i \        print(errors)' /usr/local/lib/python3.9/site-packages/kiso/task.py
     - kiso --debug up --force
     - kiso ssh submit -- true
   tags:
