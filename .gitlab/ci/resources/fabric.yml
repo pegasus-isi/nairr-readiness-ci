@@ -1,18 +1,7 @@
 include:
-  - local: .gitlab/ci/components/ssh.yml
+  - local: .gitlab/ci/components/vm.yml
     inputs:
-      job_name_prefix: ACCESS
-      ssh_host: pegasus.access-ci.org
-      ssh_user: $ACCESS_SSH_USER
-      ssh_key_file: $ACCESS_SSH_KEY_FILE
-  - local: .gitlab/ci/probes/ssh.yml
-    inputs:
-      job_name_prefix: ACCESS
-      resource_id: 6
-
-  - local: .gitlab/ci/components/runner.yml
-    inputs:
-      job_name_prefix: ACCESS
+      job_name_prefix: FABRIC
       gitlab_url: ${GITLAB_URL}
       gitlab_runner_id: ${ACCESS_GITLAB_RUNNER_ID}
       gitlab_runner_uid: ${ACCESS_GITLAB_RUNNER_UID}
@@ -21,30 +10,30 @@ include:
       install_condor: false
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
-      job_name_prefix: ACCESS
-      resource_id: 6
+      job_name_prefix: FABRIC
+      resource_id: 10
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
-      job_name_prefix: ACCESS
-      resource_id: 6
+      job_name_prefix: FABRIC
+      resource_id: 10
       slurm_cpu_partition: not-used
       slurm_gpu_partition: not-used
       workflow_generator: training
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
-      job_name_prefix: ACCESS
-      resource_id: 6
+      job_name_prefix: FABRIC
+      resource_id: 10
       probe_id: 4
       slurm_cpu_partition: not-used
       slurm_gpu_partition: not-used
       workflow_generator: inference
   - local: .gitlab/ci/probes/job-submit-htcondor.yml
     inputs:
-      job_name_prefix: ACCESS
+      job_name_prefix: FABRIC
       job_name: job_submit
-      resource_id: 6
+      resource_id: 10
   # - local: .gitlab/ci/probes/file-download-htcondor.yml
   #   inputs:
-  #     job_name_prefix: ACCESS
+  #     job_name_prefix: FABRIC
   #     job_name: file_download
-  #     resource_id: 6
+  #     resource_id: 10

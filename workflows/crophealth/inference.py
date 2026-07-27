@@ -162,6 +162,8 @@ class CropHealthWorkflow:
                 glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}",
                 container_arguments="--nv --no-mount bind-paths",
             )
+        elif os.environ.get("RESOURCE") == "ACCESS":
+            classify_disease.add_pegasus_profile(memory=f"{self.MEM}B")
         else:
             classify_disease.add_pegasus_profile(
                 gpus="1",

@@ -54,7 +54,7 @@ GITLAB_JOB_LOG_TOKEN            true       true    true    false     *      GitL
 ANVIL_SSH_USER                  true       false   false   false     *      Anvil SSH user
 ANVIL_SSH_KEY_FILE              true       false   false   false     *      Anvil user's private key file
 ANVIL_GITLAB_RUNNER_CONFIG      false      false   false   true      *      Anvil GitLab runner config.toml
-ANVIL_GITLAB_RUNNER_TOKEN       true       false   false   false     *      Anvil GitLab runner token
+ANVIL_GITLAB_RUNNER_TOKEN       true       true    true    false     *      Anvil GitLab runner token
 ANVIL_GITLAB_RUNNER_ID          false      false   false   false     *      Anvil GitLab runner integer identifier
 ANVIL_GITLAB_RUNNER_UID         false      false   false   false     *      Anvil GitLab runner unique identifier
 
@@ -64,6 +64,11 @@ BRIDGES_GITLAB_RUNNER_CONFIG    false      false   false   true      *      Brid
 BRIDGES_GITLAB_RUNNER_TOKEN     true       true    true    false     *      Bridges GitLab runner token
 BRIDGES_GITLAB_RUNNER_ID        false      false   false   false     *      Bridges GitLab runner integer identifier
 BRIDGES_GITLAB_RUNNER_UID       false      false   false   false     *      Bridges GitLab runner unique identifier
+
+CHAMELEON_GITLAB_RUNNER_CONFIG  false      false   false   true      *      Chameleon Cloud GitLab runner config.toml
+CHAMELEON_GITLAB_RUNNER_TOKEN   true       true    true    false     *      Chameleon Cloud GitLab runner token
+CHAMELEON_GITLAB_RUNNER_ID      false      false   false   false     *      Chameleon Cloud GitLab runner integer identifier
+CHAMELEON_GITLAB_RUNNER_UID     false      false   false   false     *      Chameleon Cloud GitLab runner unique identifier
 
 DELTA_GITLAB_RUNNER_TOKEN       true       true    true    false     *      Delta GitLab runner token
 DELTA_GITLAB_RUNNER_ID          false      false   false   false     *      Delta GitLab runner integer identifier
@@ -80,6 +85,11 @@ EXPANSE_GITLAB_RUNNER_CONFIG    false      false   false   true      *      Expa
 EXPANSE_GITLAB_RUNNER_TOKEN     true       true    true    false     *      Expanse GitLab runner token
 EXPANSE_GITLAB_RUNNER_ID        false      false   false   false     *      Expanse GitLab runner integer identifier
 EXPANSE_GITLAB_RUNNER_UID       false      false   false   false     *      Expanse GitLab runner unique identifier
+
+FABRIC_GITLAB_RUNNER_CONFIG     false      false   false   true      *      FABRIC GitLab runner config.toml
+FABRIC_GITLAB_RUNNER_TOKEN      true       true    true    false     *      FABRIC GitLab runner token
+FABRIC_GITLAB_RUNNER_ID         false      false   false   false     *      FABRIC GitLab runner integer identifier
+FABRIC_GITLAB_RUNNER_UID        false      false   false   false     *      FABRIC GitLab runner unique identifier
 
 STAMPEDE3_SSH_USER              true       false   false   false     *      Stampede 3 SSH user
 STAMPEDE3_SSH_MFA_SHARED_SECRET true       true    true    false     *      Stampede 3 user's MFA shared secret

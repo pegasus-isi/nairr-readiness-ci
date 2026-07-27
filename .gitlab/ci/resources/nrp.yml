@@ -8,7 +8,7 @@ include:
   - local: .gitlab/ci/probes/ssh.yml
     inputs:
       job_name_prefix: ACCESS
-      resource_id: 6
+      resource_id: 9
 
   - local: .gitlab/ci/components/runner.yml
     inputs:
@@ -22,18 +22,18 @@ include:
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: ACCESS
-      resource_id: 6
+      resource_id: 9
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: ACCESS
-      resource_id: 6
+      resource_id: 9
       slurm_cpu_partition: not-used
       slurm_gpu_partition: not-used
       workflow_generator: training
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: ACCESS
-      resource_id: 6
+      resource_id: 9
       probe_id: 4
       slurm_cpu_partition: not-used
       slurm_gpu_partition: not-used
@@ -42,9 +42,9 @@ include:
     inputs:
       job_name_prefix: ACCESS
       job_name: job_submit
-      resource_id: 6
+      resource_id: 9
   # - local: .gitlab/ci/probes/file-download-htcondor.yml
   #   inputs:
   #     job_name_prefix: ACCESS
   #     job_name: file_download
-  #     resource_id: 6
+  #     resource_id: 9

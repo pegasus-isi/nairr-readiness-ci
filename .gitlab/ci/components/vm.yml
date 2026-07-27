@@ -1,0 +1,187 @@
+spec:
+  inputs:
+    job_name_prefix:
+      description: Prefix for the CI job name and dotenv variable (must be unique per pipeline)
+      default: glab
+    gitlab_url:
+      description: GitLab URL
+    gitlab_runner_arch:
+      description: GitLab Runner architecture
+      default: amd64
+    gitlab_runner_id:
+      description: GitLab Runner ID
+    gitlab_runner_uid:
+      description: GitLab Runner UID
+    gitlab_runner_token:
+      description: GitLab Runner Token
+    install_condor:
+      description: Install Condor
+      type: boolean
+      default: true
+    site_shared_scratch:
+      description: Shared Scratch
+      default: ""
+    site_local_scratch_var:
+      description: Local Scratch variable
+      default: ""
+
+---
+
+$[[ inputs.job_name_prefix ]]-gitlab-runner-run:
+  stage: unit
+  image: rockylinux:9
+  before_script:
+    - sudo dnf -y install python3 python3-pip
+    - pip install kiso[chameleon,fabric]
+
+    - chmod 600 "${CHAMELEON_TACC_RC}" "${FABRIC_BASTION_PRIVATE_KEY}" "${FABRIC_SLIVER_PRIVATE_KEY}" "${CHAMELEON_PRIVATE_KEY}"
+
+    - eval $(ssh-agent -s)
+    - echo "$SSH_AGENT_PID" > /tmp/ssh-agent-pid-${CI_JOB_ID}
+    - ssh-add "${FABRIC_BASTION_PRIVATE_KEY}" "${FABRIC_SLIVER_PRIVATE_KEY}" "${CHAMELEON_PRIVATE_KEY}"
+
+    - mkdir -p secrets
+    - cp "${FABRIC_RC}" secrets/fabric_rc
+    - cp "${FABRIC_BASTION_PUBLIC_KEY}" "${FABRIC_BASTION_PRIVATE_KEY}.pub"
+    - cp "${CHAMELEON_TACC_RC}" secrets/tacc-app-cred-oac-edge-openrc.sh
+  script:
+    - |
+      cat > gitlab-runner.job <<EOF
+      #!/bin/bash
+      sudo dnf -y install python3
+
+      curl -L --output .gitlab-runner/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-$[[ inputs.gitlab_runner_arch ]]
+      chmod +x .gitlab-runner/gitlab-runner
+
+      mkdir install-pegasus
+      pushd install-pegasus
+
+      # Get Pegasus
+      curl -s https://raw.githubusercontent.com/pegasus-isi/get-pegasus/refs/heads/main/get_pegasus | python3 - --target pegasus
+
+      # Install Python dependencies
+      mkdir python-deps
+      if python3 -V | grep -q '3\.6'; then
+        python3 -m pip install -t python-deps dataclasses pyyaml gitpython
+      fi
+      python3 -m pip install -t python-deps pyyaml gitpython
+      popd
+
+      cat > .gitlab-runner/config.toml <<EOT
+      concurrent = 3
+      check_interval = 0
+      connection_max_age = \"15m0s\"
+      shutdown_timeout = 0
+
+      [session_server]
+        session_timeout = 1800
+
+      [[runners]]
+        name = "$[[ inputs.job_name_prefix ]]"
+        url = "$[[ inputs.gitlab_url ]]"
+        id = $[[ inputs.gitlab_runner_id ]]
+        token = "$[[ inputs.gitlab_runner_token ]]"
+        # token_obtained_at = 2026-04-17T20:13:04Z
+        # token_expires_at = 0001-01-01T00:00:00Z
+        executor = "shell"
+        environment = [
+          "RESOURCE=$[[ inputs.job_name_prefix ]]",
+          "INSTALL_CONDOR=$[[ inputs.install_condor ]]",
+          "SLURM_ACCOUNT=$[[ inputs.slurm_account ]]",
+          "SITE_SHARED_SCRATCH=$[[ inputs.site_shared_scratch ]]",
+          "SITE_LOCAL_SCRATCH_VAR=$[[ inputs.site_local_scratch_var ]]",
+        ]
+        [runners.cache]
+          MaxUploadedArchiveSize = 0
+          [runners.cache.s3]
+            AssumeRoleMaxConcurrency = 0
+          [runners.cache.gcs]
+          [runners.cache.azure]
+      EOT
+
+      cat > .gitlab-runner/.runner_system_id <<EOT
+      $[[ inputs.gitlab_runner_uid ]]
+
+      screen -dmS "$[[ inputs.job_name_prefix ]]-gitlab-runner" .gitlab-runner/gitlab-runner run
+      EOT
+      EOF
+
+    - |
+      cat > experiment.yml <<EOF
+      name: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
+      software:
+        docker:
+          labels:
+            - submit
+        apptainer:
+          labels:
+            - submit
+      sites:
+        $(if [ "$[[ inputs.job_name_prefix ]]" == "FABRIC" ]; then
+        echo '- kind: fabric
+          rc_file: secrets/fabric_rc
+          walltime: "06:00:00"
+          name_prefix: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
+          resources:
+            machines:
+              - labels:
+                  - submit
+                site: FIU
+                image: default_rocky_9
+                flavour_desc:
+                  core: 8
+                  mem: 32
+                  disk: 100
+                number: 1
+                gpus:
+                  - model: TeslaT4
+            networks:
+              - labels:
+                  - v4
+                kind: FABNetv4
+                site: FIU
+                nic:
+                  kind: SharedNIC
+                  model: ConnectX-6'
+        fi)
+        $(if [ "$[[ inputs.job_name_prefix ]]" == "CHAMELEON" ]; then
+        echo '- kind: chameleon
+          walltime: "06:00:00"
+          lease_name: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
+          rc_file: secrets/tacc-app-cred-oac-edge-openrc.sh
+          key_name: mayani-mac-mini
+          image: CC-Ubuntu24.04
+          resources:
+            machines:
+              - labels:
+                  - submit
+                flavour: compute_skylake
+                number: 1
+            networks:
+              - sharednet1'
+        fi)
+      experiments:
+        - kind: shell
+          name: shell-experiment
+          description: An experiment to print a message
+          inputs:
+            - labels:
+                - submit
+              src:
+              dst: gitlab-runner.job
+          scripts:
+            - labels:
+                - submit
+              script: |
+                #!/bin/bash
+                ./gitlab-runner.job
+      EOF
+
+    - kiso --debug up --force
+    - kiso ssh submit -- true
+  tags:
+    - docker
+  artifacts:
+    access: developer
+    reports:
+      dotenv: .env
