@@ -109,6 +109,14 @@ class CropHealthWorkflow:
 
         if os.environ.get("RESOURCE") == "ACCESS":
             self.props["pegasus.catalog.site.repo.file"] = "access-pegasus.yml"
+        elif os.environ.get("RESOURCE") in ("CHAMELEON", "FABRIC"):
+            exec_site = (
+                Site("compute", arch=Arch.X86_64)
+                .add_pegasus_profile(style="condor")
+                .add_pegasus_profile(auxillary_local="true")
+                .add_condor_profile(universe="vanilla")
+            )
+            self.sc.add_sites(exec_site)
         else:
             local_scratch_var = os.environ["SITE_LOCAL_SCRATCH_VAR"]
             local_scratch = os.environ[local_scratch_var]
