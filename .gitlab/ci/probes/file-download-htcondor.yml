@@ -25,24 +25,10 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
     - $[[ inputs.pre_script ]]
   script:
     - |
-      set -e
-
-      $[[ inputs.pre_script ]]
-
-      cat > $[[ inputs.job_name ]].in <<EOT
-      [
-        { "type": "transfer",
-          "id": 1,
-          "src_urls": [ { "site_label": "web", "url": "http://pegasus.isi.edu" } ],
-          "dest_urls": [ { "site_label": "local", "url": "file:///tmp/index.html" } ]
-        }
-      ]
-      EOT
-    - |
       cat > $[[ inputs.job_name ]].job <<EOF
       universe = vanilla
-      executable = `which pegasus-transfer`
-      input = $[[ inputs.job_name ]].in
+      executable = `which wget`
+      arguments = -nv --no-cookies --no-check-certificate --timeout=300 --tries=1 -O '/tmp/index.html' 'http://pegasus.isi.edu'
       error = job.log
 
       queue
