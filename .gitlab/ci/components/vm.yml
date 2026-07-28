@@ -49,8 +49,9 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       cat > gitlab-runner.job <<EOF
       #!/bin/bash
       sudo apt update
-      sudo DEBIAN_FRONTEND=noninteractive apt install -y curl python3 python3-pip
+      sudo DEBIAN_FRONTEND=noninteractive apt install -y curl openjdk-21-jdk python3 python3-pip
 
+      cd ~
       mkdir -p ~/install-pegasus ~/.gitlab-runner
 
       curl -L --output ~/.gitlab-runner/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-$[[ inputs.gitlab_runner_arch ]]
