@@ -25,6 +25,13 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
     - $[[ inputs.pre_script ]]
   script:
     - |
+      # Source env.sh
+      USER_HOME=$(eval "realpath ~$USER")
+      . ${USER_HOME}/install-pegasus/pegasus/env.sh
+
+      # Set PYTHONPATH so import Pegasus works
+      export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
+    - |
       set -e
       cat > $[[ inputs.job_name ]].job <<EOF
       universe = vanilla
