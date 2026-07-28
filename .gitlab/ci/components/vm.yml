@@ -31,7 +31,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
   stage: unit
   image: rockylinux:9
   before_script:
-    - dnf -y install gcc openssh-clients python3 python-devel python3-pip
+    - dnf -y install gcc openssh-clients rsync python3 python-devel python3-pip
     - pip install kiso[chameleon,fabric]
 
     - chmod 600 "${CHAMELEON_TACC_RC}" "${FABRIC_BASTION_PRIVATE_KEY}" "${FABRIC_SLIVER_PRIVATE_KEY}" "${CHAMELEON_PRIVATE_KEY}"
