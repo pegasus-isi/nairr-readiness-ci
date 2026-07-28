@@ -51,11 +51,12 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       sudo apt update
       sudo DEBIAN_FRONTEND=noninteractive apt install -y curl python3 python3-pip
 
-      curl -L --output .gitlab-runner/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-$[[ inputs.gitlab_runner_arch ]]
-      chmod +x .gitlab-runner/gitlab-runner
+      mkdir -p ~/install-pegasus ~/.gitlab-runner
 
-      mkdir install-pegasus .gitlab-runner
-      pushd install-pegasus
+      curl -L --output ~/.gitlab-runner/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-$[[ inputs.gitlab_runner_arch ]]
+      chmod +x ~/.gitlab-runner/gitlab-runner
+
+      pushd ~/install-pegasus
 
       # Get Pegasus
       curl -s https://raw.githubusercontent.com/pegasus-isi/get-pegasus/refs/heads/main/get_pegasus | python3 - --target pegasus
@@ -68,7 +69,13 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       python3 -m pip install -t python-deps pyyaml gitpython
       popd
 
-      cat > .gitlab-runner/config.toml <<EOT
+      # Source env.sh
+      . ~/install-pegasus/pegasus/env.sh
+
+      condor_master
+      sleep 5
+
+      cat > ~/.gitlab-runner/config.toml <<EOT
       concurrent = 3
       check_interval = 0
       connection_max_age = "15m0s"
@@ -99,11 +106,11 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
           [runners.cache.azure]
       EOT
 
-      cat > .gitlab-runner/.runner_system_id <<EOT
+      cat > ~/.gitlab-runner/.runner_system_id <<EOT
       $[[ inputs.gitlab_runner_uid ]]
-
-      screen -dmS "$[[ inputs.job_name_prefix ]]-gitlab-runner" .gitlab-runner/gitlab-runner run
       EOT
+
+      screen -dmS "$[[ inputs.job_name_prefix ]]-gitlab-runner" ~/.gitlab-runner/gitlab-runner run
       EOF
 
     - |
@@ -174,7 +181,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
                 - submit
               script: |
                 #!/bin/bash
-                ./gitlab-runner.job
+                bash -e ./gitlab-runner.job
       EOF
 
     - sed -i '425i \        print(errors)' /usr/local/lib/python3.9/site-packages/kiso/task.py
