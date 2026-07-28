@@ -189,7 +189,10 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
     # Old rsync version treat ~kiso as \~kiso, i.e., as a literal and is not resolved to /home/kiso/
     - sed --in-place -e 's/f"rsync /f"rsync --old-args /' /usr/local/lib/python3.9/site-packages/kiso/task.py
     - kiso --debug up --force
-    - kiso ssh submit -- true
+    - kiso ssh kiso@submit -- true
+    # Install Nvidia drivers
+    - kiso ssh kiso@submit -- 'sudo apt install -y nvidia-headless-535-server nvidia-utils-535-server ; sudo systemctl reboot'
+    - until kiso ssh kiso@submit -- nvidia-smi; do sleep 5; done
     - kiso --debug run --force
   tags:
     - docker
