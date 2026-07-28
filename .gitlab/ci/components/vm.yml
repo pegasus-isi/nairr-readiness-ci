@@ -163,7 +163,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
             machines:
               - labels:
                   - submit
-                flavour: compute_skylake
+                flavour: gpu_p100
                 number: 1
             networks:
               - sharednet1'
