@@ -3,10 +3,9 @@ include:
     inputs:
       job_name_prefix: CHAMELEON
       gitlab_url: ${GITLAB_URL}
-      gitlab_runner_id: ${ACCESS_GITLAB_RUNNER_ID}
-      gitlab_runner_uid: ${ACCESS_GITLAB_RUNNER_UID}
-      gitlab_runner_token: ${ACCESS_GITLAB_RUNNER_TOKEN}
-      install_condor: false
+      gitlab_runner_id: ${CHAMELEON_GITLAB_RUNNER_ID}
+      gitlab_runner_uid: ${CHAMELEON_GITLAB_RUNNER_UID}
+      gitlab_runner_token: ${CHAMELEON_GITLAB_RUNNER_TOKEN}
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: CHAMELEON
