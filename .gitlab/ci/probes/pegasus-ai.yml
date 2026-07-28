@@ -19,6 +19,12 @@ spec:
       description: SLURM CPU partition
     slurm_gpu_partition:
       description: SLURM GPU partition
+    htcondor_requirements:
+      description: HTCondor requirements value
+      default: ""
+    htcondor_project:
+      description: HTCondor project name
+      default: ""
     workflow_generator:
       description: Workflow generator script
       default: training
@@ -33,6 +39,8 @@ $[[ inputs.job_name_prefix ]]-pegasus_$[[ inputs.workflow_generator ]]:
     RESOURCE: $[[ inputs.job_name_prefix ]]
     SLURM_CPU_PARTITION: $[[ inputs.slurm_cpu_partition ]]
     SLURM_GPU_PARTITION: $[[ inputs.slurm_gpu_partition ]]
+    HTCONDOR_REQUIREMENTS: $[[ inputs.htcondor_requirements ]]
+    HTCONDOR_PROJECT: $[[ inputs.htcondor_project ]]
   before_script:
     - $[[ inputs.pre_script ]]
     - |
