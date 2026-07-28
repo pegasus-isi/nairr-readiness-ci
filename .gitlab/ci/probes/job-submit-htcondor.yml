@@ -28,8 +28,8 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
       set -e
       cat > $[[ inputs.job_name ]].job <<EOF
       universe = vanilla
-      executable = hostname
-
+      executable = /usr/bin/hostname
+      transfer_executable = false
       output = job.log
 
       queue
