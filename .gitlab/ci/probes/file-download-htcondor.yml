@@ -25,10 +25,17 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
     - $[[ inputs.pre_script ]]
   script:
     - |
+      # Source env.sh
+      USER_HOME=$(eval "realpath ~$USER")
+      . ${USER_HOME}/install-pegasus/pegasus/env.sh
+
+      # Set PYTHONPATH so import Pegasus works
+      export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
+    - |
       cat > $[[ inputs.job_name ]].job <<EOF
       universe = vanilla
       executable = `which wget`
-      arguments = -nv --no-cookies --no-check-certificate --timeout=300 --tries=1 -O '/tmp/index.html' 'http://pegasus.isi.edu'
+      arguments = -nv --no-cookies --no-check-certificate --timeout=300 --tries=1 -O /tmp/index.html http://pegasus.isi.edu
       error = job.log
 
       queue
