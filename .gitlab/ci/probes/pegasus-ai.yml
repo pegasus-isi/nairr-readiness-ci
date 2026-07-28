@@ -30,6 +30,7 @@ $[[ inputs.job_name_prefix ]]-pegasus_$[[ inputs.workflow_generator ]]:
   needs:
     - job: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
   variables:
+    RESOURCE: $[[ inputs.job_name_prefix ]]
     SLURM_CPU_PARTITION: $[[ inputs.slurm_cpu_partition ]]
     SLURM_GPU_PARTITION: $[[ inputs.slurm_gpu_partition ]]
   before_script:

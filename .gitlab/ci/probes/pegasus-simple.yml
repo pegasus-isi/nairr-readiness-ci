@@ -22,6 +22,8 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
   stage: e2e
   needs:
     - job: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
+  variables:
+    RESOURCE: $[[ inputs.job_name_prefix ]]
   before_script:
     - $[[ inputs.pre_script ]]
     - |
