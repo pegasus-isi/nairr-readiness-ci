@@ -43,8 +43,8 @@ include:
       job_name_prefix: ACCESS
       job_name: job_submit
       resource_id: 6
-  # - local: .gitlab/ci/probes/file-download-htcondor.yml
-  #   inputs:
-  #     job_name_prefix: ACCESS
-  #     job_name: file_download
-  #     resource_id: 6
+  - local: .gitlab/ci/probes/file-download-htcondor.yml
+    inputs:
+      job_name_prefix: ACCESS
+      job_name: file_download
+      resource_id: 6
