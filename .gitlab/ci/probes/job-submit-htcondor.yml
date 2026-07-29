@@ -14,6 +14,12 @@ spec:
     pre_script:
       description: Pre-script to run before Pegasus
       default: ""
+    htcondor_requirements:
+      description: HTCondor requirements value
+      default: ""
+    htcondor_project:
+      description: HTCondor project name
+      default: ""
 
 ---
 
@@ -21,6 +27,10 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
   stage: e2e
   needs:
     - job: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
+  variables:
+    RESOURCE: $[[ inputs.job_name_prefix ]]
+    HTCONDOR_REQUIREMENTS: $[[ inputs.htcondor_requirements ]]
+    HTCONDOR_PROJECT: $[[ inputs.htcondor_project ]]
   before_script:
     - $[[ inputs.pre_script ]]
     - |
