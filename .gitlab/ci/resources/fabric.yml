@@ -2,6 +2,7 @@ include:
   - local: .gitlab/ci/components/vm.yml
     inputs:
       job_name_prefix: FABRIC
+      resource_id: 10
       gitlab_url: ${GITLAB_URL}
       gitlab_runner_id: ${FABRIC_GITLAB_RUNNER_ID}
       gitlab_runner_uid: ${FABRIC_GITLAB_RUNNER_UID}

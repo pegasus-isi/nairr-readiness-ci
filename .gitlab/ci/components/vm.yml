@@ -3,6 +3,13 @@ spec:
     job_name_prefix:
       description: Prefix for the CI job name and dotenv variable (must be unique per pipeline)
       default: glab
+    resource_id:
+      description: Resource ID recorded in the database
+      type: number
+    probe_id:
+      description: Test ID recorded in the database
+      default: 1
+      type: number
     gitlab_url:
       description: GitLab URL
     gitlab_runner_arch:
