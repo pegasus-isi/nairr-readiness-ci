@@ -194,6 +194,19 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
     - kiso ssh kiso@submit -- 'sudo apt install -y nvidia-headless-535-server nvidia-utils-535-server ; sudo systemctl reboot'
     - until kiso ssh kiso@submit -- nvidia-smi; do sleep 5; done
     - kiso --debug run --force
+  after_script:
+    - |
+      echo "Status: $CI_JOB_STATUS"
+      if [[ "$CI_JOB_STATUS" == "canceled" ]]; then
+        echo "Job canceled, exiting..."
+        exit 0
+      fi
+
+      export MYSQL_PWD="${NAIRR_DB_PASS}"
+      EXTRA="{\"pipeline_url\": \"${CI_PIPELINE_URL}\", \"job_id\": \"${CI_JOB_ID}\"}"
+      mysql -u${NAIRR_DB_USER} -h${NAIRR_DB_HOST} ${NAIRR_DB_NAME} \
+        -e "INSERT INTO readiness_results (resource_id, version, uid, etag, probe_id, probe_status, probe_log, probe_timestamp, extra, created_at, created_by, updated_at, updated_by) \
+            VALUES($[[ inputs.resource_id ]], '0.0.0', UUID(), UUID(), $[[ inputs.probe_id ]], '${CI_JOB_STATUS}', '', UTC_TIMESTAMP(), '${EXTRA}', UTC_TIMESTAMP(), 'mayani', UTC_TIMESTAMP(), 'mayani');"
   tags:
     - docker
   artifacts:
