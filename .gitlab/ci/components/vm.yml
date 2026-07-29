@@ -77,7 +77,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       sleep 5
 
       cat > ~/.gitlab-runner/config.toml <<EOT
-      concurrent = 3
+      concurrent = 5
       check_interval = 0
       connection_max_age = "15m0s"
       shutdown_timeout = 0
@@ -128,7 +128,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
         $(if [ "$[[ inputs.job_name_prefix ]]" == "FABRIC" ]; then
         echo '- kind: fabric
           rc_file: secrets/fabric_rc
-          walltime: "06:00:00"
+          walltime: "03:00:00"
           name_prefix: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
           resources:
             machines:
@@ -154,7 +154,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
         fi)
         $(if [ "$[[ inputs.job_name_prefix ]]" == "CHAMELEON" ]; then
         echo '- kind: chameleon
-          walltime: "06:00:00"
+          walltime: "03:00:00"
           lease_name: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
           rc_file: secrets/tacc-app-cred-oac-edge-openrc.sh
           key_name: GitLab
