@@ -23,6 +23,15 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
     - job: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
   before_script:
     - $[[ inputs.pre_script ]]
+    - |
+      if [[ "${INSTALL_CONDOR}" == "true" ]]; then
+        # Source env.sh
+        USER_HOME=$(eval "realpath ~$USER")
+        . ${USER_HOME}/install-pegasus/pegasus/env.sh
+
+        # Set PYTHONPATH so import Pegasus works
+        export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
+      fi
   script:
     - |
       # Source env.sh
