@@ -179,6 +179,10 @@ class CropHealthWorkflow:
                 container_arguments="--no-mount bind-paths --bind /etc/resolv.conf",
             )
 
+            if os.environ.get("RESOURCE") == "STAMPEDE3":
+                classify_disease.add_pegasus_profile(nodes=1, ppn=1)
+                del classify_disease.profiles[Namespace.PEGASUS.value]["gpus"]
+
         self.tc.add_containers(crophealth_container)
         self.tc.add_transformations(classify_disease)
 

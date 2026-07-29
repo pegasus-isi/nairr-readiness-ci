@@ -44,6 +44,7 @@ include:
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: STAMPEDE3
+      pegasus_lite_env_source: module load tacc-apptainer
       resource_id: 7
       pre_script: |
         export _JAVA_OPTIONS="-XX:MaxMetaspaceSize=256m -Xms128m -Xmx1750m"
@@ -55,6 +56,7 @@ include:
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: STAMPEDE3
+      pegasus_lite_env_source: module load tacc-apptainer
       resource_id: 7
       probe_id: 4
       pre_script: |
