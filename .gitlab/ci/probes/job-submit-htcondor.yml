@@ -44,19 +44,19 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
       fi
   script:
     - |
-      # Source env.sh
-      USER_HOME=$(eval "realpath ~$USER")
-      . ${USER_HOME}/install-pegasus/pegasus/env.sh
-
-      # Set PYTHONPATH so import Pegasus works
-      export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
-    - |
       set -e
       cat > $[[ inputs.job_name ]].job <<EOF
       universe = vanilla
       executable = /usr/bin/hostname
       transfer_executable = false
       output = job.log
+
+      $(if [ -n "$[[ inputs.htcondor_requirements ]]" ]; then
+        echo 'requirements = $[[ inputs.htcondor_requirements ]]'
+      fi)
+      $(if [ -n "$[[ inputs.htcondor_project ]]" ]; then
+        echo 'requirements = $[[ inputs.htcondor_project ]]'
+      fi)
 
       queue
       EOF
