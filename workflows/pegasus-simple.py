@@ -54,7 +54,7 @@ tc = TransformationCatalog().add_transformations(task_a).write()
 result_a = File("result-a.txt")
 task_a = Job(task_a)
 task_a.add_args("-o", result_a)
-task_a.add_outputs(result_a)
+task_a.add_outputs(result_a, register_replica=False)
 
 wf.add_jobs(task_a)
 
