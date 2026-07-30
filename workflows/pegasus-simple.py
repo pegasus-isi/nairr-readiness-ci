@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import shutil
 from pathlib import Path
 from Pegasus.api import *
@@ -55,6 +56,13 @@ result_a = File("result-a.txt")
 task_a = Job(task_a)
 task_a.add_args("-o", result_a)
 task_a.add_outputs(result_a, register_replica=False)
+
+requirements = os.environ.get("HTCONDOR_REQUIREMENTS")
+project = os.environ.get("HTCONDOR_PROJECT")
+if requirements:
+    task_a.add_condor_profile(requirements=requirements)
+if project:
+    task_a.add_profiles(Namespace.CONDOR, "+ProjectName", f'"{project}"')
 
 wf.add_jobs(task_a)
 

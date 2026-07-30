@@ -29,8 +29,6 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
     - job: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
   variables:
     RESOURCE: $[[ inputs.job_name_prefix ]]
-    HTCONDOR_REQUIREMENTS: $[[ inputs.htcondor_requirements ]]
-    HTCONDOR_PROJECT: $[[ inputs.htcondor_project ]]
   before_script:
     - $[[ inputs.pre_script ]]
     - |
@@ -50,6 +48,13 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
       executable = /usr/bin/hostname
       transfer_executable = false
       output = job.log
+
+      $(if [ -n "$[[ inputs.htcondor_requirements ]]" ]; then
+        echo 'requirements = $[[ inputs.htcondor_requirements ]]'
+      fi)
+      $(if [ -n "$[[ inputs.htcondor_project ]]" ]; then
+        echo '+ProjectName = "$[[ inputs.htcondor_project ]]"'
+      fi)
 
       queue
       EOF

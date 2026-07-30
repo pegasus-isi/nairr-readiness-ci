@@ -29,8 +29,6 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
     - job: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
   variables:
     RESOURCE: $[[ inputs.job_name_prefix ]]
-    HTCONDOR_REQUIREMENTS: $[[ inputs.htcondor_requirements ]]
-    HTCONDOR_PROJECT: $[[ inputs.htcondor_project ]]
   before_script:
     - $[[ inputs.pre_script ]]
     - |
@@ -46,9 +44,16 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
     - |
       cat > $[[ inputs.job_name ]].job <<EOF
       universe = vanilla
-      executable = `which wget`
-      arguments = -nv --no-cookies --no-check-certificate --timeout=300 --tries=1 -O /tmp/index.html http://pegasus.isi.edu
+      executable = `which curl`
+      arguments = -L --max-time 300 --retry 0 -o /tmp/index.html http://pegasus.isi.edu
       error = job.log
+
+      $(if [ -n "$[[ inputs.htcondor_requirements ]]" ]; then
+        echo 'requirements = $[[ inputs.htcondor_requirements ]]'
+      fi)
+      $(if [ -n "$[[ inputs.htcondor_project ]]" ]; then
+        echo '+ProjectName = "$[[ inputs.htcondor_project ]]"'
+      fi)
 
       queue
       EOF
