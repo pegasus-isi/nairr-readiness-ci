@@ -37,9 +37,10 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]-status:
         STATUS="timeout"
       fi
 
-      PROBE_STATISTICS=""
       if [ -f statistics.txt ]; then
         PROBE_STATISTICS=$(cat statistics.txt | xxd -p | tr -d '\n')
+      else
+        PROBE_STATISTICS=$(echo "" | xxd -p | tr -d '\n')
       fi
 
       PROBE_LOG=$(curl --location --header "PRIVATE-TOKEN: $GITLAB_JOB_LOG_TOKEN" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/jobs/${JOB_ID}/trace" | xxd -p | tr -d '\n')
