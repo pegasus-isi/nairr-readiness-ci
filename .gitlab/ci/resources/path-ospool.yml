@@ -2,17 +2,22 @@ include:
   - local: .gitlab/ci/components/dummy-runner.yml
     inputs:
       job_name_prefix: ACCESS
+
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: OSPOOL
       resource_id: 8
-  - local: .gitlab/ci/probes/pegasus-ai.yml
-    inputs:
-      job_name_prefix: OSPOOL
-      resource_id: 8
-      slurm_cpu_partition: not-used
-      slurm_gpu_partition: not-used
-      workflow_generator: training
+      htcondor_requirements: TestPool =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
+      htcondor_project: USC_Deelman
+  # - local: .gitlab/ci/probes/pegasus-ai.yml
+  #   inputs:
+  #     job_name_prefix: OSPOOL
+  #     resource_id: 8
+  #     slurm_cpu_partition: not-used
+  #     slurm_gpu_partition: not-used
+  #     htcondor_requirements: TestPool =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
+  #     htcondor_project: USC_Deelman
+  #     workflow_generator: training
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: OSPOOL
@@ -20,14 +25,21 @@ include:
       probe_id: 4
       slurm_cpu_partition: not-used
       slurm_gpu_partition: not-used
+      htcondor_requirements: TestPool =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
+      htcondor_project: USC_Deelman
       workflow_generator: inference
+
   - local: .gitlab/ci/probes/job-submit-htcondor.yml
     inputs:
       job_name_prefix: OSPOOL
       job_name: job_submit
       resource_id: 8
+      htcondor_requirements: TestPool =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
+      htcondor_project: USC_Deelman
   - local: .gitlab/ci/probes/file-download-htcondor.yml
     inputs:
       job_name_prefix: OSPOOL
       job_name: file_download
       resource_id: 8
+      htcondor_requirements: TestPool =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
+      htcondor_project: USC_Deelman

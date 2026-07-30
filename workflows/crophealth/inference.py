@@ -31,6 +31,8 @@ class CropHealthWorkflow:
         self.wf_dir = str(Path(".").resolve())
         self.shared_scratch_dir = os.path.join(self.wf_dir, "scratch")
         self.local_storage_dir = os.path.join(self.wf_dir, "output")
+        self.requirements = os.environ.get("HTCONDOR_REQUIREMENTS")
+        self.project = os.environ.get("HTCONDOR_PROJECT")
 
     def write(self):
         """Write all catalogs and workflow to files."""
@@ -75,6 +77,14 @@ class CropHealthWorkflow:
     def create_pegasus_properties(self):
         """Create Pegasus properties configuration."""
         self.props["pegasus.mode"] = "development"
+        if self.requirements:
+            self.props[
+                "pegasus.catalog.site.sites.compute.profiles.condor.requirements"
+            ] = self.requirements
+        if self.project:
+            self.props[
+                "pegasus.catalog.site.sites.compute.profiles.condor.+ProjectName"
+            ] = f'"{self.project}"'
 
     def create_sites_catalog(self, exec_site_name="compute"):
         """Create site catalog."""
@@ -98,7 +108,7 @@ class CropHealthWorkflow:
 
         self.sc.add_sites(local)
 
-        if os.environ.get("RESOURCE") == "ACCESS":
+        if os.environ.get("RESOURCE") in ("ACCESS", "OSPOOL"):
             self.props["pegasus.catalog.site.repo.file"] = "access-pegasus.yml"
         elif os.environ.get("RESOURCE") in ("CHAMELEON", "FABRIC"):
             exec_site = (
@@ -170,8 +180,8 @@ class CropHealthWorkflow:
                 glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}",
                 container_arguments="--nv --no-mount bind-paths",
             )
-        elif os.environ.get("RESOURCE") == "ACCESS":
-            classify_disease.add_pegasus_profile(memory=f"{self.MEM}B")
+        elif os.environ.get("RESOURCE") in ("ACCESS", "OSPOOL"):
+            classify_disease.add_pegasus_profile(gpus=1, memory=f"{self.MEM}B")
         else:
             classify_disease.add_pegasus_profile(
                 gpus="1",
