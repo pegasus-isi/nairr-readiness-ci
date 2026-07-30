@@ -64,16 +64,35 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
       ]
       EOT
       EOF
-    - sbatch $[[ inputs.slurm_extra_opts ]] --output job.log --wait $[[ inputs.job_name ]].job
+    - JOBID=$(sbatch $[[ inputs.slurm_extra_opts ]] --output job.log --wait $[[ inputs.job_name ]].job)
+    - |
+      sacct -X -j $JOBID --format=Submit,Start,End,Elapsed --noheader -P | awk -F'|' '
+      {
+          cmd = "date -d \"" $1 "\" +%s"; cmd | getline submit_epoch; close(cmd)
+          cmd = "date -d \"" $2 "\" +%s"; cmd | getline start_epoch;  close(cmd)
+          cmd = "date -d \"" $3 "\" +%s"; cmd | getline end_epoch;    close(cmd)
+
+          queue = start_epoch - submit_epoch
+          total = end_epoch - submit_epoch
+
+          printf "Submitted: %s\n", $1
+          printf "Started:   %s\n", $2
+          printf "Completed: %s\n", $3
+          printf "Queued:    %02d:%02d:%02d\n", queue/3600, (queue%3600)/60, queue%60
+          printf "Run time:  %s\n", $4
+          printf "Total:     %02d:%02d:%02d\n", total/3600, (total%3600)/60, total%60
+      }' > statistics.txt
   after_script:
     - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
     - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
     - cat job.log
+    - cat statistics.txt
   artifacts:
     when: always
     access: developer
     paths:
       - job.log
+      - statistics.txt
     reports:
       dotenv: .env
   allow_failure: true

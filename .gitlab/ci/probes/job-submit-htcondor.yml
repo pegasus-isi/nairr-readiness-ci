@@ -51,13 +51,6 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
       transfer_executable = false
       output = job.log
 
-      $(if [ -n "$[[ inputs.htcondor_requirements ]]" ]; then
-        echo 'requirements = $[[ inputs.htcondor_requirements ]]'
-      fi)
-      $(if [ -n "$[[ inputs.htcondor_project ]]" ]; then
-        echo 'requirements = $[[ inputs.htcondor_project ]]'
-      fi)
-
       queue
       EOF
     - CLUSTER=`condor_submit -terse $[[ inputs.job_name ]].job`
@@ -65,16 +58,37 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
       until condor_history "$CLUSTER" -af ExitCode 2>/dev/null | grep -qE '^[0-9]+$'; do
         sleep 2
       done
+    - |
+      condor_history "$CLUSTER" -af QDate JobCurrentStartDate CompletionDate |
+      awk '
+      {
+          submit=$1
+          start=$2
+          end=$3
+
+          queue = start - submit
+          runtime = end - start
+          total = end - submit
+
+          printf "Submitted: %s\n", strftime("%Y-%m-%dT%H:%M:%S", submit)
+          printf "Started:   %s\n", strftime("%Y-%m-%dT%H:%M:%S", start)
+          printf "Completed: %s\n", strftime("%Y-%m-%dT%H:%M:%S", end)
+          printf "Queued:    %02d:%02d:%02d\n", queue/3600, (queue%3600)/60, queue%60
+          printf "Run time:  %02d:%02d:%02d\n", runtime/3600, (runtime%3600)/60, runtime%60
+          printf "Total:     %02d:%02d:%02d\n", total/3600, (total%3600)/60, total%60
+      }' > statistics.txt
     - exit `condor_history "$CLUSTER" -af ExitCode`
   after_script:
     - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
     - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
     - cat job.log
+    - cat statistics.txt
   artifacts:
     when: always
     access: developer
     paths:
       - job.log
+      - statistics.txt
     reports:
       dotenv: .env
   allow_failure: true
