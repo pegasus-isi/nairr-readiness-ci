@@ -1,7 +1,8 @@
 include:
   - local: .gitlab/ci/components/dummy-runner.yml
     inputs:
-      job_name_prefix: ACCESS
+      job_name_prefix: OSPOOL
+      depends_on: ACCESS
 
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:

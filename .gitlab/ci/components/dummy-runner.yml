@@ -3,6 +3,9 @@ spec:
     job_name_prefix:
       description: Which runner to wait for
       default: ACCESS
+    depends_on:
+      description: Jobs to wait for
+      default: ACCESS
 
 ---
 
@@ -10,7 +13,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
   stage: unit
   image: rockylinux:9
   needs:
-    - job: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
+    - job: $[[ inputs.depends_on ]]-gitlab-runner-run
   script:
     - echo "Done"
   tags:

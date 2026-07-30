@@ -1,7 +1,9 @@
 include:
   - local: .gitlab/ci/components/dummy-runner.yml
     inputs:
-      job_name_prefix: ACCESS
+      job_name_prefix: NRP
+      depends_on: ACCESS
+
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: NRP
@@ -21,6 +23,7 @@ include:
       slurm_cpu_partition: not-used
       slurm_gpu_partition: not-used
       workflow_generator: inference
+
   - local: .gitlab/ci/probes/job-submit-htcondor.yml
     inputs:
       job_name_prefix: NRP
