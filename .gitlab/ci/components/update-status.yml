@@ -51,3 +51,5 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]-status:
       SQL
   tags:
     - docker
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
