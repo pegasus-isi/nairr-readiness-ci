@@ -32,40 +32,41 @@ include:
         module load python/3.9.18
       site_shared_scratch: \${SCRATCH}
       site_local_scratch_var: TMPDIR
-  - local: .gitlab/ci/probes/pegasus-simple.yml
-    inputs:
-      job_name_prefix: STAMPEDE3
-      resource_id: 7
-      pre_script: |
-        export _JAVA_OPTIONS="-XX:MaxMetaspaceSize=256m -Xms128m -Xmx1750m"
-        export TMPDIR="/tmp"
-        module load python/3.9.18
 
-  - local: .gitlab/ci/probes/pegasus-ai.yml
-    inputs:
-      job_name_prefix: STAMPEDE3
-      pegasus_lite_env_source: module load tacc-apptainer
-      resource_id: 7
-      pre_script: |
-        export _JAVA_OPTIONS="-XX:MaxMetaspaceSize=256m -Xms128m -Xmx1750m"
-        export TMPDIR="/tmp"
-        module load python/3.9.18
-      slurm_cpu_partition: icx
-      slurm_gpu_partition: h100
-      workflow_generator: training
-  - local: .gitlab/ci/probes/pegasus-ai.yml
-    inputs:
-      job_name_prefix: STAMPEDE3
-      pegasus_lite_env_source: module load tacc-apptainer
-      resource_id: 7
-      probe_id: 4
-      pre_script: |
-        export _JAVA_OPTIONS="-XX:MaxMetaspaceSize=256m -Xms128m -Xmx1750m"
-        export TMPDIR="/tmp"
-        module load python/3.9.18
-      slurm_cpu_partition: icx
-      slurm_gpu_partition: h100
-      workflow_generator: inference
+  # - local: .gitlab/ci/probes/pegasus-simple.yml
+  #   inputs:
+  #     job_name_prefix: STAMPEDE3
+  #     resource_id: 7
+  #     pre_script: |
+  #       export _JAVA_OPTIONS="-XX:MaxMetaspaceSize=256m -Xms128m -Xmx1750m"
+  #       export TMPDIR="/tmp"
+  #       module load python/3.9.18
+  # - local: .gitlab/ci/probes/pegasus-ai.yml
+  #   inputs:
+  #     job_name_prefix: STAMPEDE3
+  #     pegasus_lite_env_source: module load tacc-apptainer
+  #     resource_id: 7
+  #     pre_script: |
+  #       export _JAVA_OPTIONS="-XX:MaxMetaspaceSize=256m -Xms128m -Xmx1750m"
+  #       export TMPDIR="/tmp"
+  #       module load python/3.9.18
+  #     slurm_cpu_partition: icx
+  #     slurm_gpu_partition: h100
+  #     workflow_generator: training
+  # - local: .gitlab/ci/probes/pegasus-ai.yml
+  #   inputs:
+  #     job_name_prefix: STAMPEDE3
+  #     pegasus_lite_env_source: module load tacc-apptainer
+  #     resource_id: 7
+  #     probe_id: 4
+  #     pre_script: |
+  #       export _JAVA_OPTIONS="-XX:MaxMetaspaceSize=256m -Xms128m -Xmx1750m"
+  #       export TMPDIR="/tmp"
+  #       module load python/3.9.18
+  #     slurm_cpu_partition: icx
+  #     slurm_gpu_partition: h100
+  #     workflow_generator: inference
+
   - local: .gitlab/ci/probes/job-submit.yml
     inputs:
       job_name_prefix: STAMPEDE3
