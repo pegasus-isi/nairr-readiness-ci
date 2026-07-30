@@ -64,7 +64,7 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
       ]
       EOT
       EOF
-    - JOBID=$(sbatch $[[ inputs.slurm_extra_opts ]] --output job.log --wait $[[ inputs.job_name ]].job)
+    - JOBID=$(sbatch $[[ inputs.slurm_extra_opts ]] --output job.log --wait $[[ inputs.job_name ]].job | tail -1 | grep -o [0-9]*)
     - |
       sacct -X -j $JOBID --format=Submit,Start,End,Elapsed --noheader -P | awk -F'|' '
       {
