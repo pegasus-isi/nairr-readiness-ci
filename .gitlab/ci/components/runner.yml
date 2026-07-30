@@ -83,7 +83,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       set -e
       mkdir -p .gitlab-runner
       cat > .gitlab-runner/config.toml <<EOF
-      concurrent = 3
+      concurrent = 4
       check_interval = 0
       connection_max_age = \"15m0s\"
       shutdown_timeout = 0
