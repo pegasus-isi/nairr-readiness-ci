@@ -44,8 +44,9 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
     - |
       cat > $[[ inputs.job_name ]].job <<EOF
       universe = vanilla
-      executable = `which curl`
-      arguments = -L --max-time 300 --retry 0 -o /tmp/index.html http://pegasus.isi.edu
+      executable = `which wget`
+      arguments = -nv --no-cookies --no-check-certificate --timeout=300 --tries=1 -O /tmp/index.html http://pegasus.isi.edu
+
       error = job.log
 
       $(if [ -n "$[[ inputs.htcondor_requirements ]]" ]; then
