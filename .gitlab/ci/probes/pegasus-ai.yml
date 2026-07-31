@@ -71,6 +71,9 @@ $[[ inputs.job_name_prefix ]]-pegasus_$[[ inputs.workflow_generator ]]:
       if [[ "$EC" -eq 0 ]]; then
         exit 1
       fi
+
+      pegasus-statistics -f text submit
+      mv submit/statistics/summary.txt ${CI_PROJECT_DIR}/statistics.txt
   after_script:
     - printf '$[[ inputs.job_name_prefix ]]_pegasus_$[[ inputs.workflow_generator ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
     - printf '$[[ inputs.job_name_prefix ]]_pegasus_$[[ inputs.workflow_generator ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
@@ -90,6 +93,7 @@ $[[ inputs.job_name_prefix ]]-pegasus_$[[ inputs.workflow_generator ]]:
     access: developer
     paths:
       - workflows/crophealth/submit
+      - statistics.txt
     reports:
       dotenv: .env
   allow_failure: true
