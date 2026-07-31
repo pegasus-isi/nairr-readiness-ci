@@ -69,6 +69,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
   needs:
     - job: $[[ inputs.job_name_prefix ]]-ssh-cmd
       artifacts: true
+    - job: $[[ inputs.job_name_prefix ]]-ssh-job
   before_script:
     - dnf -y install openssh-clients
     - |
