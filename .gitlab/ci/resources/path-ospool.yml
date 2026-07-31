@@ -8,7 +8,7 @@ include:
     inputs:
       job_name_prefix: OSPOOL
       resource_id: 8
-      htcondor_requirements: TestPool =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
+      htcondor_requirements: TestPool =!= True && NRP =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
       htcondor_project: USC_Deelman
   # - local: .gitlab/ci/probes/pegasus-ai.yml
   #   inputs:
@@ -16,7 +16,7 @@ include:
   #     resource_id: 8
   #     slurm_cpu_partition: not-used
   #     slurm_gpu_partition: not-used
-  #     htcondor_requirements: TestPool =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
+  #     htcondor_requirements: TestPool =!= True && NRP =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
   #     htcondor_project: USC_Deelman
   #     workflow_generator: training
   - local: .gitlab/ci/probes/pegasus-ai.yml
@@ -26,7 +26,7 @@ include:
       probe_id: 4
       slurm_cpu_partition: not-used
       slurm_gpu_partition: not-used
-      htcondor_requirements: TestPool =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
+      htcondor_requirements: TestPool =!= True && NRP =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
       htcondor_project: USC_Deelman
       workflow_generator: inference
 
@@ -35,12 +35,12 @@ include:
       job_name_prefix: OSPOOL
       job_name: job_submit
       resource_id: 8
-      htcondor_requirements: TestPool =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
+      htcondor_requirements: TestPool =!= True && NRP =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
       htcondor_project: USC_Deelman
   - local: .gitlab/ci/probes/file-download-htcondor.yml
     inputs:
       job_name_prefix: OSPOOL
       job_name: file_download
       resource_id: 8
-      htcondor_requirements: TestPool =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
+      htcondor_requirements: TestPool =!= True && NRP =!= True && TARGET.HAS_SINGULARITY && Mips > 30000
       htcondor_project: USC_Deelman

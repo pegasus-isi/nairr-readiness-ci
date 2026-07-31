@@ -8,29 +8,34 @@ include:
     inputs:
       job_name_prefix: NRP
       resource_id: 9
-  - local: .gitlab/ci/probes/pegasus-ai.yml
-    inputs:
-      job_name_prefix: NRP
-      resource_id: 9
-      slurm_cpu_partition: not-used
-      slurm_gpu_partition: not-used
-      workflow_generator: training
-  - local: .gitlab/ci/probes/pegasus-ai.yml
-    inputs:
-      job_name_prefix: NRP
-      resource_id: 9
-      probe_id: 4
-      slurm_cpu_partition: not-used
-      slurm_gpu_partition: not-used
-      workflow_generator: inference
+      htcondor_requirements: NRP == True
+  # - local: .gitlab/ci/probes/pegasus-ai.yml
+  #   inputs:
+  #     job_name_prefix: NRP
+  #     resource_id: 9
+  #     slurm_cpu_partition: not-used
+  #     slurm_gpu_partition: not-used
+  #     htcondor_requirements: NRP == True
+  #     workflow_generator: training
+  # - local: .gitlab/ci/probes/pegasus-ai.yml
+  #   inputs:
+  #     job_name_prefix: NRP
+  #     resource_id: 9
+  #     probe_id: 4
+  #     slurm_cpu_partition: not-used
+  #     slurm_gpu_partition: not-used
+  #     htcondor_requirements: NRP == True
+  #     workflow_generator: inference
 
   - local: .gitlab/ci/probes/job-submit-htcondor.yml
     inputs:
       job_name_prefix: NRP
       job_name: job_submit
       resource_id: 9
+      htcondor_requirements: NRP == True
   - local: .gitlab/ci/probes/file-download-htcondor.yml
     inputs:
       job_name_prefix: NRP
       job_name: file_download
       resource_id: 9
+      htcondor_requirements: NRP == True

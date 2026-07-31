@@ -117,7 +117,7 @@ class CropHealthWorkflow:
 
         self.sc.add_sites(local)
 
-        if os.environ.get("RESOURCE") in ("ACCESS", "OSPOOL"):
+        if os.environ.get("RESOURCE") in ("ACCESS", "OSPOOL", "NRP"):
             self.props["pegasus.catalog.site.repo.file"] = "access-pegasus.yml"
         elif os.environ.get("RESOURCE") in ("CHAMELEON", "FABRIC"):
             exec_site = (
@@ -202,7 +202,7 @@ class CropHealthWorkflow:
                 glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}",
                 container_arguments="--nv --no-mount bind-paths",
             )
-        elif os.environ.get("RESOURCE") in ("ACCESS", "OSPOOL"):
+        elif os.environ.get("RESOURCE") in ("ACCESS", "OSPOOL", "NRP"):
             preprocess_images.add_pegasus_profile(gpus=1, memory=f"{self.MEM}B")
             train_classifier.add_pegasus_profile(gpus=1, memory=f"{self.MEM}B")
         else:
