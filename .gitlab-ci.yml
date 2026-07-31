@@ -15,18 +15,18 @@ stages:
 
 include:
   # Direct Access
-  - local: .gitlab/ci/resources/anvil.yml
-  - local: .gitlab/ci/resources/expanse.yml
-  - local: .gitlab/ci/resources/bridges2.yml
-  - local: .gitlab/ci/resources/delta.yml
-  # - local: .gitlab/ci/resources/delta-ai.yml
-  - local: .gitlab/ci/resources/stampede3.yml
+  # - local: .gitlab/ci/resources/anvil.yml
+  # - local: .gitlab/ci/resources/expanse.yml
+  # - local: .gitlab/ci/resources/bridges2.yml
+  # - local: .gitlab/ci/resources/delta.yml
+  # # - local: .gitlab/ci/resources/delta-ai.yml
+  # - local: .gitlab/ci/resources/stampede3.yml
 
   # Access via ACCESS
   - local: .gitlab/ci/resources/jetstream.yml
   - local: .gitlab/ci/resources/path-ospool.yml
-  # - local: .gitlab/ci/resources/nrp.yml
+  - local: .gitlab/ci/resources/nrp.yml
 
   # API Access
-  - local: .gitlab/ci/resources/chameleon.yml
-  - local: .gitlab/ci/resources/fabric.yml
+  # - local: .gitlab/ci/resources/chameleon.yml
+  # - local: .gitlab/ci/resources/fabric.yml
