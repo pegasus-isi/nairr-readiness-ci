@@ -46,7 +46,7 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
       universe = vanilla
       executable = `which wget`
       arguments = -nv --no-cookies --no-check-certificate --timeout=300 --tries=1 -O /tmp/index.html http://pegasus.isi.edu
-
+      transfer_executable = false
       error = job.log
 
       $(if [ -n "$[[ inputs.htcondor_requirements ]]" ]; then
