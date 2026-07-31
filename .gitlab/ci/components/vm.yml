@@ -80,6 +80,9 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       # Source env.sh
       . ~/install-pegasus/pegasus/env.sh
 
+      # Create Pegasus DB
+      pegasus-db-admin create
+
       condor_master
       sleep 5
 
