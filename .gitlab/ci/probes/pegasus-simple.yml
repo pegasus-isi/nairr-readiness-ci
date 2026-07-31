@@ -58,6 +58,7 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
         exit 1
       fi
 
+      until [ -f submit/monitord.done ]; do sleep 1; done
       pegasus-statistics -f text submit
       mv submit/statistics/summary.txt ${CI_PROJECT_DIR}/statistics.txt
   after_script:
