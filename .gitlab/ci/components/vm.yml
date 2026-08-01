@@ -206,8 +206,8 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
     - kiso --debug run --force
   after_script:
     - |
-      if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then
-        echo "Pipeline source is schedule, skipping..."
+      if [[ "$CI_PIPELINE_SOURCE" != "schedule" ]]; then
+        echo "Pipeline source is not schedule, skipping..."
         exit 0
       fi
 

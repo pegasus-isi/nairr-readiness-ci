@@ -53,8 +53,8 @@ $[[ inputs.job_name_prefix ]]-ssh-job:
       eval "${PREFIX} ${SSH_CMD} true"
   after_script:
     - |
-      if [[ "$CI_PIPELINE_SOURCE" == "schedule" ]]; then
-        echo "Pipeline source is schedule, skipping..."
+      if [[ "$CI_PIPELINE_SOURCE" != "schedule" ]]; then
+        echo "Pipeline source is not schedule, skipping..."
         exit 0
       fi
 
