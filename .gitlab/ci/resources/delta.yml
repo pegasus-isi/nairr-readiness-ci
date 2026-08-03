@@ -30,21 +30,21 @@ include:
     inputs:
       job_name_prefix: DELTA
       resource_id: 4
-  # - local: .gitlab/ci/probes/pegasus-ai.yml
-  #   inputs:
-  #     job_name_prefix: DELTA
-  #     resource_id: 4
-  #     slurm_cpu_partition: cpu
-  #     slurm_gpu_partition: gpuA100x4
-  #     workflow_generator: training
-  # - local: .gitlab/ci/probes/pegasus-ai.yml
-  #   inputs:
-  #     job_name_prefix: DELTA
-  #     resource_id: 4
-  #     probe_id: 4
-  #     slurm_cpu_partition: cpu
-  #     slurm_gpu_partition: gpuA100x4
-  #     workflow_generator: inference
+  - local: .gitlab/ci/probes/pegasus-ai.yml
+    inputs:
+      job_name_prefix: DELTA
+      resource_id: 4
+      slurm_cpu_partition: cpu
+      slurm_gpu_partition: gpuA100x4
+      workflow_generator: training
+  - local: .gitlab/ci/probes/pegasus-ai.yml
+    inputs:
+      job_name_prefix: DELTA
+      resource_id: 4
+      probe_id: 4
+      slurm_cpu_partition: cpu
+      slurm_gpu_partition: gpuA100x4
+      workflow_generator: inference
   - local: .gitlab/ci/probes/job-submit.yml
     inputs:
       job_name_prefix: DELTA

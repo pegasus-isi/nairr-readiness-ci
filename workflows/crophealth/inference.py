@@ -120,7 +120,7 @@ class CropHealthWorkflow:
             self.sc.add_sites(exec_site)
         else:
             local_scratch_var = os.environ["SITE_LOCAL_SCRATCH_VAR"]
-            local_scratch = os.environ[local_scratch_var]
+            local_scratch = os.environ.get(local_scratch_var, local_scratch_var)
             exec_site = (
                 Site(exec_site_name)
                 .add_directories(
@@ -179,6 +179,12 @@ class CropHealthWorkflow:
                 project=os.environ["SLURM_ACCOUNT"] + "-gpu",
                 glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}",
                 container_arguments="--nv --no-mount bind-paths",
+            )
+        elif os.environ.get("RESOURCE") == "DELTA":
+            classify_disease.add_pegasus_profile(
+                project=os.environ["SLURM_ACCOUNT"].replace("-cpu", "-gpu"),
+                gpus=1,
+                memory=f"{self.MEM}B",
             )
         elif os.environ.get("RESOURCE") in ("ACCESS", "OSPOOL", "NRP"):
             classify_disease.add_pegasus_profile(gpus=1, memory=f"{self.MEM}B")
