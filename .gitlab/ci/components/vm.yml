@@ -217,6 +217,10 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
         exit 0
       fi
 
+      if [[ -z "$STATUS" || "$STATUS" == "timedout" ]]; then
+        STATUS="timeout"
+      fi
+
       export MYSQL_PWD="${NAIRR_DB_PASS}"
       EXTRA="{\"pipeline_url\": \"${CI_PIPELINE_URL}\", \"job_id\": \"${CI_JOB_ID}\"}"
       mysql -u${NAIRR_DB_USER} -h${NAIRR_DB_HOST} ${NAIRR_DB_NAME} \
