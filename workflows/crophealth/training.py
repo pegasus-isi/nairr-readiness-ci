@@ -181,7 +181,7 @@ class CropHealthWorkflow:
             pfn=os.path.join(self.wf_dir, "bin/preprocess_images.py"),
             is_stageable=True,
             container=crophealth_container,
-        ).add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"])
+        ).add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"], diskspace="10GB")
 
         train_classifier = Transformation(
             "train_classifier",
@@ -189,7 +189,7 @@ class CropHealthWorkflow:
             pfn=os.path.join(self.wf_dir, "bin/train_classifier.py"),
             is_stageable=True,
             container=crophealth_container,
-        ).add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"])
+        ).add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"], diskspace="10GB")
 
         if os.environ.get("RESOURCE") == "ANVIL":
             preprocess_images.add_pegasus_profile(
