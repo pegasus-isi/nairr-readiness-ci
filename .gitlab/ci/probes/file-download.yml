@@ -65,6 +65,7 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
       EOT
       EOF
     - JOBID=$(sbatch $[[ inputs.slurm_extra_opts ]] --output job.log --wait $[[ inputs.job_name ]].job | tail -1 | grep -o [0-9]*)
+    - printf '%s' "${JOBID}" >> job.id
     - |
       sacct -X -j $JOBID --format=Submit,Start,End,Elapsed --noheader -P | awk -F'|' '
       {
@@ -87,6 +88,8 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
     - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
     - cat job.log
     - cat statistics.txt
+    - $[[ inputs.pre_script ]]
+    - scancel `cat job.id`
   artifacts:
     when: always
     access: developer

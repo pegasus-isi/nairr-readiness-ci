@@ -59,6 +59,7 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
       queue
       EOF
     - CLUSTER=`condor_submit -terse $[[ inputs.job_name ]].job`
+    - printf '%s' "${CLUSTER}" >> job.id
     - |
       until condor_history "$CLUSTER" -af ExitCode 2>/dev/null | grep -qE '^[0-9]+$'; do
         sleep 2
@@ -88,6 +89,17 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
     - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
     - cat job.log
     - cat statistics.txt
+    - $[[ inputs.pre_script ]]
+    - |
+      if [[ "${INSTALL_CONDOR}" == "true" ]]; then
+        # Source env.sh
+        USER_HOME=$(eval "realpath ~$USER")
+        . ${USER_HOME}/install-pegasus/pegasus/env.sh
+
+        # Set PYTHONPATH so import Pegasus works
+        export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
+      fi
+    - condor_rm `cat job.id`
   artifacts:
     when: always
     access: developer
