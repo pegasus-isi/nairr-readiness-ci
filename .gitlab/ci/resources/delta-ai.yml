@@ -27,25 +27,25 @@ include:
       site_shared_scratch: /work/nvme/bfof/mayani
       site_local_scratch_var: TMPDIR
 
-  - local: .gitlab/ci/probes/pegasus-simple.yml
-    inputs:
-      job_name_prefix: DELTA_AI
-      resource_id: 5
-  - local: .gitlab/ci/probes/pegasus-ai.yml
-    inputs:
-      job_name_prefix: DELTA_AI
-      resource_id: 5
-      slurm_cpu_partition: test
-      slurm_gpu_partition: GPU-shared
-      workflow_generator: training
-  - local: .gitlab/ci/probes/pegasus-ai.yml
-    inputs:
-      job_name_prefix: DELTA_AI
-      resource_id: 5
-      probe_id: 4
-      slurm_cpu_partition: test
-      slurm_gpu_partition: GPU-shared
-      workflow_generator: inference
+  # - local: .gitlab/ci/probes/pegasus-simple.yml
+  #   inputs:
+  #     job_name_prefix: DELTA_AI
+  #     resource_id: 5
+  # - local: .gitlab/ci/probes/pegasus-ai.yml
+  #   inputs:
+  #     job_name_prefix: DELTA_AI
+  #     resource_id: 5
+  #     slurm_cpu_partition: test
+  #     slurm_gpu_partition: GPU-shared
+  #     workflow_generator: training
+  # - local: .gitlab/ci/probes/pegasus-ai.yml
+  #   inputs:
+  #     job_name_prefix: DELTA_AI
+  #     resource_id: 5
+  #     probe_id: 4
+  #     slurm_cpu_partition: test
+  #     slurm_gpu_partition: GPU-shared
+  #     workflow_generator: inference
 
   - local: .gitlab/ci/probes/job-submit.yml
     inputs:
