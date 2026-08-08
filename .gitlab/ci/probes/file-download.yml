@@ -86,10 +86,10 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
   after_script:
     - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
     - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
+    - $[[ inputs.pre_script ]]
+    - scancel `cat job.id` || true
     - cat job.log
     - cat statistics.txt
-    - $[[ inputs.pre_script ]]
-    - scancel `cat job.id`
   artifacts:
     when: always
     access: developer

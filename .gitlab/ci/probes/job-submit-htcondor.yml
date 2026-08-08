@@ -87,8 +87,6 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
   after_script:
     - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
     - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
-    - cat job.log
-    - cat statistics.txt
     - |
       if [[ "${INSTALL_CONDOR}" == "true" ]]; then
         # Source env.sh
@@ -98,7 +96,9 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
         # Set PYTHONPATH so import Pegasus works
         export PYTHONPATH=`pegasus-config --python`:${USER_HOME}/install-pegasus/python-deps
       fi
-    - condor_rm `cat job.id`
+    - condor_rm `cat job.id` || true
+    - cat job.log
+    - cat statistics.txt
   artifacts:
     when: always
     access: developer
