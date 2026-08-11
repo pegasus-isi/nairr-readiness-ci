@@ -144,7 +144,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
             machines:
               - labels:
                   - submit
-                site: TACC
+                site: FIU
                 image: default_ubuntu_24
                 flavour_desc:
                   core: 8
@@ -157,7 +157,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
               - labels:
                   - v4
                 kind: FABNetv4
-                site: TACC
+                site: FIU
                 nic:
                   kind: SharedNIC
                   model: ConnectX-6'

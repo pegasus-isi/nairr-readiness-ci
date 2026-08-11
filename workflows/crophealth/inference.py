@@ -1,5 +1,6 @@
 import os
 import logging
+import platform
 from pathlib import Path
 
 from Pegasus.api import *
@@ -159,10 +160,14 @@ class CropHealthWorkflow:
         """Create transformation catalog with executables and containers."""
         self.tc = TransformationCatalog()
 
+        suffix = "-" + platform.machine().lower()
+        if suffix != "-aarch64":
+            suffix = ""
+
         crophealth_container = Container(
             "crophealth_container",
             container_type=Container.SINGULARITY,
-            image="https://download.pegasus.isi.edu/tutorial/crophealth/crophealth-container.sif",
+            image=f"https://download.pegasus.isi.edu/tutorial/crophealth/crophealth-container{suffix}.sif",
             image_site="www",
         )
 

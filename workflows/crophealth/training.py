@@ -8,6 +8,7 @@ BATCH_SIZE = 16  # Training batch size
 
 import os
 import logging
+import platform
 import argparse
 from pathlib import Path
 
@@ -168,10 +169,14 @@ class CropHealthWorkflow:
         """Create transformation catalog with executables and containers."""
         self.tc = TransformationCatalog()
 
+        suffix = "-" + platform.machine().lower()
+        if suffix != "-aarch64":
+            suffix = ""
+
         crophealth_container = Container(
             "crophealth_container",
             container_type=Container.SINGULARITY,
-            image="https://download.pegasus.isi.edu/tutorial/crophealth/crophealth-container.sif",
+            image=f"https://download.pegasus.isi.edu/tutorial/crophealth/crophealth-container{suffix}.sif",
             image_site="www",
         )
 
