@@ -152,7 +152,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
                   disk: 100
                 number: 1
                 gpus:
-                  - model: TeslaT4
+                  - model: RTX6000
             networks:
               - labels:
                   - v4
