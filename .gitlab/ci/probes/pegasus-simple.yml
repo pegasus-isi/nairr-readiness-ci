@@ -61,6 +61,7 @@ $[[ inputs.job_name_prefix ]]-$[[ inputs.job_name ]]:
       until [ -f submit/monitord.done ]; do sleep 1; done
       pegasus-statistics -f text submit
       mv submit/statistics/summary.txt ${CI_PROJECT_DIR}/statistics.txt
+      echo "Done"
   after_script:
     - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_JOB_ID=%s\n' "${CI_JOB_ID}" > .env
     - printf '$[[ inputs.job_name_prefix ]]_$[[ inputs.job_name ]]_STATUS=%s\n' "${CI_JOB_STATUS}" >> .env
