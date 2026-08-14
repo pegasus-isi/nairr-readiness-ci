@@ -5,8 +5,11 @@ variables:
   RUNNER_AFTER_SCRIPT_TIMEOUT: 5m
 
 default:
-  before_script:
-    - env
+  retry:
+    max: 2
+    when:
+      - api_failure
+      - runner_system_failure
 
 stages:
   - unit
