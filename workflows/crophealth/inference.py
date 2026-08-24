@@ -50,7 +50,12 @@ class CropHealthWorkflow:
     def plan_submit(self):
         """Plan and submit the workflow."""
         try:
-            self.wf.plan(submit=True, relative_dir="submit", sites=["compute"])
+            self.wf.plan(
+                submit=True,
+                relative_dir="submit",
+                sites=["compute"],
+                cluster=["horizontal"],
+            )
         except PegasusClientError as e:
             print(e)
 
@@ -177,7 +182,9 @@ class CropHealthWorkflow:
             pfn=os.path.join(self.wf_dir, "bin/classify_disease.py"),
             is_stageable=True,
             container=crophealth_container,
-        ).add_pegasus_profile(queue=os.environ["SLURM_GPU_PARTITION"])
+        ).add_pegasus_profile(
+            queue=os.environ["SLURM_GPU_PARTITION"], clusters_num=1, clusters_size=3
+        )
 
         if os.environ.get("RESOURCE") == "ANVIL":
             classify_disease.add_pegasus_profile(
