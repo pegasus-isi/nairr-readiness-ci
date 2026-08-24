@@ -31,13 +31,13 @@ include:
     inputs:
       job_name_prefix: DELTA_AI
       resource_id: 5
-  # - local: .gitlab/ci/probes/pegasus-ai.yml
-  #   inputs:
-  #     job_name_prefix: DELTA_AI
-  #     resource_id: 5
-  #     slurm_cpu_partition: ghx4
-  #     slurm_gpu_partition: ghx4
-  #     workflow_generator: training
+  - local: .gitlab/ci/probes/pegasus-ai.yml
+    inputs:
+      job_name_prefix: DELTA_AI
+      resource_id: 5
+      slurm_cpu_partition: ghx4
+      slurm_gpu_partition: ghx4
+      workflow_generator: training
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: DELTA_AI

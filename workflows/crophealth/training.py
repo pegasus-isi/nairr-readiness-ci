@@ -218,6 +218,13 @@ class CropHealthWorkflow:
                 gpus=1,
                 memory=f"{self.MEM}B",
             )
+        elif os.environ.get("RESOURCE") == "DELTA_AI":
+            preprocess_images.add_pegasus_profile(
+                gpus=1, memory=f"{self.MEM}B", container_arguments="--nv"
+            )
+            train_classifier.add_pegasus_profile(
+                gpus=1, memory=f"{self.MEM}B", container_arguments="--nv"
+            )
         elif os.environ.get("RESOURCE") in ("ACCESS", "OSPOOL", "NRP"):
             preprocess_images.add_pegasus_profile(gpus=1, memory=f"{self.MEM}B")
             train_classifier.add_pegasus_profile(gpus=1, memory=f"{self.MEM}B")
