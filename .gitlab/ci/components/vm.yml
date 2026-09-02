@@ -194,8 +194,6 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
                 #!/bin/bash
                 bash -e ./gitlab-runner.job
       EOF
-    # Debug
-    - sed -i '425i \        print(errors)' /usr/local/lib/python3.9/site-packages/kiso/task.py
     # Old rsync version treat ~kiso as \~kiso, i.e., as a literal and is not resolved to /home/kiso/
     - sed --in-place -e 's/f"rsync /f"rsync --old-args /' /usr/local/lib/python3.9/site-packages/kiso/task.py
     - kiso --debug up --force
