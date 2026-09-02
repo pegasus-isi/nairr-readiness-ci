@@ -22,7 +22,7 @@ spec:
       default: ""
     slurm_time:
       description: SLURM job runtime
-      default: "00:00:05"
+      default: "00:05:00"
     slurm_extra_opts:
       description: SLURM extra options
       default: ""
