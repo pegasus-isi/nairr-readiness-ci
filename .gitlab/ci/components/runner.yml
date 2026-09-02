@@ -23,6 +23,10 @@ spec:
       description: GitLab Runner UID
     gitlab_runner_token:
       description: GitLab Runner Token
+    gitlab_runner_concurrency:
+      description: GitLab Runner Concurrency
+      type: number
+      default: 4
     run_on_login_node:
       description: Run the GitLab runner on the login node
       type: boolean
@@ -84,7 +88,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       set -e
       mkdir -p .gitlab-runner
       cat > .gitlab-runner/config.toml <<EOF
-      concurrent = 4
+      concurrent = $[[ inputs.gitlab_runner_concurrency ]]
       check_interval = 0
       connection_max_age = \"15m0s\"
       shutdown_timeout = 0
