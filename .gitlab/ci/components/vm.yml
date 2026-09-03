@@ -166,6 +166,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
         echo '- kind: chameleon
           walltime: "03:00:00"
           lease_name: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
+          prefix: $[[ inputs.job_name_prefix ]]-gitlab-runner-run
           rc_file: secrets/tacc-app-cred-oac-edge-openrc.sh
           key_name: GitLab
           image: CC-Ubuntu24.04
