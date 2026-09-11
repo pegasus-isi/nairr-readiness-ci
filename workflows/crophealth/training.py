@@ -228,6 +228,10 @@ class CropHealthWorkflow:
         elif os.environ.get("RESOURCE") in ("ACCESS", "OSPOOL", "NRP"):
             preprocess_images.add_pegasus_profile(gpus=1, memory=f"{self.MEM}B")
             train_classifier.add_pegasus_profile(gpus=1, memory=f"{self.MEM}B")
+
+            if os.environ.get("RESOURCE") == "NRP":
+                preprocess_images.sites[exec_site_name].container = None
+                train_classifier.sites[exec_site_name].container = None
         else:
             preprocess_images.add_pegasus_profile(
                 gpus="1",

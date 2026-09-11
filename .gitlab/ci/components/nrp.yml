@@ -1,0 +1,102 @@
+spec:
+  inputs:
+    job_name_prefix:
+      description: Prefix for the CI job name and dotenv variable (must be unique per pipeline)
+      default: NRP
+
+---
+
+$[[ inputs.job_name_prefix ]]-gitlab-runner-run:
+  stage: unit
+  image: rockylinux:9
+  before_script:
+    - |
+      cat /etc/yum.repos.d/kubernetes.repo <<EOF
+      [kubernetes]
+      name=Kubernetes
+      baseurl=https://k8s.io
+      enabled=1
+      gpgcheck=1
+      gpgkey=https://k8s.iorepodata/repomd.xml.key
+      EOF
+
+    - dnf -y install kubectl
+
+    - mkdir ~/.kube
+    - chmod 600 "${NRP_K8S_CONFIG}"
+    - cp "${NRP_K8S_CONFIG}" ~/.kube/config
+  script:
+    - |
+      cat > nrp-batch.yml <<EOF
+      apiVersion: batch/v1
+      kind: Job
+      metadata:
+        name: access-pegasus-ep
+        namespace: usc-isi-scitech
+      spec:
+        # Maximum total runtime: 5 hours
+        activeDeadlineSeconds: 18000
+
+        # Do not retry failed pods
+        backoffLimit: 0
+
+        template:
+          metadata:
+            labels:
+              app: access-pegasus-ep
+          spec:
+            restartPolicy: Never
+
+            containers:
+              - name: ep
+                image: ghcr.io/pegasus-isi/access-ep:main
+                imagePullPolicy: Always
+
+                # securityContext:
+                #   capabilities:
+                #     add: ["SYS_ADMIN", "DAC_OVERRIDE", "SETUID", "SETGID"]
+
+                resources:
+                  requests:
+                    cpu: "4"
+                    memory: "30Gi"
+                    ephemeral-storage: "30Gi"
+                    nvidia.com/gpu: 1
+                  limits:
+                    cpu: "4"
+                    memory: "30Gi"
+                    ephemeral-storage: "30Gi"
+                    nvidia.com/gpu: 1
+
+                env:
+                  - name: _condor_NUM_CPUS
+                    value: "4"
+
+                volumeMounts:
+                  - name: access-pegasus-token
+                    mountPath: /etc/condor/tokens.d/access-pegasus.token
+                    subPath: access-pegasus.token
+                    readOnly: true
+
+            volumes:
+              - name: access-pegasus-token
+                configMap:
+                  name: ep
+                  defaultMode: 0600
+                  items:
+                    - key: access-pegasus.token
+                      path: access-pegasus.token
+      EOF
+    - kubectl delete job --ignore-not-found access-pegasus-ep
+    - sleep 5
+    - kubectl apply -f nrp-batch.yml
+    - until kubectl get pod -l job-name=access-pegasus-ep -o name | grep -q .; do sleep 2; done
+    - kubectl wait --for=jsonpath='{.status.phase}'=Running pod -l job-name=access-pegasus-ep --timeout=10m
+  tags:
+    - docker
+  artifacts:
+    access: developer
+    paths:
+      - experiment.yml
+    reports:
+      dotenv: .env

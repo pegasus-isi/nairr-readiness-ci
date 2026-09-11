@@ -206,6 +206,9 @@ class CropHealthWorkflow:
             )
         elif os.environ.get("RESOURCE") in ("ACCESS", "OSPOOL", "NRP"):
             classify_disease.add_pegasus_profile(gpus=1, memory=f"{self.MEM}B")
+
+            if os.environ.get("RESOURCE") == "NRP":
+                classify_disease.sites[exec_site_name].container = None
         else:
             classify_disease.add_pegasus_profile(
                 gpus="1",

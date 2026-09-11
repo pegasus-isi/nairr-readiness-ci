@@ -91,6 +91,9 @@ FABRIC_GITLAB_RUNNER_TOKEN      true       true    true    false     *      FABR
 FABRIC_GITLAB_RUNNER_ID         false      false   false   false     *      FABRIC GitLab runner integer identifier
 FABRIC_GITLAB_RUNNER_UID        false      false   false   false     *      FABRIC GitLab runner unique identifier
 
+NRP_K8S_CONFIG                  false      false   false   true      *      NRP K8S config
+NRP_K8S_TOKEN                   true       true    true    false     *      NRP K8S service account token
+
 STAMPEDE3_SSH_USER              true       false   false   false     *      Stampede 3 SSH user
 STAMPEDE3_SSH_MFA_SHARED_SECRET true       true    true    false     *      Stampede 3 user's MFA shared secret
 STAMPEDE3_SSH_KEY_FILE          true       false   false   false     *      Stampede 3 user's private key file
