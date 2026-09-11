@@ -8,16 +8,16 @@ spec:
 
 $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
   stage: unit
-  image: rockylinux:9
+  image: rockylinux/rockylinux:9
   before_script:
     - |
-      cat /etc/yum.repos.d/kubernetes.repo <<EOF
+      cat > /etc/yum.repos.d/kubernetes.repo <<EOF
       [kubernetes]
       name=Kubernetes
-      baseurl=https://k8s.io
+      baseurl=https://pkgs.k8s.io/core:/stable:/v1.37/rpm/
       enabled=1
       gpgcheck=1
-      gpgkey=https://k8s.iorepodata/repomd.xml.key
+      gpgkey=https://pkgs.k8s.io/core:/stable:/v1.37/rpm/repodata/repomd.xml.key
       EOF
 
     - dnf -y install kubectl
