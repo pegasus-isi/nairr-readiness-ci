@@ -91,7 +91,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
     - sleep 5
     - kubectl apply -f nrp-batch.yml
     - until kubectl get pod -l job-name=access-pegasus-ep -o name | grep -q .; do sleep 2; done
-    - kubectl wait --for=jsonpath='{.status.phase}'=Running pod -l job-name=access-pegasus-ep --timeout=10m
+    - kubectl wait --for=jsonpath='{.status.phase}'=Running pod -l job-name=access-pegasus-ep --timeout=110m
   tags:
     - docker
   artifacts:
