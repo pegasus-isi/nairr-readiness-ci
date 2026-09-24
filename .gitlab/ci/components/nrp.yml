@@ -47,6 +47,17 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
           spec:
             restartPolicy: Never
 
+            # --- Added Affinity to restrict GPU to Compute 7+ ---
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                  - matchExpressions:
+                    - key: nvidia.com/gpu.compute.major
+                      operator: Gt
+                      values:
+                      - "6" # Matches Volta (7), Turing (7), Ampere (8), Ada (8), Hopper (9), Blackwell (10)
+
             containers:
               - name: ep
                 image: ghcr.io/pegasus-isi/access-ep:main
