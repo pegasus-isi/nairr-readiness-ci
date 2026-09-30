@@ -189,8 +189,13 @@ class CropHealthWorkflow:
         if os.environ.get("RESOURCE") == "ANVIL":
             classify_disease.add_pegasus_profile(
                 project=os.environ["SLURM_ACCOUNT"] + "-gpu",
-                glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}",
+                glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM} -A {os.environ['SLURM_ACCOUNT'] + '-gpu'}",
                 container_arguments="--nv --no-mount bind-paths",
+            )
+        elif os.environ.get("RESOURCE") == "BRIDGES":
+            classify_disease.add_pegasus_profile(
+                gpus="1",
+                glite_arguments=f"-A {os.environ['SLURM_ACCOUNT']}",
             )
         elif os.environ.get("RESOURCE") == "DELTA":
             classify_disease.add_pegasus_profile(

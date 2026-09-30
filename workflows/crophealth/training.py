@@ -199,13 +199,22 @@ class CropHealthWorkflow:
         if os.environ.get("RESOURCE") == "ANVIL":
             preprocess_images.add_pegasus_profile(
                 project=os.environ["SLURM_ACCOUNT"] + "-gpu",
-                glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}",
+                glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM} -A {os.environ['SLURM_ACCOUNT'] + '-gpu'}",
                 container_arguments="--nv --no-mount bind-paths",
             )
             train_classifier.add_pegasus_profile(
                 project=os.environ["SLURM_ACCOUNT"] + "-gpu",
-                glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM}",
+                glite_arguments=f"--gres=gpu:1 --qos=gpu --mem={self.MEM} -A {os.environ['SLURM_ACCOUNT'] + '-gpu'}",
                 container_arguments="--nv --no-mount bind-paths",
+            )
+        elif os.environ.get("RESOURCE") == "BRIDGES":
+            preprocess_images.add_pegasus_profile(
+                gpus="1",
+                glite_arguments=f"-A {os.environ['SLURM_ACCOUNT']}",
+            )
+            train_classifier.add_pegasus_profile(
+                gpus="1",
+                glite_arguments=f"-A {os.environ['SLURM_ACCOUNT']}",
             )
         elif os.environ.get("RESOURCE") == "DELTA":
             preprocess_images.add_pegasus_profile(
