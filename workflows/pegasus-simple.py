@@ -45,7 +45,7 @@ task_a = Transformation(
     is_stageable=True,
     arch=Arch.X86_64,
     os_type=OS.LINUX,
-)
+).add_pegasus_profile(memory="256 MB")
 
 tc = TransformationCatalog().add_transformations(task_a).write()
 
