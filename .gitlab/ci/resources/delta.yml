@@ -23,6 +23,7 @@ include:
       slurm_partition: cpu
       slurm_account: bfof-delta-cpu
       slurm_time: "04:00:00"
+      slurm_extra_opts: --mem=2G
       site_shared_scratch: /scratch/bfof/mayani
       site_local_scratch_var: TMPDIR
 
