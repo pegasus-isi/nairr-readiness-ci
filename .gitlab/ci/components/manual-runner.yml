@@ -78,13 +78,13 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       # Usage: DELTA_PASS=... [DELTA_DUO=1] ./a.sh ssh user@host [args...]
       set timeout 60
 
-      spawn {*}$argv
+      spawn {*}\$argv
 
       expect -nocase "password:"
-      send -- "$env(DELTA_PASS)\r"
+      send -- "\$env(DELTA_PASS)\r"
 
       expect "Passcode or option"
-      send -- "[expr {[info exists env(DELTA_DUO)] ? $env(DELTA_DUO) : 1}]\r"
+      send -- "[expr {[info exists env(DELTA_DUO)] ? \$env(DELTA_DUO) : 1}]\r"
 
       interact
       EOF
