@@ -3,6 +3,21 @@ spec:
     job_name_prefix:
       description: Prefix for the CI job name and dotenv variable (must be unique per pipeline)
       default: glab
+    ssh_host:
+      description: Target SSH hostname
+    ssh_port:
+      description: Target SSH port
+      default: 22
+      type: number
+    ssh_user:
+      description: Username for the target host
+    ssh_password_var:
+      description: Name fo SSH password variable
+      default: ""
+    ssh_options:
+      description: Additional SSH options for the target host connection
+      default: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+
     ssh_mfa_type:
       description: MFA type for the target host (totp, or empty for none)
       default: ""
@@ -56,7 +71,28 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
   stage: unit
   image: rockylinux:9
   script:
-    - echo "Runner should be started manually"
+    - sudo dnf -y install expect openssh-clients
+    - |
+      cat > ssh-expect.sh <<EOF
+      #!/usr/bin/expect -f
+      # Usage: DELTA_PASS=... [DELTA_DUO=1] ./a.sh ssh user@host [args...]
+      set timeout 60
+
+      spawn {*}$argv
+
+      expect -nocase "password:"
+      send -- "$env(DELTA_PASS)\r"
+
+      expect "Passcode or option"
+      send -- "[expr {[info exists env(DELTA_DUO)] ? $env(DELTA_DUO) : 1}]\r"
+
+      interact
+      EOF
+    - chmod +x ssh-expect.sh
+    - export DELTA_PASS=${$[[ inputs.ssh_password_var ]]}
+    - export DELTA_DUO=1
+    - ./ssh-expect.sh ssh $[[ inputs.ssh_options ]] -l $[[ inputs.ssh_user ]] -p $[[ inputs.ssh_port ]] $[[ inputs.ssh_host ]] sbatch gitlab-runner.job
+
   tags:
     - docker
   artifacts:

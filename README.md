@@ -70,10 +70,14 @@ CHAMELEON_GITLAB_RUNNER_TOKEN   true       true    true    false     *      Cham
 CHAMELEON_GITLAB_RUNNER_ID      false      false   false   false     *      Chameleon Cloud GitLab runner integer identifier
 CHAMELEON_GITLAB_RUNNER_UID     false      false   false   false     *      Chameleon Cloud GitLab runner unique identifier
 
+DELTA_SSH_USER                  true       false   false   false     *      Delta SSH user
+DELTA_SSH_PASSWORD              true       true    true    false     *      Delta SSH password
 DELTA_GITLAB_RUNNER_TOKEN       true       true    true    false     *      Delta GitLab runner token
 DELTA_GITLAB_RUNNER_ID          false      false   false   false     *      Delta GitLab runner integer identifier
 DELTA_GITLAB_RUNNER_UID         false      false   false   false     *      Delta GitLab runner unique identifier
 
+DELTA_AI_SSH_USER               true       false   false   false     *      Delta AI SSH user
+DELTA_AI_SSH_PASSWORD           true       true    true    false     *      Delta AI SSH password
 DELTA_AI_GITLAB_RUNNER_TOKEN    true       true    true    false     *      Delta AI GitLab runner token
 DELTA_AI_GITLAB_RUNNER_ID       false      false   false   false     *      Delta AI GitLab runner integer identifier
 DELTA_AI_GITLAB_RUNNER_UID      false      false   false   false     *      Delta AI GitLab runner unique identifier
