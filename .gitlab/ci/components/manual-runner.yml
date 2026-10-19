@@ -92,7 +92,9 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
       # Propagate SSH exit status
       set result [wait]
-      exit [lindex $result 3]
+      set ec [lindex $result 3]
+      puts "DEBUG: SSH exit code = $ec"
+      exit $ec
       EOF
     - chmod +x ssh-expect.sh
     - export DELTA_PASS=${$[[ inputs.ssh_password_var ]]}
