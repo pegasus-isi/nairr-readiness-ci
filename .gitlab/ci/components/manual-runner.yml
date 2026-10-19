@@ -92,6 +92,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
 
       # Propagate SSH exit status
       set result [wait]
+      puts "DEBUG: wait result = $result"
       set ec [lindex $result 3]
       puts "DEBUG: SSH exit code = $ec"
       exit $ec
