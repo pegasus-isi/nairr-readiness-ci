@@ -16,7 +16,7 @@ spec:
       default: ""
     ssh_options:
       description: Additional SSH options for the target host connection
-      default: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=no -tt"
+      default: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
     ssh_mfa_type:
       description: MFA type for the target host (totp, or empty for none)
@@ -86,7 +86,13 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
       expect "Passcode or option"
       send -- "[expr {[info exists env(DELTA_DUO)] ? \$env(DELTA_DUO) : 1}]\r"
 
-      interact
+      # Wait for Duo approval and remote command completion
+      set timeout -1
+      expect eof
+
+      # Propagate SSH exit status
+      set result [wait]
+      exit [lindex $result 3]
       EOF
     - chmod +x ssh-expect.sh
     - export DELTA_PASS=${$[[ inputs.ssh_password_var ]]}
