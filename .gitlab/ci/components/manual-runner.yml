@@ -16,7 +16,7 @@ spec:
       default: ""
     ssh_options:
       description: Additional SSH options for the target host connection
-      default: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+      default: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=no -tt"
 
     ssh_mfa_type:
       description: MFA type for the target host (totp, or empty for none)
