@@ -71,7 +71,7 @@ $[[ inputs.job_name_prefix ]]-gitlab-runner-run:
   stage: unit
   image: rockylinux:9
   script:
-    - sudo dnf -y install expect openssh-clients
+    - dnf -y install expect openssh-clients
     - |
       cat > ssh-expect.sh <<EOF
       #!/usr/bin/expect -f
