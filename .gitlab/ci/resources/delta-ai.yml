@@ -16,7 +16,7 @@ include:
   - local: .gitlab/ci/components/manual-runner.yml
     inputs:
       job_name_prefix: DELTA_AI
-      ssh_host: login.delta.ncsa.illinois.edu
+      ssh_host: dtai-login.delta.ncsa.illinois.edu
       ssh_user: $DELTA_SSH_USER
       ssh_password_var: DELTA_AI_SSH_PASSWORD
       gitlab_url: ${GITLAB_URL}
