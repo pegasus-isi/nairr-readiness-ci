@@ -209,10 +209,12 @@ class CropHealthWorkflow:
             )
         elif os.environ.get("RESOURCE") == "BRIDGES":
             preprocess_images.add_pegasus_profile(
+                cores="2",
                 gpus="1",
                 glite_arguments=f"-A {os.environ['SLURM_ACCOUNT']}",
             )
             train_classifier.add_pegasus_profile(
+                cores="2",
                 gpus="1",
                 glite_arguments=f"-A {os.environ['SLURM_ACCOUNT']}",
             )

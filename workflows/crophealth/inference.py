@@ -194,6 +194,7 @@ class CropHealthWorkflow:
             )
         elif os.environ.get("RESOURCE") == "BRIDGES":
             classify_disease.add_pegasus_profile(
+                cores="2",
                 gpus="1",
                 glite_arguments=f"-A {os.environ['SLURM_ACCOUNT']}",
             )
