@@ -23,16 +23,24 @@ include:
       slurm_partition: RM-shared
       slurm_account: sta230005p
       slurm_time: "04:00:00"
+      # Bridges-2 has Python 3.6 on the login node, but Python 3.8 in the container
+      pre_script: |
+        module load python/3.8.6
       site_shared_scratch: \${PROJECT}
       site_local_scratch_var: LOCAL
+
   - local: .gitlab/ci/probes/pegasus-simple.yml
     inputs:
       job_name_prefix: BRIDGES
       resource_id: 3
+      pre_script: |
+        module load python/3.8.6
   - local: .gitlab/ci/probes/pegasus-ai.yml
     inputs:
       job_name_prefix: BRIDGES
       resource_id: 3
+      pre_script: |
+        module load python/3.8.6
       slurm_cpu_partition: RM-shared
       slurm_gpu_partition: GPU-shared
       workflow_generator: training
@@ -41,9 +49,12 @@ include:
       job_name_prefix: BRIDGES
       resource_id: 3
       probe_id: 4
+      pre_script: |
+        module load python/3.8.6
       slurm_cpu_partition: RM-shared
       slurm_gpu_partition: GPU-shared
       workflow_generator: inference
+
   - local: .gitlab/ci/probes/job-submit.yml
     inputs:
       job_name_prefix: BRIDGES
@@ -56,5 +67,7 @@ include:
       job_name_prefix: BRIDGES
       job_name: file_download
       resource_id: 3
+      pre_script: |
+        module load python/3.8.6
       slurm_partition: RM-shared
       slurm_account: sta230005p
